@@ -1,0 +1,4 @@
+name = "HermesMQTT"
+uuid = "8706dd1c-d27c-4dc2-b187-383141bb70e3"
+authors = ["Andreas Dominik <andreas.dominik@mni.thm.de>"]
+version = "0.1.0"
