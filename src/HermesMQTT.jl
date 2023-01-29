@@ -21,7 +21,7 @@ include("languages.jl")
 include("callback.jl")
 include("susi.jl")
 
-# keep rrack of current actions:
+# keep track of current actions:
 # 
 PREFIX = nothing    # prefix for parameter names
 CURRENT_SITE_ID = "default"
@@ -44,7 +44,8 @@ INI_MATCH = "must_include"
 #
 const HERMES_DIR = @__DIR__
 const ACTIONS_DIR = diretory(HERMES_DIR)
-const CONFIG_INI = readConfig(HERMES_DIR)
+const CONFIG_INI = read_config(HERMES_DIR)
+const LANG = set_language(getConfig(:language))
 
 # List of intents to listen to:
 # (intent, developer, complete topic, module, skill-action)
@@ -69,7 +70,7 @@ export subscribeMQTT, readOneMQTT, publishMQTT, publishMQTTfile,
        setDeveloperName, getDeveloperName, setModule, getModule,
        setAppDir, getAppDir, setAppName, getAppName,
        setTopic, getTopic, setIntent, getIntent,
-       readConfig, matchConfig, getConfig, isInConfig, getAllConfig,
+       read_config, match_config, get_config, isInConfig, getAllConfig,
        isConfigValid, isValidOrEnd, setConfigPrefix, resetConfigPrefix,
        getConfigPath,
        tryrun, tryReadTextfile, ping,

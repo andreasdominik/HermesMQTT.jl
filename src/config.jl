@@ -3,7 +3,7 @@
 
 
 """
-    readConfig(appDir)
+    read_config(appDir)
 
 Read the lines of the App's config file and
 return a Dict with config values.
@@ -11,7 +11,7 @@ return a Dict with config values.
 ## Arguments:
 * `appDir`: Directory of the currently running app.
 """
-function readConfig(appDir)
+function read_config(appDir)
 
     config_ini = Dict{Symbol, Any}()
     fileName = "$appDir/config.ini"
@@ -52,7 +52,7 @@ end
 
 
 """
-    matchConfig(name::Symbol, val::String)
+    match_config(name::Symbol, val::String)
 
 Return true if the parameter with name `name` of the config.ini has the value
 val or one element of the list as the value val.
@@ -61,7 +61,7 @@ val or one element of the list as the value val.
 * `name`: name of the config parameter as Symbol or String
 * `val`: desired value
 """
-function matchConfig(name, val::String)
+function match_config(name, val::String)
 
     name = addPrefix(name)
     # if !(name isa Symbol)
@@ -84,7 +84,7 @@ end
 
 
 """
-    getConfig(name; multiple = false, onePrefix = nothing)
+    get_config(name; multiple = false, onePrefix = nothing)
 
 Return the parameter value of the config.ini with
 name or nothing if the param does not exist.
@@ -106,7 +106,7 @@ If name is an `AbstractString`, the prefix is added if a
 prefix is defined (as `<prefix>:<name>`).
 'getConfig()' returns ''nothing if something is wrong.
 """
-function getConfig(name; multiple = false, onePrefix = nothing)
+function get_config(name; multiple = false, onePrefix = nothing)
 
     global CONFIG_INI
 
