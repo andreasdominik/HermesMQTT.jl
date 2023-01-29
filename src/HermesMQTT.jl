@@ -45,7 +45,7 @@ INI_MATCH = "must_include"
 const HERMES_DIR = @__DIR__
 const ACTIONS_DIR = diretory(HERMES_DIR)
 const CONFIG_INI = read_config(HERMES_DIR)
-const LANG = set_language(getConfig(:language))
+const LANG = set_language(get_config(:language))
 
 # List of intents to listen to:
 # (intent, developer, complete topic, module, skill-action)

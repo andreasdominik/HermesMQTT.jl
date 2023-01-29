@@ -1,14 +1,14 @@
 """
-    addStringsToArray!( a, moreElements)
+    add_strings_to_array!( a, more_elements)
 
-Add moreElements to a. If a is not an existing
+Add more_elements to a. If a is not an existing
 Array of String, a new Array is created.
 
 ## Arguments:
 * `a`: Array of String.
-* `moreElements`: elements to be added.
+* `more_elements`: elements to be added.
 """
-function addStringsToArray!( a, moreElements)
+function add_strings_to_array!( a, more_elements)
 
     if a isa AbstractString
         a = [a]
@@ -16,10 +16,10 @@ function addStringsToArray!( a, moreElements)
         a = String[]
     end
 
-    if moreElements isa AbstractString
-        push!(a, moreElements)
-    elseif moreElements isa AbstractArray
-        for t in moreElements
+    if more_elements isa AbstractString
+        push!(a, more_elements)
+    elseif more_elements isa AbstractArray
+        for t in more_elements
             push!(a, t)
         end
     end
@@ -29,19 +29,19 @@ end
 
 
 """
-    extractSlotValue(payload, slotName; multiple = false)
+    extract_slot_value(payload, slot_name; multiple = false)
 
 Return the value of a slot.
 
 Nothing is returned, if
 * no slots in payload,
-* no slots with name slotName in payload,
-* no values in slot slotName.
+* no slots with name slot_name in payload,
+* no values in slot slot_name.
 
 If multiple == `true`, a list of all slot values will be
 returned. If false, only the 1st one as String.
 """
-function extractSlotValue(payload, slotName; multiple = false)
+function extract_slot_value(payload, slot_name; multiple = false)
 
     if !haskey(payload, :slots)
         return nothing
@@ -49,7 +49,7 @@ function extractSlotValue(payload, slotName; multiple = false)
 
     values = []
     for sl in payload[:slots]
-        if sl[:slotName] == slotName
+        if sl[:slot_name] == slot_name
             if haskey(sl, :value) && haskey(sl[:value], :value)
                 push!(values,sl[:value][:value])
             end
@@ -66,7 +66,7 @@ function extractSlotValue(payload, slotName; multiple = false)
 end
 
 """
-    extractMultiSlotValues(payload, slotNames)
+    extract_multislot_values(payload, slot_names)
 
 Return a list with all values of a list of slots.
 
@@ -75,12 +75,12 @@ Nothing is returned, if
 * no slots with name in slotNames in payload,
 * no values in slot slotNames.
 """
-function extractMultiSlotValues(payload, slotNames::AbstractArray)
+function extract_multislot_values(payload, slot_names::AbstractArray)
 
     values = []
 
-    for slot in slotNames
-        value = extractSlotValue(payload, slot, multiple=true)
+    for slot in slot_names
+        value = extract_slot_value(payload, slot, multiple=true)
         if value != nothing
             append!(values, value)
         end
@@ -96,35 +96,35 @@ end
 
 
 """
-    isInSlot(payload, slotName, value)
+    is_in_slot(payload, slot_name, value)
 
 Return `true`, if the value is present in the slot slotName
 of the JSON payload (i.e. one of the slot values must match).
 Return `false` if something is wrong (value not in payload or no
 slots slotName.)
 """
-function isInSlot(payload, slotName, value)
+function is_in_Slot(payload, slot_name, value)
 
-    values = extractSlotValue(payload, slotName; multiple = true)
+    values = extract_slot_value(payload, slot_name; multiple = true)
     return (values != nothing) && (value in values)
 end
 
 
 """
-    readTimeFromSlot(payload, slotName)
+    read_time_from_slot(payload, slot_name)
 
 Return a DateTime from a slot with a time string of the format
 `"2019-09-03 18:00:00 +00:00"` or `nothing` if it is
 not possible to parse the slot.
 """
-function readTimeFromSlot(payload, slotName)
+function read_time_from_slot(payload, slot_name)
 
     dateTime = nothing
 
     # date format delivered from Snips:
     #
     # dateFormat = Dates.DateFormat("yyyy-mm-dd HH:MM:SS")
-    timeStr = extractSlotValue(payload, slotName, multiple = false)
+    timeStr = extract_slot_value(payload, slot_name, multiple = false)
     if timeStr == nothing
         return nothing
     end
@@ -147,7 +147,7 @@ end
 
 
 """
-    tryrun(cmd; wait = true, errorMsg = ERRORS_EN[:error_script], silent = flase)
+    tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent = flase)
 
 Try to run an external command and returns true if successful
 or false if not.
@@ -155,19 +155,19 @@ or false if not.
 ## Arguments:
 * cmd: command to be executed on the shell
 * wait: if `true`, wait until the command has finished
-* errorMsg: AbstractString or key to multi-language dict with the
+* error_msg: AbstractString or key to multi-language dict with the
             error message.
 * silent: if `true`, no error is published, if something went wrong.
 """
-function tryrun(cmd; wait = true, errorMsg = ERRORS_EN[:error_script], silent = false)
+function tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent = false)
 
-    errorMsg = langText(errorMsg)
+    error_msg = langText(error_msg)
     result = true
     try
         run(cmd; wait = wait)
     catch
         result = false
-        silent || publishSay(errorMsg)
+        silent || publish_say(error_msg)
         printLog("Error running script $cmd")
     end
 
@@ -200,22 +200,22 @@ end
 
 
 """
-    tryReadTextfile(fname, errorMsg = TEXTS[:error_read])
+    try_read_textfile(fname, error_msg = TEXTS[:error_read])
 
 Try to read a text file from file system and
 return the text as `String` or an `String` of length 0, if
 something went wrong.
 """
-function tryReadTextfile(fname, errorMsg = :error_read)
+function try_read_textfile(fname, error_msg = :error_read)
 
-    errorMsg = langText(errorMsg)
+    error_msg = langText(error_msg)
     text = ""
     try
         text = open(fname) do file
                   read(file, String)
                end
     catch
-        publishSay(errMsg, lang = LANG)
+        publish_say(err_msg, lang = LANG)
         printLog("Error opening text file $fname")
         text = ""
     end
@@ -225,7 +225,7 @@ end
 
 
 """
-    setLanguage(lang)
+    set_language(lang)
 
 Set the default language for HermesMQTT
 Currently supported laguages are "en" and "de".
@@ -236,7 +236,7 @@ Log-messages will always be in English.
 ## Arguments
 * lang: one of `"en"` or `"de"` or any other.
 """
-function setLanguage(lang)
+function set_language(lang)
 
     if lang != nothing
         global LANG = lang
@@ -246,7 +246,7 @@ function setLanguage(lang)
 end
 
 """
-    addText(lang::AbstractString, key::Symbol, text)
+    add_text(lang::AbstractString, key::Symbol, text)
 
 Add the text to the dictionary of text sniplets for the language
 `lang` and the key `key`.
@@ -263,7 +263,7 @@ will return a randomly selected text from the list.
 If the key already exists, the new text will be added to the the
 Array of texts for a key.
 """
-function addText(lang::AbstractString, key::Symbol, text)
+function add_text(lang::AbstractString, key::Symbol, text)
 
     if text isa AbstractString
         text = [text]
@@ -278,9 +278,9 @@ end
 
 
 """
-    langText(key::Symbol)
-    langText(key::Nothing)
-    langText(key::AbstractString)
+    lang_text(key::Symbol)
+    lang_text(key::Nothing)
+    lang_text(key::AbstractString)
 
 Return the text in the languages dictionary for the key and the
 language set with `setLanguage()`.
@@ -291,7 +291,7 @@ if this also does not exist, an error message is returned.
 The variants make sure that nothing or the key itself are returned
 if key is nothing or an AbstractString, respectively.
 """
-function langText(key::Symbol)
+function lang_text(key::Symbol)
 
     if haskey(LANGUAGE_TEXTS, (LANG, key))
         return StatsBase.sample(LANGUAGE_TEXTS[(LANG, key)])
@@ -302,13 +302,13 @@ function langText(key::Symbol)
     end
 end
 
-function langText(key::Nothing)
+function lang_text(key::Nothing)
 
     return nothing
 end
 
 
-function langText(key::AbstractString)
+function lang_text(key::AbstractString)
 
     return key
 end
@@ -317,23 +317,23 @@ end
 
 
 """
-    setAppDir(appDir)
+    set_appdir(appdir)
 
-Store the directory `appDir` as CURRENT_APP_DIR in the
+Store the directory `appdir` as CURRENT_APP_DIR in the
 current session
 """
-function setAppDir(appDir)
+function set_appdir(appdir)
 
-    global CURRENT_APP_DIR = appDir
+    global CURRENT_APP_DIR = appdir
 end
 
 """
-    getAppDir()
+    get_appdir()
 
 Return the directory of the currently running app
 (i.e. the variable CURRENT_APP_DIR)
 """
-function getAppDir()
+function get_appdir()
     return CURRENT_APP_DIR
 end
 
@@ -341,47 +341,47 @@ end
 
 
 """
-    setAppName(appName)
+    set_appname(appname)
 
 Store the name of the current app/module as CURRENT_APP_NAME in the
 current session
 """
-function setAppName(appName)
+function set_appname(appname)
 
-    global CURRENT_APP_NAME = appName
+    global CURRENT_APP_NAME = appname
 end
 
 """
-    getAppName()
+    get_appname()
 
 Return the name of the currently running app
 (i.e. the variable CURRENT_APP_NAME)
 """
-function getAppName()
+function get_appname()
     return CURRENT_APP_NAME
 end
 
 
 """
-    printLog(s)
+    print_log(s)
 
 Print the message
 The current App-name is printed as prefix.
 """
-function printLog(s)
+function print_log(s)
 
     if s == nothing
         s = "log-message is nothing"
     end
     logtime = Dates.format(Dates.now(), "e, dd u yyyy HH:MM:SS")
-    prefix = getAppName()
+    prefix = get_appname()
     println("***> $logtime [$prefix]: $s")
     flush(stdout)
 end
 
 
 """
-    printDebug(s)
+    print_debug(s)
 
 Print the message only, if debug-mode is on.
 Debug-modes include
@@ -392,24 +392,24 @@ Debug-modes include
                  off-line while a skill-action is running).
 Current App-name is printed as prefix.
 """
-function printDebug(s)
+function print_debug(s)
 
     if s == nothing
         s = "log-message is nothing"
     end
-    if !matchConfig(:debug, "none")
-        printLog("<<< DEBUG >>> $s")
+    if !match_config(:debug, "none")
+        print_log("<<< DEBUG >>> $s")
     end
 end
 
 
 """
-    allOccursin(needles, haystack)
+    all_occursin(needles, haystack)
 
 Return true if all words in the list needles occures in haystack.
 `needles` can be an AbstractStrings or regular expression.
 """
-function allOccursin(needles, haystack)
+function all_occursin(needles, haystack)
 
     if needles isa AbstractString
         needles = [needles]
@@ -426,12 +426,12 @@ end
 
 
 """
-    oneOccursin(needles, haystack)
+    one_occursin(needles, haystack)
 
 Return true if one of the words in the list needles occures in haystack.
 `needles` can be an AbstractStrings or regular expression.
 """
-function oneOccursin(needles, haystack)
+function one_occursin(needles, haystack)
 
     if needles isa AbstractString
         needles = [needles]
@@ -447,7 +447,7 @@ function oneOccursin(needles, haystack)
 end
 
 """
-    allOccursinOrder(needles, haystack; complete = true)
+    all_occursin_order(needles, haystack; complete = true)
 
 Return true if all words in the list needles occures in haystack
 in the given order.
@@ -460,7 +460,7 @@ The match ic case insensitive.
 `complete`: if `true`, the target string must start with the first
             word and end with the last word of the list.
 """
-function allOccursinOrder(needles, haystack; complete=true)
+function all_occursin_order(needles, haystack; complete=true)
 
     if needles isa AbstractString
         needles = [needles]
@@ -473,14 +473,14 @@ function allOccursinOrder(needles, haystack; complete=true)
     else
         rg = Regex("$(join(needles, ".*"))", "i")
     end
-    printDebug("RegEx: >$rg<, command: >$haystack<")
+    print_debug("RegEx: >$rg<, command: >$haystack<")
     return occursin(rg, haystack)
 end
 
 
 
 """
-    isFalseDetection(payload)
+    is_false_detection(payload)
 
 Return true, if the current intent is **not** correct for the uttered
 command (i.e. false positive).
@@ -506,21 +506,21 @@ of the list).
 Several lines are possible; the last part of the parameter name
 is used as description and to make the parameter names unique.
 """
-function isFalseDetection(payload)
+function is_false_detection(payload)
 
     INCLUDE = ":must_include:"
     CHAIN = ":must_chain:"
     SPAN = ":must_span:"
 
     command = strip(payload[:input])
-    intent = getIntent()
+    intent = get_intent()
 
     # make list of all config.ini keys which hold lists
     # of must-words:
     #
     rgx = Regex("^$intent$INCLUDE|^$intent$CHAIN|^$intent$SPAN")
-    config = filter(p->occursin(rgx, String(p.first)), getAllConfig())
-    printDebug("Config false detection lines: $config")
+    config = filter(p->occursin(rgx, String(p.first)), get_all_config())
+    print_debug("Config false detection lines: $config")
 
     if length(config) == 0
         falseActivation = false
@@ -529,22 +529,22 @@ function isFalseDetection(payload)
         #
         falseActivation = true
         for (name,needle) in config
-            printDebug("""name = $name; needle = "$needle".""")
+            print_debug("""name = $name; needle = "$needle".""")
 
-            if occursin(INCLUDE, "$name") && allOccursin(needle, command)
+            if occursin(INCLUDE, "$name") && all_occursin(needle, command)
                 # printDebug("match INCLUDE: $command, $needle")
                 falseActivation = false
-            elseif occursin(CHAIN, "$name") && allOccursinOrder(needle, command, complete=false)
+            elseif occursin(CHAIN, "$name") && all_occursin_order(needle, command, complete=false)
                 # printDebug("match CHAIN: $command, $needle")
                 falseActivation = false
-            elseif occursin(SPAN, "$name") && allOccursinOrder(needle, command, complete=true)
+            elseif occursin(SPAN, "$name") && all_occursin_order(needle, command, complete=true)
                 # printDebug("match SPAN: $command, $needle")
                 falseActivation = false
             end
         end
     end
     if falseActivation
-        printLog(  """[$intent]: Intent "$intent" aborted. False detection recognised for command: "$command".""")
+        print_log(  """[$intent]: Intent "$intent" aborted. False detection recognised for command: "$command".""")
     end
 
     return falseActivation
