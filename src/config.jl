@@ -84,7 +84,7 @@ end
 
 
 """
-    get_config(name; multiple = false, onePrefix = nothing)
+    get_config(name; multiple = false, one_prefix = nothing)
 
 Return the parameter value of the config.ini with
 name or nothing if the param does not exist.
@@ -96,7 +96,7 @@ values is read.
 * `name`: name of the config parameter as Symbol or String
 * `multiple`: if `true` an array of values is returned, even if
               only a single value have been read.
-* `onePrefix`: if defined, the prefix will be used only for this
+* `one_prefix`: if defined, the prefix will be used only for this
               single call instead of the stored prefix.
 
 ## Details:
@@ -104,16 +104,16 @@ If name is of type `Symbol`, it is treated as key in the
 Dirctionary of parameter values.
 If name is an `AbstractString`, the prefix is added if a
 prefix is defined (as `<prefix>:<name>`).
-'getConfig()' returns ''nothing if something is wrong.
+'get_config()' returns ''nothing if something is wrong.
 """
-function get_config(name; multiple = false, onePrefix = nothing)
+function get_config(name; multiple = false, one_prefix = nothing)
 
     global CONFIG_INI
 
-    if onePrefix == nothing
-        name = addPrefix(name)
+    if one_prefix == nothing
+        name = add_prefix(name)
     else
-        name = Symbol("$onePrefix:$name")
+        name = Symbol("$one_prefix:$name")
     end
 
     if haskey(CONFIG_INI, name)
@@ -128,7 +128,7 @@ function get_config(name; multiple = false, onePrefix = nothing)
 end
 
 """
-    function getConfigPath(name, defaultPath; onePrefix = nothing)
+    function get_config_path(name, default_path; one_prefix = nothing)
 
 Read the config value 'name' as filename and generate a full
 (absolute) path:
@@ -137,45 +137,45 @@ Read the config value 'name' as filename and generate a full
 
 ## Arguments:
 * `name`: name of the config parameter as Symbol or String
-* `defaultPath`: path to be used if name is not already a path
-* `onePrefix`: if defined, the prefix will be used only for this
+* `default_path`: path to be used if name is not already a path
+* `one_prefix`: if defined, the prefix will be used only for this
               single call instead of the stored prefix.
 """
-function getConfigPath(name, defaultPath; onePrefix = nothing)
+function get_config_path(name, default_path; one_prefix = nothing)
 
-    fName = getConfig(name, onePrefix = onePrefix)
+    fName = get_config(name, one_prefix = one_prefix)
     if (fName == nothing) || (length(fName) < 1)
         return nothing
     elseif fName[1] == '/'
         return fName
     else
-        return joinpath(defaultPath, fName)
+        return joinpath(default_path, fName)
     end
 end
 
 
 """
-    getAllConfig()
+    get_all_config()
 
 Return a Dict with the complete `config.ini`.
 """
-function getAllConfig()
+function get_all_config()
 
     return CONFIG_INI
 end
 
 
 """
-    isInConfig(name)
+    is_in_config(name)
 
 Return true if a parameter with name exists.
 
 ## Arguments:
 * `name`: name of the config parameter as Symbol or String
 """
-function isInConfig(name)
+function is_in_config(name)
 
-    name = addPrefix(name)
+    name = add_prefix(name)
     # if !(name isa Symbol)
     #     name = Symbol(name)
     # end
@@ -186,7 +186,7 @@ end
 
 
 """
-    isConfigValid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error_config])
+    is_config_valid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error_config])
 
 Return `true`, if the parameter `name` have been read correctly from the
 `config.ini` file and `false` otherwise. By default "correct" means: it is aString with
@@ -198,19 +198,19 @@ length > 0. For a moore specific test, a regex can be provided.
 * elem: element to be tested, if the parameter returns an array
 * errorMsg: alternative error message.
 """
-function isConfigValid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error_config])
+function is_config_valid(name; regex = r".", elem = 1, error_msg = ERRORS_EN[:error_config])
 
-    name = addPrefix(name)
-    if !isInConfig(name)
+    name = add_prefix(name)
+    if !is_in_config(name)
         return false
     end
 
-    if getConfig(name) == nothing
+    if get_config(name) == nothing
         param = ""
-    elseif getConfig(name) isa AbstractString
-        param = getConfig(name)
-    elseif getConfig(name) isa AbstractArray
-        param = getConfig(name)[elem]
+    elseif get_config(name) isa AbstractString
+        param = get_config(name)
+    elseif get_config(name) isa AbstractArray
+        param = get_config(name)[elem]
     else
         param = ""
     end
@@ -218,15 +218,15 @@ function isConfigValid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error
     if occursin(regex, param)
         return true
     else
-        publishSay("$errorMsg : $name")
-        printLog("[$CURRENT_APP_NAME]: $errorMsg : $name")
-        printLog("    Regex: $regex, parameter: $param")
+        publish_say("$errorMsg : $name")
+        print_log("[$CURRENT_APP_NAME]: $error_msg : $name")
+        print_log("    Regex: $regex, parameter: $param")
         return false
     end
 end
 
 
-function addPrefix(name)
+function add_prefix(name)
 
     global PREFIX
 
@@ -243,25 +243,25 @@ end
 
 
 """
-    setConfigPrefix(newPrefix)
+    set_config_prefix(new_prefix)
 
 Set the prefix for all following calls to a parameter from
 `config.ini`. All parameter names, gives as `Strings` will be
 modified as `<prefix>:<name>`.
 """
-function setConfigPrefix(newPrefix)
+function set_config_prefix(new_prefix)
 
-    global PREFIX = newPrefix
+    global PREFIX = new_prefix
 end
 
 
 """
-    resetConfigPrefix()
+    reset_configPrefix()
 
 Remove the prefix for all following calls to a parameter from
 `config.ini`.
 """
-function resetConfigPrefix()
+function reset_config_prefix()
 
     global PREFIX = nothing
 end
