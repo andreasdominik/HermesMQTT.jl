@@ -1,12 +1,12 @@
 module HermesMQTT
 
-import JSON
-import StatsBase
+using JSON
+using statsBase
 using Dates
 using Distributed
 
 include("utils.jl")
-include("J4H.jl")
+include("snips.jl")
 include("mqtt.jl")
 include("hermes.jl")
 include("intents.jl")
@@ -21,8 +21,9 @@ include("languages.jl")
 include("callback.jl")
 include("susi.jl")
 
-CONFIG_INI = Dict{Symbol, Any}()
-prefix = nothing    # prefix for parameter names
+# keep rrack of current actions:
+# 
+PREFIX = nothing    # prefix for parameter names
 CURRENT_SITE_ID = "default"
 CURRENT_SESSION_ID = "1"
 CURRENT_DEVEL_NAME = "unknown"
@@ -39,8 +40,11 @@ LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
 INI_MATCH = "must_include"
 
-# read config susi.config entries moved to QnD.config:
+# read config susi.config entries moved to HermesMQTT config:
 #
+const HERMES_DIR = @__DIR__
+const ACTIONS_DIR = diretory(HERMES_DIR)
+const CONFIG_INI = readConfig(HERMES_DIR)
 
 # List of intents to listen to:
 # (intent, developer, complete topic, module, skill-action)

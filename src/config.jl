@@ -13,7 +13,7 @@ return a Dict with config values.
 """
 function readConfig(appDir)
 
-    global CONFIG_INI
+    config_ini = Dict{Symbol, Any}()
     fileName = "$appDir/config.ini"
 
     configLines = []
@@ -37,9 +37,9 @@ function readConfig(appDir)
                     vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
 
                     if length(vals) == 1
-                        CONFIG_INI[name] = vals[1]
+                        config_ini[name] = vals[1]
                     elseif length(vals) > 1
-                        CONFIG_INI[name] = vals
+                        config_ini[name] = vals
                     end
                 end
             end
@@ -47,7 +47,7 @@ function readConfig(appDir)
     catch
         printLog("Warning: no config file found!")
     end
-
+     return config_ini
 end
 
 
@@ -228,16 +228,16 @@ end
 
 function addPrefix(name)
 
-    global prefix
+    global PREFIX
 
     # do nothing if name is a Symbol:
     #
     if name isa Symbol
         return name
-    elseif prefix == nothing
+    elseif PREFIX == nothing
         return Symbol(name)
     else
-        return Symbol("$prefix:$name")
+        return Symbol("$PREFIX:$name")
     end
 end
 
@@ -251,7 +251,7 @@ modified as `<prefix>:<name>`.
 """
 function setConfigPrefix(newPrefix)
 
-    global prefix = newPrefix
+    global PREFIX = newPrefix
 end
 
 
@@ -263,5 +263,5 @@ Remove the prefix for all following calls to a parameter from
 """
 function resetConfigPrefix()
 
-    global prefix = nothing
+    global PREFIX = nothing
 end
