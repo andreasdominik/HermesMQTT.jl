@@ -23,11 +23,13 @@ function readConfig(appDir)
         # read lines as "param_name=value"
         # or "param_name=value1,value2,value3"
         #
-        rgx = r"^(?<name>[^[:space:]]+) *= *(?<val>.+)$"
+        rgx = r"^(?<name>[^[:space:]]+)=(?<val>.+)$"
         for line in configLines
             # skip comments.
             #
             if !occursin(r"^#", line)
+                
+                line = replace(line, " "=>"")   # strip spaces
                 m = match(rgx, line)
                 if m != nothing
                     name = Symbol(m[:name])
