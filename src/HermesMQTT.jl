@@ -53,7 +53,7 @@ const LANG = set_language(get_config(:language))
 SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, AbstractString,
                              Module, Function}[]
 
-export subscribeMQTT, readOneMQTT, publishMQTT, publishMQTTfile,
+export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        subscribe2Intents, subscribe2Topics, listenIntentsOneTime,
        publishEndSession, publishContinueSession,
        publishStartSessionAction, publishStartSessionNotification,
