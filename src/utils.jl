@@ -81,7 +81,7 @@ function extract_multislot_values(payload, slot_names::AbstractArray)
 
     for slot in slot_names
         value = extract_slot_value(payload, slot, multiple=true)
-        if value != nothing
+        if !isnothing(value)
             append!(values, value)
         end
     end
@@ -106,7 +106,7 @@ slots slotName.)
 function is_in_Slot(payload, slot_name, value)
 
     values = extract_slot_value(payload, slot_name; multiple = true)
-    return (values != nothing) && (value in values)
+    return !isnothing(values) && (value in values)
 end
 
 
@@ -125,7 +125,7 @@ function read_time_from_slot(payload, slot_name)
     #
     # dateFormat = Dates.DateFormat("yyyy-mm-dd HH:MM:SS")
     timeStr = extract_slot_value(payload, slot_name, multiple = false)
-    if timeStr == nothing
+    if isnothing(timeStr)
         return nothing
     end
 
@@ -238,10 +238,10 @@ Log-messages will always be in English.
 """
 function set_language(lang)
 
-    if lang != nothing
-        global LANG = lang
-    else
+    if isnothing(lang)
         global LANG = DEFAULT_LANG
+    else
+        global LANG = lang
     end
 end
 
@@ -370,7 +370,7 @@ The current App-name is printed as prefix.
 """
 function print_log(s)
 
-    if s == nothing
+    if isnothing(s)
         s = "log-message is nothing"
     end
     logtime = Dates.format(Dates.now(), "e, dd u yyyy HH:MM:SS")
@@ -394,7 +394,7 @@ Current App-name is printed as prefix.
 """
 function print_debug(s)
 
-    if s == nothing
+    if isnothing(s)
         s = "log-message is nothing"
     end
     if !match_config(:debug, "none")
