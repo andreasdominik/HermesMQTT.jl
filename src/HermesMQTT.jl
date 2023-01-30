@@ -102,7 +102,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        db_has_entry,
        scheduler_add_trigger, scheduler_add_actions, scheduler_make_action,
        scheduler_delete_all, scheduler_delete_topic, scheduler_delete_by_origin,
-       getWeather,
+       get_weather,
        get_language, set_language
 
 end # module
