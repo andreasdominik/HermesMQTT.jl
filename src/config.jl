@@ -106,7 +106,7 @@ If name is an `AbstractString`, the prefix is added if a
 prefix is defined (as `<prefix>:<name>`).
 'get_config()' returns ''nothing if something is wrong.
 """
-function get_config(name; multiple = false, one_prefix = nothing)
+function get_config(name; multiple=false, one_prefix=nothing)
 
     global CONFIG_INI
 

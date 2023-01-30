@@ -1,23 +1,25 @@
 [global]
 # debug mode: none, no-parallel or logging
 #
-debug=logging
+debug = logging
+language = de
 
 # devices, switched by the on/off-intent:
 # home database in dir AppilcationData
 #
 #on_off_devices=floor_light,light,irrigation,TV,amazon_fire,KODI
-on_off_devices=light
-database_file=home.json
+on_off_devices = light
+database_file = home.json
 
 [secret]
 # application_data_dir=/opt/Susi/ApplicationData
 
 # MQTT broker settings:
-mqtt_ip=localhost
-mqtt_port=12345
-mqtt_user=bla
-mqtt_password=bla
+mqtt_host = localhost
+mqtt_port = 12345
+mqtt_user = susi
+mqtt_password = 12345
+mqtt_timeout = nothing
 
 # API key and city-ID for openWeather and weatherAPI
 # (here: example Berlin, DE)
