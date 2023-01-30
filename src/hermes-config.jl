@@ -133,26 +133,6 @@ function get_siteID()
     return global CURRENT[:site_ID]
 end
 
-"""
-    set_language(lang)
-
-Set the language in the Module HermesMQTT
-"""
-function set_language(lang)
-
-    global CONFIG_INI[:language] = lang
-end
-
-"""
-    get_language()
-
-Return the language in the Module HermesMQTT
-"""
-function get_language()
-
-    return global CONFIG_INI[:language]
-end
-
 
 
 """
@@ -290,4 +270,60 @@ Return the intent name of the currently running app.
 function get_intent()
 
     return global CURRENT[:intent]
+end
+
+
+
+# global HermesMQTT config.ini-settings:
+#
+
+"""
+    get_hermes_config(key)
+
+Get a value from the global HermesMQTT config (read from the 
+`config.ini` located in the HermesMQTT-subdirectory).
+
+### Arguments:
++ `key`: Dictionary key.
+"""
+function get_hermes_config(key)
+    return global CONFIG_INI[Symbol(key)]
+end
+
+
+"""
+    set_hermes_config(key, value)
+
+Set a value to the global HermesMQTT config (read from the 
+`config.ini` located in the HermesMQTT-subdirectory).
+
+### Arguments:
++ `key`: Dictionary key (will be casted to Symbol)
++ `value`: value to be stored.
+"""
+function set_hermes_config(key,value)
+    global CONFIG_INI[Symbol(key)] = value
+end
+
+
+
+
+"""
+    set_language(lang)
+
+Set the language in the Module HermesMQTT
+"""
+function set_language(lang)
+
+    global CONFIG_INI[:language] = lang
+end
+
+"""
+    get_language()
+
+Return the language in the Module HermesMQTT
+"""
+function get_language()
+
+    return global CONFIG_INI[:language]
 end

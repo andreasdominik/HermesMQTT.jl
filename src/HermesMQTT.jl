@@ -7,7 +7,7 @@ using Distributed
 using Random
 
 include("utils.jl")
-include("snips.jl")
+include("hermes-config.jl")
 include("mqtt.jl")
 include("hermes.jl")
 include("intents.jl")
@@ -42,25 +42,15 @@ LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
 INI_MATCH = "must_include"
 
-# read config susi.config entries moved to HermesMQTT config:
+# init config. Read of config.ini moved to strater script, because
+# the Package is located anywhere...:
 #
-const HERMES_DIR = @__DIR__
-const ACTIONS_DIR = diretory(HERMES_DIR)
-const CONFIG_INI = read_config(HERMES_DIR)
-if isnothing(get_config(:language))
-    set_language(DEFAULT_LANG)
-end
+CONFIG_INI = Dict{Symbol, Any}()
+
 
 # save home status database location in CONFIG_INI:
 # dirname, filename and path (full path to database) 
 #
-set_config(:database_dir, joinpath(ACTIONS_DIR, "ApplicationData", "database"))
-if isnothing(get_config(:database_file))
-    set_config(:database_file, "home.json")
-end
-set_config(:database_path), 
-    joinpath(get_config(:database_dir), get_config(:database_file))
-
 
 # List of intents to listen to:
 # (intent, developer, complete topic, module, skill-action)
@@ -86,7 +76,6 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        set_appdir, get_appdir, set_appname, get_appname,
        set_topic, get_topic, set_intent, get_intent,
        read_config, match_config, get_config, is_in_config, get_all_config,
-       set_config,
        is_config_valid, is_valid_or_end, set_config_prefix, reset_config_prefix,
        get_config_path,
        tryrun, try_read_textfile, ping,
@@ -103,6 +92,6 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        scheduler_add_trigger, scheduler_add_actions, scheduler_make_action,
        scheduler_delete_all, scheduler_delete_topic, scheduler_delete_by_origin,
        get_weather,
-       get_language, set_language
+       get_language, set_language, get_hermes_config, load_hermes_config
 
 end # module

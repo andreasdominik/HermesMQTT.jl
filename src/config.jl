@@ -1,6 +1,26 @@
 #
 # helpers to work with config.ini
 
+function load_hermes_config(hermes_dir)
+
+    skills_dir = dirname(hermes_dir)  # set base dir one higher
+
+    global CONFIG_INI = read_config(hermes_dir)
+
+    # fix some potential issues:
+    #
+    if isnothing(get_config(:language))
+        set_language(DEFAULT_LANG)
+    end
+
+    set_config(:database_dir, 
+               joinpath(skills_dir, "application_data", "database"))
+    if isnothing(get_config(:database_file))
+        set_config(:database_file, "home.json")
+    end
+    set_config(:database_path), 
+        joinpath(get_config(:database_dir), get_config(:database_file))
+end
 
 """
     read_config(appDir)
@@ -14,7 +34,7 @@ return a Dict with config values.
 function read_config(appDir)
 
     config_ini = Dict{Symbol, Any}()
-    fileName = "$appDir/config.ini"
+    fileName = joinpath($appDir, "config.ini")
 
     configLines = []
     try
@@ -266,13 +286,3 @@ function reset_config_prefix()
     global PREFIX = nothing
 end
 
-
-"""
-    set_config(k,v)
-
-Save a value `v` in the global config Dict with the key
-`:k`.
-""" 
-function set_config(k, v)
-    CONFIG_INI[Symbol(k)] = v
-end
