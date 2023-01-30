@@ -47,9 +47,20 @@ INI_MATCH = "must_include"
 const HERMES_DIR = @__DIR__
 const ACTIONS_DIR = diretory(HERMES_DIR)
 const CONFIG_INI = read_config(HERMES_DIR)
-if isnothing get_config(:language)
+if isnothing(get_config(:language))
     set_language(DEFAULT_LANG)
 end
+
+# save home status database location in CONFIG_INI:
+# dirname, filename and path (full path to database) 
+#
+set_config(:database_dir, joinpath(ACTIONS_DIR, "ApplicationData", "database"))
+if isnothing(get_config(:database_file))
+    set_config(:database_file, "home.json")
+end
+set_config(:database_path), 
+    joinpath(get_config(:database_dir), get_config(:database_file))
+
 
 # List of intents to listen to:
 # (intent, developer, complete topic, module, skill-action)
@@ -75,6 +86,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        set_appdir, get_appdir, set_appname, get_appname,
        set_topic, get_topic, set_intent, get_intent,
        read_config, match_config, get_config, is_in_config, get_all_config,
+       set_config,
        is_config_valid, is_valid_or_end, set_config_prefix, reset_config_prefix,
        get_config_path,
        tryrun, try_read_textfile, ping,
@@ -86,7 +98,8 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        switchShelly1, switchShelly25relay, moveShelly25roller,
        all_occuresin, one_occursin, all_occursin_order,
        is_false_detection,
-       dbWritePayload, dbWriteValue, dbReadEntry, dbReadValue, dbHasEntry,
+       db_write_payload, db_write_value, db_read_entry, db_read_value, 
+       db_has_entry,
        schedulerAddAction, schedulerAddActions, schedulerMakeAction,
        schedulerDeleteAll, schedulerDeleteTopic, schedulerDeleteOrigin,
        getWeather,

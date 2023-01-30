@@ -265,3 +265,14 @@ function reset_config_prefix()
 
     global PREFIX = nothing
 end
+
+
+"""
+    set_config(k,v)
+
+Save a value `v` in the global config Dict with the key
+`:k`.
+""" 
+function set_config(k, v)
+    CONFIG_INI[Symbol(k)] = v
+end
