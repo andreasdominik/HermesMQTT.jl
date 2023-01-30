@@ -133,6 +133,26 @@ function get_siteID()
     return global CURRENT[:site_ID]
 end
 
+"""
+    set_language(lang)
+
+Set the language in the Module HermesMQTT
+"""
+function set_language(lang)
+
+    global CONFIG_INI[:language] = lang
+end
+
+"""
+    get_language()
+
+Return the language in the Module HermesMQTT
+"""
+function get_language()
+
+    return global CONFIG_INI[:language]
+end
+
 
 
 """
