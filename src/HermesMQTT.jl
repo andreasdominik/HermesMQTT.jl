@@ -4,6 +4,7 @@ using JSON
 using statsBase
 using Dates
 using Distributed
+using Random
 
 include("utils.jl")
 include("snips.jl")
@@ -46,7 +47,9 @@ INI_MATCH = "must_include"
 const HERMES_DIR = @__DIR__
 const ACTIONS_DIR = diretory(HERMES_DIR)
 const CONFIG_INI = read_config(HERMES_DIR)
-const LANG = set_language(get_config(:language))
+if isnothing get_config(:language)
+    set_language(DEFAULT_LANG)
+end
 
 # List of intents to listen to:
 # (intent, developer, complete topic, module, skill-action)
@@ -55,16 +58,16 @@ SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, AbstractString,
                              Module, Function}[]
 
 export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
-       subscribe2Intents, subscribe2Topics, listenIntentsOneTime,
-       publishEndSession, publishContinueSession,
-       publishStartSessionAction, publishStartSessionNotification,
+       subscribe_to_intents, subscribe_to_topics, listen_to_intents_one_time,
+       publish_end_session, publish_continue_session,
+       publish_start_session_action, publish_start_session_notification,
        publishSystemTrigger,publishListenTrigger, makeSystemTrigger,
-       publishHotwordOn, publishHotwordOff,
-       configureIntent,
+       publish_hotword_on, publish_hotword_off,
+       configure_intent,
        registerIntentAction, registerTriggerAction,
        getIntentActions, setIntentActions,
-       askYesOrNoOrUnknown, askYesOrNo,
-       publishSay,
+       ask_yes_no_unknown, ask_yes_or_no,
+       publish_say,
        add_text, lang_text,
        set_siteID, get_siteID,
        set_sessionID, get_sessionID,
@@ -76,7 +79,8 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        get_config_path,
        tryrun, try_read_textfile, ping,
        try_parse_JSON_file, try_parse_JSON, try_make_JSON,
-       extract_slot_value, extract_multislot_values, is_in_slot, isOnOffMatched, 
+       extract_slot_value, extract_multislot_values, is_in_slot, 
+       is_on_off_matched, 
        read_time_from_slot, readableDateTime,
        setGPIO, print_debug, print_log,
        switchShelly1, switchShelly25relay, moveShelly25roller,
