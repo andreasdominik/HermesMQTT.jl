@@ -41,9 +41,10 @@ LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
 INI_MATCH = "must_include"
 
-# init config. Read of config.ini moved to strater script, because
+# init config. Read of config.ini moved to starter script, because
 # the Package is located anywhere...:
 #
+HERMES_INI = Dict{Symbol, Any}()  # config.ini of HermesMQTT
 CONFIG_INI = Dict{Symbol, Any}()
 
 

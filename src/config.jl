@@ -5,21 +5,21 @@ function load_hermes_config(hermes_dir)
 
     skills_dir = dirname(hermes_dir)  # set base dir one higher
 
-    global CONFIG_INI = read_config(hermes_dir)
+    global HERMES_INI = read_config(hermes_dir)
 
     # fix some potential issues:
     #
-    if isnothing(get_config(:language))
-        set_language(DEFAULT_LANG)
+    if isnothing(get_hermes_config(:language))
+        set_hermes_config(:language, DEFAULT_LANG)
     end
 
-    set_config(:database_dir, 
+    set_hermes_config(:database_dir, 
                joinpath(skills_dir, "application_data", "database"))
-    if isnothing(get_config(:database_file))
-        set_config(:database_file, "home.json")
+    if isnothing(get_hermes_config(:database_file))
+        set_hermes_config(:database_file, "home.json")
     end
-    set_config(:database_path), 
-        joinpath(get_config(:database_dir), get_config(:database_file))
+    set_hermes_config(:database_path, 
+        joinpath(get_hermes_config(:database_dir), get_hermes_config(:database_file)))
 end
 
 """
@@ -51,7 +51,7 @@ function read_config(appDir)
                 
                 line = replace(line, " "=>"")   # strip spaces
                 m = match(rgx, line)
-                if m != nothing
+                if !isnothing(m)
                     name = Symbol(m[:name])
                     rawVals = split(chomp(m[:val]), r",")
                     vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
@@ -130,7 +130,7 @@ function get_config(name; multiple=false, one_prefix=nothing)
 
     global CONFIG_INI
 
-    if one_prefix == nothing
+    if idsnothing(one_prefix)
         name = add_prefix(name)
     else
         name = Symbol("$one_prefix:$name")
@@ -148,7 +148,7 @@ function get_config(name; multiple=false, one_prefix=nothing)
 end
 
 """
-    function get_config_path(name, default_path; one_prefix = nothing)
+    get_config_path(name, default_path; one_prefix = nothing)
 
 Read the config value 'name' as filename and generate a full
 (absolute) path:
@@ -164,7 +164,7 @@ Read the config value 'name' as filename and generate a full
 function get_config_path(name, default_path; one_prefix = nothing)
 
     fName = get_config(name, one_prefix = one_prefix)
-    if (fName == nothing) || (length(fName) < 1)
+    if isnothing(fName) || (length(fName) < 1)
         return nothing
     elseif fName[1] == '/'
         return fName
@@ -225,7 +225,7 @@ function is_config_valid(name; regex = r".", elem = 1, error_msg = ERRORS_EN[:er
         return false
     end
 
-    if get_config(name) == nothing
+    if isnothing(get_config(name))
         param = ""
     elseif get_config(name) isa AbstractString
         param = get_config(name)
@@ -254,7 +254,7 @@ function add_prefix(name)
     #
     if name isa Symbol
         return name
-    elseif PREFIX == nothing
+    elseif isnothing(PREFIX)
         return Symbol(name)
     else
         return Symbol("$PREFIX:$name")
