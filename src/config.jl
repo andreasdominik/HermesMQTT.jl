@@ -34,7 +34,7 @@ return a Dict with config values.
 function read_config(appDir)
 
     config_ini = Dict{Symbol, Any}()
-    fileName = joinpath($appDir, "config.ini")
+    fileName = joinpath(appDir, "config.ini")
 
     configLines = []
     try

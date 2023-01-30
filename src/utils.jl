@@ -225,27 +225,6 @@ end
 
 
 """
-    set_language(lang)
-
-Set the default language for HermesMQTT
-Currently supported laguages are "en" and "de".
-
-This will affect publishSay() and all system messages.
-Log-messages will always be in English.
-
-## Arguments
-* lang: one of `"en"` or `"de"` or any other.
-"""
-function set_language(lang)
-
-    if isnothing(lang)
-        global LANG = DEFAULT_LANG
-    else
-        global LANG = lang
-    end
-end
-
-"""
     add_text(lang::AbstractString, key::Symbol, text)
 
 Add the text to the dictionary of text sniplets for the language

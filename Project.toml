@@ -2,3 +2,10 @@ name = "HermesMQTT"
 uuid = "8706dd1c-d27c-4dc2-b187-383141bb70e3"
 authors = ["Andreas Dominik <andreas.dominik@mni.thm.de>"]
 version = "0.1.0"
+
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"

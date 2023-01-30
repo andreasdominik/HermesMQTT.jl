@@ -1,7 +1,7 @@
 module HermesMQTT
 
 using JSON
-using statsBase
+using StatsBase
 using Dates
 using Distributed
 using Random
@@ -20,7 +20,6 @@ include("shelly.jl")
 include("weather.jl")
 include("languages.jl")
 include("callback.jl")
-include("susi.jl")
 
 # keep track of current actions:
 # 

@@ -130,7 +130,7 @@ Return the siteID in the Module HermesMQTT
 """
 function get_siteID()
 
-    return global CURRENT[:site_ID]
+    return CURRENT[:site_ID]
 end
 
 
@@ -157,7 +157,7 @@ Return the sessionId of the currently running session.
 """
 function get_sessionID()
 
-    return global CURRENT[:sessionID]
+    return CURRENT[:sessionID]
 end
 
 
@@ -184,7 +184,7 @@ Return the name of the develpper of the currently running app.
 """
 function get_developer_name()
 
-    return global CURRENT[:devel_name]
+    return CURRENT[:devel_name]
 end
 
 
@@ -211,7 +211,7 @@ Return the module of the currently running app.
 """
 function get_module()
 
-    return global CURRENT[:module]
+    return CURRENT[:module]
 end
 
 
@@ -239,7 +239,7 @@ Return the topic of the currently running app.
 """
 function get_topic()
 
-    return global CURRENT[:topic]
+    return CURRENT[:topic]
 end
 
 
@@ -269,7 +269,7 @@ Return the intent name of the currently running app.
 """
 function get_intent()
 
-    return global CURRENT[:intent]
+    return CURRENT[:intent]
 end
 
 
@@ -287,7 +287,7 @@ Get a value from the global HermesMQTT config (read from the
 + `key`: Dictionary key.
 """
 function get_hermes_config(key)
-    return global CONFIG_INI[Symbol(key)]
+    return CONFIG_INI[Symbol(key)]
 end
 
 
@@ -325,5 +325,5 @@ Return the language in the Module HermesMQTT
 """
 function get_language()
 
-    return global CONFIG_INI[:language]
+    return CONFIG_INI[:language]
 end
