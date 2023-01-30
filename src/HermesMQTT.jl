@@ -100,8 +100,8 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        is_false_detection,
        db_write_payload, db_write_value, db_read_entry, db_read_value, 
        db_has_entry,
-       schedulerAddAction, schedulerAddActions, schedulerMakeAction,
-       schedulerDeleteAll, schedulerDeleteTopic, schedulerDeleteOrigin,
+       scheduler_add_trigger, scheduler_add_actions, scheduler_make_action,
+       scheduler_delete_all, scheduler_delete_topic, scheduler_delete_by_origin,
        getWeather,
        get_language, set_language
 
