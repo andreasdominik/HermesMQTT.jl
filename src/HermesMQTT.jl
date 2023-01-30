@@ -23,14 +23,15 @@ include("susi.jl")
 
 # keep track of current actions:
 # 
-PREFIX = nothing    # prefix for parameter names
-CURRENT_SITE_ID = "default"
-CURRENT_SESSION_ID = "1"
-CURRENT_DEVEL_NAME = "unknown"
-CURRENT_MODULE = Main
-CURRENT_INTENT = "none"
-CURRENT_APP_DIR = ""
-CURRENT_APP_NAME = "HermesMQTT framework"
+CURRENT = Dict(
+    :prefix => nothing,    # prefix for parameter names
+    :siteID => "default",
+    :sessionID => "1",
+    :devel_name => "unknown",
+    :module => Main,
+    :intent => "none",
+    :app_dir => "",
+    :app_name => "HermesMQTT framework")
 
 
 # set default language and texts to en
@@ -65,16 +66,16 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        askYesOrNoOrUnknown, askYesOrNo,
        publishSay,
        add_text, lang_text,
-       setSiteId, getSiteId,
-       setSessionId, getSessionId,
-       setDeveloperName, getDeveloperName, setModule, getModule,
+       set_siteID, get_siteID,
+       set_sessionID, get_sessionID,
+       set_developer_name, get_developer_name, set_module, get_module,
        set_appdir, get_appdir, set_appname, get_appname,
-       setTopic, getTopic, setIntent, getIntent,
+       set_topic, get_topic, set_intent, get_intent,
        read_config, match_config, get_config, is_in_config, get_all_config,
        is_config_valid, is_valid_or_end, set_config_prefix, reset_config_prefix,
        get_config_path,
        tryrun, try_read_textfile, ping,
-       tryParseJSONfile, tryParseJSON, tryMkJSON,
+       try_parse_JSON_file, try_parse_JSON, try_make_JSON,
        extract_slot_value, extract_multislot_values, is_in_slot, isOnOffMatched, 
        read_time_from_slot, readableDateTime,
        setGPIO, print_debug, print_log,
