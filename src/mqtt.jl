@@ -94,20 +94,21 @@ function construct_MQTT_cmd(topics; hostname=nothing, port=nothing,
     params = make_mosquitto_params(hostname=hostname, port=port, 
                                    user=user, password=password)
 
-    cmd = `mosquitto_sub --qos 2 -v -C 1 $params`
+    cmds = ["mosquitto_sub", "--qos", "2" ,"-v", "-C", "1"] 
+    append!(cmds, params)
 
     if topics isa AbstractString
-        cmd = `$cmd -t $topics`
+        push!(cmds, "-t", topics)
     elseif topics isa Array
         unique!(topics)
         for topic in topics
-            cmd = `$cmd -t $topic`
+            push!(cmds, "-t", topic)
         end
     else
-        cmd = `$cmd -t '#'`
+        push!(cmds, "-t", "'#'")
     end
 
-    cmd = Cmd(cmd, ignorestatus = true)
+    cmd = Cmd(Cmd(cmds), ignorestatus = true)
     return cmd
 end
 
@@ -115,25 +116,25 @@ function make_mosquitto_params(;hostname=nothing, port=nothing,
                                user=nothing, password=nothing)
 
     isnothing(hostname) && (hostname = get_config(:mqtt_host))
-    isnothind(port) && (port = get_config(:mqtt_port))
+    isnothing(port) && (port = get_config(:mqtt_port))
     isnothing(user) && (user = get_config(:mqtt_user))
     isnothing(password) && (password = get_config(:mqtt_password))
 
-    params = ""
+    params = []
     if !isnothing(hostname)
-        params = "$params -h $hostname"
+        push!(params, "-h", hostname)
     end
 
     if !isnothing(port)
-        params = "$params -p $port"
+        push!(params, "-p", port)
     end
 
     if !isnothing(user)
-        params = "$params -u $user"
+        push!(params, "-u", user)
     end
 
     if !isnothing(password)
-        params = "$params -P $password"
+        push!(params, "-P", password)
     end
 
     return params
@@ -146,7 +147,7 @@ Run the cmd return mosquito_sub output.
 """
 function run_one_MQTT(cmd)
 
-    printLog("MQTT-command: $cmd")
+    print_log("MQTT-command: $cmd")
     return read(cmd, String)
 end
 
@@ -167,7 +168,7 @@ function parse_MQTT(message)
         topic = strip(m[:topic])
         payload = try_parse_JSON(strip(m[:payload]))
     else
-        printLog("ERROR: Unable to parse MQTT message!")
+        print_log("ERROR: Unable to parse MQTT message!")
         topic = nothing
         payload = Dict()
     end
@@ -192,30 +193,31 @@ Publish a MQTT message.
 """
 function publish_MQTT(topic, payload; file=false)
 
-    # build cmd string:
+    # build cmd as a list of strings:
     #
+    cmds = ["mosquitto_pub", "--qos", "2"]
+
     params = make_mosquitto_params()
-    cmd = `mosquitto_pub --qos 2 $params`
-    cmd = `$cmd -t $topic`
+    push!(cmds, "-t", topic)
 
     if file
         if fname isa AbstractString && length(fname) > 0
-            cmd = `$cmd -f $fname`
+            push!(cmds, "-f", fname)
         else
-            cmd = `$cmd -m ''`
+            push!(cmds, "-m", "''")
         end
     else
         json = try_make_JSON(payload)
         if json isa AbstractString && length(json) > 0
-            cmd = `$cmd -m $json`
+            push!(cmds, "-m", json)
         else
-            cmd = `$cmd -m ''`
+            push!(cmds, "-m", "''")
         end
     end
 
-    cmd = Cmd(cmd, ignorestatus = true)
+    cmd = Cmd(Cmd(cmds), ignorestatus = true)
 
-    printLog(cmd)
+    print_log(cmd)
     run(cmd, wait=true)  # false maybe possible?
 end
 

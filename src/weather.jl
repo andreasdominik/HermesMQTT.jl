@@ -79,7 +79,7 @@ function getOpenWeather()
         print_debug("openweather URL = $url")
         response = read(`curl $url`, String)
 
-        printLog("Weather from OpenWeatherMap: $response")
+        print_log("Weather from OpenWeatherMap: $response")
         openWeather = try_parse_JSON(response)
 
         if !(openWeather isa Dict)

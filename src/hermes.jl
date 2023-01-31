@@ -167,7 +167,7 @@ MQTT publish end session.
              If omitted, sessionId of the current will be inserted.
 * `text`: text to be said via TTS
 """
-function publish_end_session(text=nothing, sessionID=get_sessionID)
+function publish_end_session(text=nothing, sessionID=get_sessionID())
 
     text = lang_text(text)
     payload = Dict(:sessionId => sessionID)

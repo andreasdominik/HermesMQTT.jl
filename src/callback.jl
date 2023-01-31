@@ -17,7 +17,7 @@ function main_callback(topic, payload)
 
 
         print_log("Corrupted payload detected for topic $topic")
-        # printLog("payload: $(JSON.print(payload))")
+        # print_log("payload: $(JSON.print(payload))")
         print_log("intent or trigger aborted!")
         return
     end
@@ -35,7 +35,7 @@ function main_callback(topic, payload)
         skill = t[4]   # module
 
         if occursin(r"hermes/intent/", topic)
-            printLog("Hermes intent $topic recognised; execute $fun in $skill.")
+            print_log("Hermes intent $topic recognised; execute $fun in $skill.")
         else occursin(r"qnd/trigger/", topic)
             print_log("System trigger $topic recognised; execute $fun in $skill.")
         end

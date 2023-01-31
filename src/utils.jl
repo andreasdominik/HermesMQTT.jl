@@ -168,7 +168,7 @@ function tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent =
     catch
         result = false
         silent || publish_say(error_msg)
-        printLog("Error running script $cmd")
+        print_log("Error running script $cmd")
     end
 
     return result
@@ -216,7 +216,7 @@ function try_read_textfile(fname, error_msg = :error_read)
                end
     catch
         publish_say(err_msg, lang = LANG)
-        printLog("Error opening text file $fname")
+        print_log("Error opening text file $fname")
         text = ""
     end
 
