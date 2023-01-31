@@ -49,7 +49,7 @@ if a matching intent is recieved.
 
 See `subscribe2Intents()` for details.
 """
-function subscribe_to_opics(topics, callback)
+function subscribe_to_topics(topics, callback)
 
     subscribe_MQTT(topics, callback)
 end
