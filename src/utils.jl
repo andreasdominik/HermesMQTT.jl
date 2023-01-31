@@ -257,12 +257,12 @@ end
 
 
 """
-    lang_text(key::Symbol)
+    lang_text(key::Symbol, lang=get_language())
     lang_text(key::Nothing)
     lang_text(key::AbstractString)
 
 Return the text in the languages dictionary for the key and the
-language set with `setLanguage()`.
+configured language.
 
 If the key does not exists, the text in the default language is returned;
 if this also does not exist, an error message is returned.
@@ -270,12 +270,10 @@ if this also does not exist, an error message is returned.
 The variants make sure that nothing or the key itself are returned
 if key is nothing or an AbstractString, respectively.
 """
-function lang_text(key::Symbol)
+function lang_text(key::Symbol, lang=get_language())
 
-    if haskey(LANGUAGE_TEXTS, (LANG, key))
-        return StatsBase.sample(LANGUAGE_TEXTS[(LANG, key)])
-    elseif haskey(LANGUAGE_TEXTS, (DEFAULT_LANG, key))
-        return StatsBase.sample(LANGUAGE_TEXTS[(DEFAULT_LANG, key)])
+    if haskey(LANGUAGE_TEXTS, (lang, key))
+        return StatsBase.sample(LANGUAGE_TEXTS[(lang, key)])
     else
         return "I don't know what to say! I got $key"
     end
