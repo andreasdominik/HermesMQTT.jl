@@ -296,48 +296,47 @@ end
 
 
 """
-    set_appdir(appdir)
+    set_appdir(app_dir)
 
-Store the directory `appdir` as CURRENT_APP_DIR in the
+Store the directory `appdir` as CURRENT[:app_dir] in the
 current session
 """
-function set_appdir(appdir)
+function set_appdir(app_dir)
 
-    global CURRENT_APP_DIR = appdir
+    global CURRENT
+    CURRENT[:app_dir] = app_dir
 end
 
 """
     get_appdir()
 
 Return the directory of the currently running app
-(i.e. the variable CURRENT_APP_DIR)
 """
 function get_appdir()
-    return CURRENT_APP_DIR
+    return CURRENT[:app_dir]
 end
 
 
 
 
 """
-    set_appname(appname)
+    set_appname(app_name)
 
-Store the name of the current app/module as CURRENT_APP_NAME in the
-current session
+Store the name of the current app/module in CURRENT.
 """
-function set_appname(appname)
+function set_appname(app_name)
 
-    global CURRENT_APP_NAME = appname
+    global CURRENT
+    CURRENT[:app_name] = app_name
 end
 
 """
     get_appname()
 
-Return the name of the currently running app
-(i.e. the variable CURRENT_APP_NAME)
+Return the name of the currently running app.
 """
 function get_appname()
-    return CURRENT_APP_NAME
+    return CURRENT[:app_name]
 end
 
 

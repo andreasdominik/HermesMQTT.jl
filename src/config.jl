@@ -11,14 +11,14 @@ config of the HermesMQTT` framework from
 
 ### Arguments:
 + `hermes_dir`: path to the HermesMQTT-config.ini
-               `.../Skills/HermesMQTT`
+               `.../Skills/HermesMQTT.jl`
 """
 function load_two_configs(app_dir, hermes_dir=nothing)
 
     # construct HermesMQTT dir if not given:
     #
     if isnothing(hermes_dir)
-        hermes_dir = joinpath(dirname(app_dir), "HermesMQTT")
+        hermes_dir = joinpath(dirname(app_dir), "HermesMQTT.jl")
     end
 
     load_hermes_config(hermes_dir)
@@ -50,7 +50,7 @@ Load config setting for the `HermesMQTT` framework.
 
 ### Arguments:
 + `hermes_dir`: path to the HermesMQTT-config.ini
-               `.../Skills/HermesMQTT`
+               `.../Skills/HermesMQTT.jl`
 """
 function load_hermes_config(hermes_dir)
 
@@ -120,7 +120,7 @@ function read_config(appDir)
             end
         end
     catch
-        printLog("Warning: no config file found!")
+        print_log("Warning: no config file found!")
     end
     return config_ini
 end
@@ -341,3 +341,13 @@ function reset_config_prefix()
     global PREFIX = nothing
 end
 
+"""
+    set_config(name, value)
+
+Set a config key-value pair to the global CONFIG_INI.
+"""
+function set_config(name, value)
+
+    global CONFIG_INI
+    CONFIG_INI[Symbol(name)] = value
+end
