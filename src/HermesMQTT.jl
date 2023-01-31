@@ -44,7 +44,6 @@ INI_MATCH = "must_include"
 # init config. Read of config.ini moved to starter script, because
 # the Package is located anywhere...:
 #
-HERMES_INI = Dict{Symbol, Any}()  # config.ini of HermesMQTT
 CONFIG_INI = Dict{Symbol, Any}()
 
 
@@ -92,6 +91,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        scheduler_add_trigger, scheduler_add_actions, scheduler_make_action,
        scheduler_delete_all, scheduler_delete_topic, scheduler_delete_by_origin,
        get_weather,
-       get_language, set_language, get_hermes_config, load_hermes_config
+       get_language, set_language, set_config, 
+       load_hermes_config, load_skill_config, load_two_configs
 
 end # module

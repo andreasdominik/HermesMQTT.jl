@@ -274,35 +274,20 @@ end
 
 
 
-# global HermesMQTT config.ini-settings:
-#
-
 """
-    get_hermes_config(key)
-
-Get a value from the global HermesMQTT config (read from the 
-`config.ini` located in the HermesMQTT-subdirectory).
-
-### Arguments:
-+ `key`: Dictionary key.
-"""
-function get_hermes_config(key)
-    return HERMES_INI[Symbol(key)]
-end
-
-
-"""
-    set_hermes_config(key, value)
+    set_config(key, value)
 
 Set a value to the global HermesMQTT config (read from the 
-`config.ini` located in the HermesMQTT-subdirectory).
+`config.ini` located in the HermesMQTT-subdirectory
+and the current skill `config.ini`).
 
 ### Arguments:
 + `key`: Dictionary key (will be casted to Symbol)
 + `value`: value to be stored.
 """
 function set_hermes_config(key,value)
-    global HERMES_INI[Symbol(key)] = value
+    global CONFIG_INI
+    CONFIG_INI[Symbol(key)] = value
 end
 
 
@@ -315,7 +300,7 @@ Set the language in the Module HermesMQTT
 """
 function set_language(lang)
 
-    global HERMES_INI[:language] = lang
+    global CONFIG_INI[:language] = lang
 end
 
 """
@@ -325,5 +310,5 @@ Return the language in the Module HermesMQTT
 """
 function get_language()
 
-    return HERMES_INI[:language]
+    return CONFIG_INI[:language]
 end

@@ -1,26 +1,81 @@
 #
 # helpers to work with config.ini
 
+
+"""
+    load_two_configs(app_dir, hermes_dir=nothing)
+
+Load config setting for a skill in dir `app_dir` **and**
+config of the HermesMQTT` framework from 
+`app_dir/../HermesMQTT/config.ini` or the specified dir.
+
+### Arguments:
++ `hermes_dir`: path to the HermesMQTT-config.ini
+               `.../Skills/HermesMQTT`
+"""
+function load_two_configs(app_dir, hermes_dir=nothing)
+
+    # construct HermesMQTT dir if not given:
+    #
+    if isnothing(hermes_dir)
+        hermes_dir = joinpath(dirname(app_dir), "HermesMQTT")
+    end
+
+    load_hermes_config(hermes_dir)
+    load_skill_config(app_dir)
+end
+
+
+"""
+    load_skill_config(app_dir)
+
+Load config setting for a skill.
+
+### Arguments:
++ `app_dir`: path to the config.ini
+               `.../Skills/Skill`
+"""
+function load_skill_config(app_dir)
+
+    global CONFIG_INI
+    config_ini = read_config(app_dir)
+    merge!(CONFIG_INI, config_ini)
+end
+    
+
+"""
+    load_hermes_config(hermes_dir)
+
+Load config setting for the `HermesMQTT` framework.
+
+### Arguments:
++ `hermes_dir`: path to the HermesMQTT-config.ini
+               `.../Skills/HermesMQTT`
+"""
 function load_hermes_config(hermes_dir)
 
     skills_dir = dirname(hermes_dir)  # set base dir one higher
 
-    global HERMES_INI = read_config(hermes_dir)
+    config_ini = read_config(hermes_dir)
+    global CONFIG_INI
+    merge!(CONFIG_INI, config_ini)
+    # todo appenD!
 
     # fix some potential issues:
     #
-    if isnothing(get_hermes_config(:language))
-        set_hermes_config(:language, DEFAULT_LANG)
+    if isnothing(get_config(:language))
+        set_config(:language, DEFAULT_LANG)
     end
 
-    set_hermes_config(:database_dir, 
+    set_config(:database_dir, 
                joinpath(skills_dir, "application_data", "database"))
-    if isnothing(get_hermes_config(:database_file))
-        set_hermes_config(:database_file, "home.json")
+    if isnothing(get_config(:database_file))
+        set_config(:database_file, "home.json")
     end
-    set_hermes_config(:database_path, 
-        joinpath(get_hermes_config(:database_dir), get_hermes_config(:database_file)))
+    set_config(:database_path, 
+        joinpath(get_config(:database_dir), get_config(:database_file)))
 end
+
 
 """
     read_config(appDir)
@@ -67,7 +122,7 @@ function read_config(appDir)
     catch
         printLog("Warning: no config file found!")
     end
-     return config_ini
+    return config_ini
 end
 
 
@@ -130,7 +185,7 @@ function get_config(name; multiple=false, one_prefix=nothing)
 
     global CONFIG_INI
 
-    if idsnothing(one_prefix)
+    if isnothing(one_prefix)
         name = add_prefix(name)
     else
         name = Symbol("$one_prefix:$name")
