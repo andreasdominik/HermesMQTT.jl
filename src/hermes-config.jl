@@ -119,7 +119,7 @@ Set the siteID in the Module HermesMQTT
 """
 function set_siteID(siteID)
 
-    global CURRENT[:site_ID] = siteID
+    global CURRENT[:siteID] = siteID
 end
 
 """
@@ -130,7 +130,7 @@ Return the siteID in the Module HermesMQTT
 """
 function get_siteID()
 
-    return CURRENT[:site_ID]
+    return CURRENT[:siteID]
 end
 
 

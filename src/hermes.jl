@@ -339,8 +339,8 @@ dictionary of phrases for the selected language by calling
 * `wait`: wait until the massege is spoken (i.i. wait for the
         MQTT-topic)
 """
-function publish_say(text; sessionId=get_sessionID(),
-                    siteId=get_siteID(), lang=get_language(),
+function publish_say(text; sessionID=get_sessionID(),
+                    siteID=get_siteID(), lang=get_language(),
                     id=nothing, wait=true)
 
     text = lang_text(text)
@@ -362,7 +362,11 @@ function publish_say(text; sessionId=get_sessionID(),
     #
     while wait
         topic, payload = read_one_MQTT("hermes/tts/sayFinished")
-        if payload[:id] == id
+        if !haskey(payload, :id)
+            print_log("ERROR: sayFinished retrieved without id!")
+            wait = false
+            sleep(3)
+        elseif payload[:id] == id
             wait = false
         end
     end
