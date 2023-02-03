@@ -94,21 +94,17 @@ function construct_MQTT_cmd(topics; hostname=nothing, port=nothing,
     params = make_mosquitto_params(hostname=hostname, port=port, 
                                    user=user, password=password)
 
-    cmds = ["mosquitto_sub", "--qos", "2" ,"-v", "-C", "1"] 
-    append!(cmds, params)
+    cmd = `mosquitto_sub --qos 2 -v -C 1 $params`
 
     if topics isa AbstractString
-        push!(cmds, "-t", topics)
-    elseif topics isa Array
-        unique!(topics)
-        for topic in topics
-            push!(cmds, "-t", topic)
-        end
-    else
-        push!(cmds, "-t", "'#'")
+        topics = [topics]
+    end
+    unique!(topics)
+    for topic in topics
+        cmd = `$cmd -t $topic`
     end
 
-    cmd = Cmd(Cmd(cmds), ignorestatus = true)
+    cmd = Cmd(cmd, ignorestatus = true)
     return cmd
 end
 
@@ -120,21 +116,21 @@ function make_mosquitto_params(;hostname=nothing, port=nothing,
     isnothing(user) && (user = get_config(:mqtt_user))
     isnothing(password) && (password = get_config(:mqtt_password))
 
-    params = []
+    params = ``
     if !isnothing(hostname)
-        push!(params, "-h", hostname)
+        params = `$params -h $hostname`
     end
 
     if !isnothing(port)
-        push!(params, "-p", port)
+        params = `$params -p $port`
     end
 
     if !isnothing(user)
-        push!(params, "-u", user)
+        params = `$params -u $user`
     end
 
     if !isnothing(password)
-        push!(params, "-P", password)
+        params = `$params -P $password`
     end
 
     return params
@@ -196,8 +192,8 @@ function publish_MQTT(topic, payload; file=false)
     # build cmd as a list of strings:
     #
     cmds = ["mosquitto_pub", "--qos", "2"]
-
     params = make_mosquitto_params()
+    push!(cmds, params...)
     push!(cmds, "-t", topic)
 
     if file
