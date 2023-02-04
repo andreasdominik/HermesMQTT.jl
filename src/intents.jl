@@ -27,7 +27,7 @@ The variants registerIntent... create topics with prefix
 function register_intent_action(intent, developer, inModule, action)
 
     global SKILL_INTENT_ACTIONS
-    topic = "hermes/intent/$developer:$intent"
+    topic = "hermes/intent/$intent"
     push!(SKILL_INTENT_ACTIONS, (intent, developer, topic, inModule, action))
 end
 
@@ -55,7 +55,7 @@ See `register_intent_action()` for details.
 function register_trigger_action(intent, developer, inModule, action)
 
     global SKILL_INTENT_ACTIONS
-    topic = "qnd/trigger/$developer:$intent"
+    topic = "qnd/trigger/$intent"
     push!(SKILL_INTENT_ACTIONS, (intent, developer, topic, inModule, action))
 end
 
@@ -158,12 +158,14 @@ end
 
 function expand_topic(topic, develName=get_developer_name())
 
-    if !occursin(r":", topic)
-        topic = "$develName:$topic"
-    end
-    if !occursin(r"^qnd/trigger/", topic)
-        topic = "qnd/trigger/$topic"
-    end
+    # do NOT include developer name in intent!
+    #
+    # if !occursin(r":", topic)
+    #     topic = "$develName:$topic"
+    # end
+    # if !occursin(r"^qnd/trigger/", topic)
+    #     topic = "qnd/trigger/$topic"
+    # end
     return topic
 end
 

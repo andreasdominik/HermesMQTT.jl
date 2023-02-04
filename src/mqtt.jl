@@ -191,27 +191,21 @@ function publish_MQTT(topic, payload; file=false)
 
     # build cmd as a list of strings:
     #
-    cmds = ["mosquitto_pub", "--qos", "2"]
     params = make_mosquitto_params()
-    push!(cmds, params...)
-    push!(cmds, "-t", topic)
+    cmd = `mosquitto_pub --qos 2 $params -t $topic`
 
     if file
-        if fname isa AbstractString && length(fname) > 0
-            push!(cmds, "-f", fname)
-        else
-            push!(cmds, "-m", "''")
-        end
+        cmd = `cmd -f $payload`
     else
         json = try_make_JSON(payload)
         if json isa AbstractString && length(json) > 0
-            push!(cmds, "-m", json)
+            cmd = `cmd -m $json`
         else
-            push!(cmds, "-m", "''")
+            print_log("ERROR: Unable to cteatre JSON from payload!")
         end
     end
 
-    cmd = Cmd(Cmd(cmds), ignorestatus = true)
+    cmd = Cmd(cmd, ignorestatus = true)
 
     print_log(cmd)
     run(cmd, wait=true)  # false maybe possible?

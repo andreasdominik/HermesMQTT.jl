@@ -104,7 +104,7 @@ and return :yes if "Yes" is answered or :no if "No" or
 """
 function ask_yes_no_unknown(question)
 
-    intentListen = "andreasdominik:ADoSnipsYesNoDE"
+    intentListen = "Susi:Yes_No"
     topicsListen = ["hermes/nlu/intentNotRecognized", "hermes/error/nlu",
                     "hermes/dialogueManager/intentNotRecognized"]
     slotName = "yes_or_no"
@@ -113,10 +113,10 @@ function ask_yes_no_unknown(question)
     intent = ""
     payload = Dict()
 
-    configureIntent(intentListen, true)
-    publish_MQTT(TOPIC_NOTIFICATION_OFF, Dict(:siteId => get_siteID()))
+    configure_intent(intentListen, true)
+    # publish_MQTT(TOPIC_NOTIFICATION_OFF, Dict(:siteId => get_siteID()))
 
-    question = langText(question)
+    question = lang_text(question)
     publish_continue_session(question, sessionID=get_sessionID,
               intentFilter=intentListen,
               customData=nothing, sendIntentNotRecognized=true)
@@ -126,13 +126,13 @@ function ask_yes_no_unknown(question)
 
     configure_intent(intentListen, false)
 
-    if !isnothing(get_config(:notifications)) && get_config(:notifications) == "on"
-        publish_MQTT(TOPIC_NOTIFICATION_ON, Dict(:siteId => get_siteID()))
-    end
+    # if !isnothing(get_config(:notifications)) && get_config(:notifications) == "on"
+    #     publish_MQTT(TOPIC_NOTIFICATION_ON, Dict(:siteId => get_siteID()))
+    # end
 
-    if is_in_slot(payload, slotName, "YES")
+    if is_in_slot(payload, slotName, "yes")
         return :yes
-    elseif isInSlot(payload, slotName, "NO")
+    elseif isInSlot(payload, slotName, "no")
         return :no
     else
         return :unknown
@@ -170,7 +170,8 @@ MQTT publish end session.
 function publish_end_session(text=nothing, sessionID=get_sessionID())
 
     text = lang_text(text)
-    payload = Dict(:sessionId => sessionID)
+    payload = Dict(:sessionId => sessionID,
+                   :siteID => get_siteID())
     if !isnothing(text)
         payload[:text] = text
     end
@@ -348,6 +349,7 @@ function publish_say(text; sessionID=get_sessionID(),
     payload = Dict(:text => text, :siteId => siteID)
     payload[:lang] = lang
     payload[:sessionId] = sessionID
+    payload[:siteId] = siteID
 
     # make unique ID:
     #
@@ -443,7 +445,7 @@ function configure_intent(intent, on)
 
     topic = "hermes/dialogueManager/configure"
 
-    payload = Dict(:siteId=>get_siteID,
+    payload = Dict(:siteId=>get_siteID(),
                    :intents=>[Dict(:intentId=>intent, :enable=>on)])
 
     publish_MQTT(topic, payload)

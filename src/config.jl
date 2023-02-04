@@ -138,7 +138,7 @@ val or one element of the list as the value val.
 """
 function match_config(name, val::String)
 
-    name = addPrefix(name)
+    name = add_prefix(name)
     # if !(name isa Symbol)
     #     name = Symbol(name)
     # end

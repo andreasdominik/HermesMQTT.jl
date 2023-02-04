@@ -52,7 +52,7 @@ CONFIG_INI = Dict{Symbol, Any}()
 #
 
 # List of intents to listen to:
-# (intent, developer, complete topic, module, skill-action)
+# (intent, developer, topic, module, skill-action)
 #
 SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, AbstractString,
                              Module, Function}[]
