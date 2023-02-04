@@ -25,7 +25,7 @@ using HermesMQTT
 # <Skills-dir>/HermesMQTTIntents/loader-hermes-intents.jl
 #
 #
-const HERMES_MQTT_DIR = @__DIR__
+const HERMES_MQTT_DIR = dirname(@__DIR__)
 const SKILLS_DIR = dirname(HERMES_MQTT_DIR)
 load_hermes_config(HERMES_MQTT_DIR)     # load config.ini of HermesMQTT
 
@@ -46,7 +46,7 @@ for (root, dirs, files) in walkdir(SKILLS_DIR)
     append!(loaders, paths)
 end
 
-println("[HermesMQTT loader]: $(length(loaders)) skills found to load.")
+print_log("[HermesMQTT loader]: $(length(loaders)) skills found to load.")
 
 for loader in loaders
     global INTENT_ACTIONS
@@ -56,6 +56,5 @@ end
 
 # start listening to MQTT with main callback
 #
-
 const topics = [i[3] for i in INTENT_ACTIONS]
-subscribe_to_topics(topics, main_callback)
+subscribe_to_topics(topics, HermesMQTT.main_callback)
