@@ -1,0 +1,15 @@
+
+
+
+
+"""
+function TEMPLATE_SKILL_action(topic, payload)
+
+    Generated dummy action for the intent TEMPLATE_NAME_RAW.
+"""
+function TEMPLATE_SKILL_action(topic, payload)
+
+    print_log("action TEMPLATE_SKILL_action() started.")
+    publish_say(:skill_echo, get_intent())
+
+    if ask_yes_or_no(:ask_echo_slots)

@@ -39,8 +39,10 @@ weatherapi:location=52.52,13.40
 :OK = okay
 :OK = auch gut
 :no = das war falsch
+:no = nein
 
 [en]
 :OK = okay
 :OK = all right
+:no = no
 :no = this is wrong
