@@ -32,3 +32,15 @@ openweather:city_id=6350865
 #weather_service=weatherapi
 weatherapi:api_key=insert_valid_API-key_here
 weatherapi:location=52.52,13.40
+
+# predefined sentences in different languages:
+#
+[de]
+:OK = das is okay
+:OK = auch gut
+:no = das war falsch
+
+[en]
+:OK = okay
+:OK = all right
+:no = this is wrong
