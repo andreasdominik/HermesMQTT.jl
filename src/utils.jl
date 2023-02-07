@@ -41,23 +41,24 @@ Nothing is returned, if
 If multiple == `true`, a list of all slot values will be
 returned. If false, only the 1st one as String.
 """
-function extract_slot_value(payload, slot_name; multiple = false)
+function extract_slot_value(payload, slot_name; multiple=false, 
+                            default=nothing)
 
+    slot_name = "$slot_name"
+    slot_value = default
     if !haskey(payload, :slots)
-        return nothing
+        return slot_value
     end
 
     values = []
-    for sl in payload[:slots]
-        if sl[:slot_name] == slot_name
-            if haskey(sl, :value) && haskey(sl[:value], :value)
-                push!(values,sl[:value][:value])
-            end
+    for slot in payload[:slots]
+        if slot[:entity] == slot_name
+            push!(values, slot[:value][:value])
         end
     end
 
     if length(values) < 1
-        return nothing
+        return slot_value
     elseif !multiple
         return values[1]
     else
@@ -103,7 +104,7 @@ of the JSON payload (i.e. one of the slot values must match).
 Return `false` if something is wrong (value not in payload or no
 slots slotName.)
 """
-function is_in_Slot(payload, slot_name, value)
+function is_in_slot(payload, slot_name, value)
 
     values = extract_slot_value(payload, slot_name; multiple = true)
     return !isnothing(values) && (value in values)

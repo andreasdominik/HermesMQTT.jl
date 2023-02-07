@@ -195,13 +195,13 @@ function publish_MQTT(topic, payload; file=false)
     cmd = `mosquitto_pub --qos 2 $params -t $topic`
 
     if file
-        cmd = `cmd -f $payload`
+        cmd = `$cmd -f $payload`
     else
         json = try_make_JSON(payload)
         if json isa AbstractString && length(json) > 0
-            cmd = `cmd -m $json`
+            cmd = `$cmd -m $json`
         else
-            print_log("ERROR: Unable to cteatre JSON from payload!")
+            print_log("ERROR: Unable to create JSON from payload!")
         end
     end
 

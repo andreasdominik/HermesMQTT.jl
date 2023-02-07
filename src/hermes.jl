@@ -117,13 +117,12 @@ function ask_yes_no_unknown(question)
     # publish_MQTT(TOPIC_NOTIFICATION_OFF, Dict(:siteId => get_siteID()))
 
     question = lang_text(question)
-    publish_continue_session(question, sessionID=get_sessionID,
+    publish_continue_session(question, sessionID=get_sessionID(),
               intentFilter=intentListen,
               customData=nothing, sendIntentNotRecognized=true)
 
     topic, payload = listen_to_intents_one_time(intentListen,
                             moreTopics = topicsListen)
-
     configure_intent(intentListen, false)
 
     # if !isnothing(get_config(:notifications)) && get_config(:notifications) == "on"
@@ -132,7 +131,7 @@ function ask_yes_no_unknown(question)
 
     if is_in_slot(payload, slotName, "yes")
         return :yes
-    elseif isInSlot(payload, slotName, "no")
+    elseif is_in_slot(payload, slotName, "no")
         return :no
     else
         return :unknown
@@ -158,7 +157,7 @@ end
 
 
 """
-    publish_end_session(text; sessionID=get_sessionID)
+    publish_end_session(text; sessionID=get_sessionID())
 
 MQTT publish end session.
 
