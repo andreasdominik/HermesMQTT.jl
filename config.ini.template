@@ -36,7 +36,7 @@ weatherapi:location=52.52,13.40
 # predefined sentences in different languages:
 #
 [de]
-:OK = das is okay
+:OK = okay
 :OK = auch gut
 :no = das war falsch
 
