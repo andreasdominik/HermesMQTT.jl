@@ -93,7 +93,7 @@ end
 
 
 """
-    ask_yes_no_unknown(question)
+    ask_yes_no_unknown(question...)
 
 Ask the question and listen to the intent "ADoSnipsYesNoDE"
 and return :yes if "Yes" is answered or :no if "No" or
@@ -102,7 +102,7 @@ and return :yes if "Yes" is answered or :no if "No" or
 ## Arguments:
 * `question`: String with the question to be uttered by Snips
 """
-function ask_yes_no_unknown(question)
+function ask_yes_no_unknown(question...)
 
     intentListen = "Susi:Yes_No"
     topicsListen = ["hermes/nlu/intentNotRecognized", "hermes/error/nlu",
@@ -116,8 +116,7 @@ function ask_yes_no_unknown(question)
     configure_intent(intentListen, true)
     # publish_MQTT(TOPIC_NOTIFICATION_OFF, Dict(:siteId => get_siteID()))
 
-    question = lang_text(question)
-    publish_continue_session(question, sessionID=get_sessionID(),
+    publish_continue_session(question..., sessionID=get_sessionID(),
               intentFilter=intentListen,
               customData=nothing, sendIntentNotRecognized=true)
 
@@ -148,16 +147,16 @@ and return :true if "Yes" or "No" otherwise.
 ## Arguments:
 * `question`: String with the question to uttered
 """
-function ask_yes_or_no(question)
+function ask_yes_or_no(question...)
 
-    answer = ask_yes_no_unknown(question)
+    answer = ask_yes_no_unknown(question...)
     return answer == :yes
 end
 
 
 
 """
-    publish_end_session(text; sessionID=get_sessionID())
+    publish_end_session(text...; sessionID=get_sessionID())
 
 MQTT publish end session.
 
@@ -166,14 +165,12 @@ MQTT publish end session.
              If omitted, sessionId of the current will be inserted.
 * `text`: text to be said via TTS
 """
-function publish_end_session(text=nothing, sessionID=get_sessionID())
+function publish_end_session(text...; sessionID=get_sessionID())
 
-    text = lang_text(text)
+    text = lang_text(text...)
     payload = Dict(:sessionId => sessionID,
                    :siteID => get_siteID())
-    if !isnothing(text)
-        payload[:text] = text
-    end
+    payload[:text] = text
     publish_MQTT("hermes/dialogueManager/endSession", payload)
 
     # wait for end session:
@@ -185,7 +182,7 @@ end
 
 
 """
-    publish_continue_session(text; sessionID=get_sessionID(),
+    publish_continue_session(text...; sessionID=get_sessionID(),
          intentFilter = nothing,
          customData = nothing, sendIntentNotRecognized = false)
 
@@ -202,11 +199,11 @@ MQTT publish continue session.
                 by itself or sent them as an Intent Not Recognized for
                 the client to handle.
 """
-function publish_continue_session(text; sessionID=get_sessionID(),
+function publish_continue_session(text...; sessionID=get_sessionID(),
          intentFilter=nothing,
          customData=nothing, sendIntentNotRecognized=false)
 
-    text = lang_text(text)
+    text = lang_text(text...)
     payload = Dict{Symbol, Any}(:sessionId => sessionID, :text => text)
 
     if !isnothing(intentFilter)
@@ -244,11 +241,11 @@ MQTT publish start session with init action
                 the client to handle.
 * `customData`: data to be sent to the service.
 """
-function publish_start_session_action(text; siteID=get_siteID(),
+function publish_start_session_action(text...; siteID=get_siteID(),
                 intentFilter=nothing, sendIntentNotRecognized=false,
                 customData=nothing)
 
-    text = lang_text(text)
+    text = lang_text(text...)
 
     if !isnothing(intentFilter)
         if intentFilter isa AbstractString
@@ -281,10 +278,10 @@ MQTT publish start session with init notification
 * `text`: text to be said via TTS
 * `customData`: data to be sent to the service.
 """
-function publish_start_session_notification(text; siteID=get_siteID(),
+function publish_start_session_notification(text...; siteID=get_siteID(),
                 customData = nothing)
 
-    text = lang_text(text)
+    text = lang_text(text...)
     init = Dict(:type => "notification",
                 :text => text)
 
@@ -320,7 +317,7 @@ end
 
 
 """
-    publish_say(text; sessionID=get_sessionID(), siteID=nothing,
+    publish_say(text...; sessionID=get_sessionID(), siteID=nothing,
                     lang=LANG, id=nothing, wait=true)
 
 Let the TTS say something.
@@ -339,11 +336,11 @@ dictionary of phrases for the selected language by calling
 * `wait`: wait until the massege is spoken (i.i. wait for the
         MQTT-topic)
 """
-function publish_say(text; sessionID=get_sessionID(),
+function publish_say(text...; sessionID=get_sessionID(),
                     siteID=get_siteID(), lang=get_language(),
                     id=nothing, wait=true)
 
-    text = lang_text(text)
+    text = lang_text(text...)
     text = replace(text, r"\n|\r"=>" ")
     payload = Dict(:text => text, :siteId => siteID)
     payload[:lang] = lang

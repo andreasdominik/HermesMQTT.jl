@@ -99,22 +99,31 @@ function read_config(appDir)
         # or "param_name=value1,value2,value3"
         #
         rgx = r"^(?<name>[^[:space:]]+)=(?<val>.+)$"
+        read_section = true
         for line in configLines
             # skip comments.
             #
             if !occursin(r"^#", line)
                 
                 line = replace(line, " "=>"")   # strip spaces
-                m = match(rgx, line)
-                if !isnothing(m)
-                    name = Symbol(m[:name])
-                    rawVals = split(chomp(m[:val]), r",")
-                    vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
+                if line == "[global]" || line == "[secret]"
+                    read_section = true
+                elseif occursin(r"^\[[a-z][a-z]\]", line)
+                    read_section = false
+                end
 
-                    if length(vals) == 1
-                        config_ini[name] = vals[1]
-                    elseif length(vals) > 1
-                        config_ini[name] = vals
+                if read_section
+                    m = match(rgx, line)
+                    if !isnothing(m)
+                        name = Symbol(m[:name])
+                        rawVals = split(chomp(m[:val]), r",")
+                        vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
+
+                        if length(vals) == 1
+                            config_ini[name] = vals[1]
+                        elseif length(vals) > 1
+                            config_ini[name] = vals
+                        end
                     end
                 end
             end
@@ -350,4 +359,47 @@ function set_config(name, value)
 
     global CONFIG_INI
     CONFIG_INI[Symbol(name)] = value
+end
+
+
+function read_language_sentences(app_dir)
+
+    @show file_name = joinpath(app_dir, "config.ini")
+
+    config_lines = []
+    try
+        config_lines = readlines(file_name)
+
+        # read lines as "name = sentence"
+        # or ":name = sentence"
+        #
+        rgx_section = r"^\[(?<lang>[a-z][a-z])\]"
+        rgx = r"^:?(?<name>[^ ]+) *= *(?<val>.+)$"
+        lang = DEFAULT_LANG
+        read_section = false
+        for line in config_lines
+            # skip comments.
+            #
+            if !occursin(r"^#", line)
+                
+                if line == "[global]" || line == "[secret]"
+                    read_section = false
+                elseif occursin(rgx_section, line)
+                    read_section = true
+                    lang = match(rgx_section, line)[:lang]
+                end
+
+                if read_section
+                    m = match(rgx, line)
+                    if !isnothing(m)
+                        name = Symbol(m[:name])
+                        sentence = m[:val]
+                        add_text(lang, name, sentence)
+                    end
+                end
+            end
+        end
+    catch
+        print_log("Warning: no config file found!")
+    end
 end

@@ -258,9 +258,25 @@ end
 
 
 """
-    lang_text(key::Symbol, lang=get_language())
-    lang_text(key::Nothing)
-    lang_text(key::AbstractString)
+    function lang_text(texts..., lang=get_language())
+
+Join the elements of texts into a single string and
+replace each string by the sentence of the language.
+
+### Arguments:
+`texts`: iterable collection of elements that can be converted
+         into strings. `Symbols` will be replaced by the
+         languange snipplets.
+"""
+function lang_text(texts...; lang=get_language())
+
+    texts = [lang_text_one(t) for t in texts]
+    return join(texts, " ")
+end
+"""
+    lang_text_one(key::Symbol, lang=get_language())
+    lang_text_one(key::Nothing)
+    lang_text_one(key::AbstractString)
 
 Return the text in the languages dictionary for the key and the
 configured language.
@@ -271,7 +287,7 @@ if this also does not exist, an error message is returned.
 The variants make sure that nothing or the key itself are returned
 if key is nothing or an AbstractString, respectively.
 """
-function lang_text(key::Symbol, lang=get_language())
+function lang_text_one(key::Symbol, lang=get_language())
 
     if haskey(LANGUAGE_TEXTS, (lang, key))
         return StatsBase.sample(LANGUAGE_TEXTS[(lang, key)])
@@ -280,15 +296,15 @@ function lang_text(key::Symbol, lang=get_language())
     end
 end
 
-function lang_text(key::Nothing)
+function lang_text_one(key::Nothing)
 
-    return nothing
+    return ""
 end
 
 
-function lang_text(key::AbstractString)
+function lang_text_one(key)
 
-    return key
+    return "$key"
 end
 
 
