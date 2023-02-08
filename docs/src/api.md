@@ -5,13 +5,13 @@
 These functions publish and subscribe to Hermes MQTT-topics.
 
 ```@docs
-subscribe2Intents
-subscribe2Topics
-publishStartSessionAction
-publishStartSessionNotification
-publishEndSession
-publishHotwordOn
-publishHotwordOff
+subscribe_to_intents
+subscribe_to_topics
+publish_start_session_action
+publish_start_session_notification
+publish_end_session
+publish_hotword_on
+publish_hotword_off
 ```
 
 
@@ -22,32 +22,31 @@ advanced direct dialogues are provided that can be included
 in the control flow of the program.
 
 ```@docs
-publishContinueSession
-listenIntentsOneTime
-configureIntent
-askYesOrNoOrUnknown
-askYesOrNo
-publishSay
+publish_continue_session
+listen_intents_one_time
+configure_intent
+ask_yes_or_no_or_unknown
+ask_yes_or_no
+publish_say
 ```
 
-## Interaction with Susi/NoSnips
+## Interaction with assistant Rhasspy/Susi/Snips
 
 ```@docs
-getSusiToml
-getLanguage
+get_language
 ```
 
 ## Functions to handle intents
 
 ```@docs
-registerIntentAction
-registerTriggerAction
-getIntentActions
-setIntentActions
-publishSystemTrigger
-makeSystemTrigger
-publishListenTrigger
-isFalseDetection
+register_intent_action
+register_trigger_action
+get_intent_actions
+set_intent_actions
+publish_system_trigger
+make_system_trigger
+publish_listen_trigger
+is_false_detection
 ```
 
 
@@ -59,15 +58,15 @@ Helper functions for read values from the file `config.ini`.
 `config.ini` files follow the normal rules as for all Snips apps, with
 some extensions:
 
-- as for standard Snips, no spaces are allowed around the `=`
-- the parameter value may contain whitespace; i.e.
-  `light=my light`
-  returns one parameter with value: `my light`.
+- spaces are allowed around the `=`
+- the parameter value may not contain whitespace; i.e.
+  `light=my light` is better `light=my_light`
 - if the value of the parameter (right side) includes commas,
   the value can be interpreted as a comma-separated list of values.
   In this case, the reader-function will return an array of Strings
   with the values (which an be accessed by their index).
-- parameter names may have a prefix (set by the function `setConfigPrefix()`).
+- parameter names may have a prefix (set by the function 
+  `set_config_prefix()`).
   If set, all config-functions will try to find parameter names with prefix.
   Example: If the config.ini includes the lines:
   ```
@@ -79,31 +78,34 @@ some extensions:
   to sub-functions:
 
   ```
-  Snips.setConfigPrefix("main_light")
-  main_ip = Snips.getConfig("ip")
+  set_config_prefix("main_light")
+  main_ip = get_config("ip")
 
-  Snips.setConfigPrefix("wall_light")
-  wall_ip = Snips.getConfig("ip")
+  set_config_prefix("wall_light")
+  wall_ip = get_config("ip")
   ```
 
   Obviously is possible to access the parameters directly via
-  `Snips.setConfigPrefix("main_light:ip")` or
-  `Snips.setConfigPrefix(Symbol("main_light:ip"))`
+  `get_config("main_light:ip")` or
+  `get_config(Symbol("main_light:ip"))`
   without setting the prefix (the second form will work even if another
   prefix is set; see doc of the functions for details).
 
 
 
 ```@docs
-getConfig
-setConfigPrefix
-resetConfigPrefix
-getAllConfig
-readConfig
-matchConfig
-isInConfig
-isConfigValid
-getConfigPath
+get_config
+set_config_prefix
+reset_config_prefix
+get_all_config
+read_config
+match_config
+is_in_config
+is_config_valid
+get_config_path
+load_hermes_config
+load_skill_config
+load_two_configs
 ```
 
 
@@ -112,11 +114,11 @@ getConfigPath
 Functions to read values from slots of recognised intents.
 
 ```@docs
-extractSlotValue
-isInSlot
-isOnOffMatched
-isValidOrEnd
-readTimeFromSlot
+extract_slot_value
+is_in_slot
+is_on_off_matched
+is_valid_or_end
+read_time_from_slot
 ```
 
 
@@ -129,39 +131,37 @@ this first (and preliminary) implementation is surpriningly
 robust and easy to maintain - there might be no need to change.
 
 ```@docs
-subscribeMQTT
-readOneMQTT
-publishMQTT
-publishMQTTfile
+subscribe_MQTT
+read_one_MQTT
+publish_MQTT
+publish_MQTT_file
 ```
 
 
 
 ## Handle background information of recognised intent
 ```@docs
-setSiteId
-getSiteId
-setSessionId
-getSessionId
-setDeveloperName
-getDeveloperName
-setModule
-getModule
-setAppDir
-getAppDir
-setAppName
-getAppName
-setTopic
-getTopic
-setIntent
-getIntent
+set_siteID
+get_siteID
+set_sessionID
+get_sessionID
+set_module
+get_module
+set_appdir
+get_appdir
+set_appname
+get_appname
+set_topic
+get_topic
+set_intent
+get_intent
 ```
 
 ## Multi-language utilities
 ```@docs
-setLanguage
-addText
-langText
+set_language
+add_text
+lang_text
 ```
 
 ## Hardware control
@@ -177,10 +177,10 @@ the web-interface of the device. At no point it's necessary to create an account
 or use a cloud service (although the Shelly1 documentation recommends).
 
 ```@docs
-setGPIO
-switchShelly1
-switchShelly25relay
-moveShelly25roller
+set_GPIO
+switch_shelly_1
+switch_shelly_25_relay
+move_shelly_25_roller
 ```
 
 ## Status database
@@ -199,7 +199,7 @@ The db looks somehow like:
     "irrigation" :
     {
         "time" : "2019-08-26T10:12:13.177"
-        "writer" : "ADoSnipsIrrigation",
+        "writer" : "Susi:Irrigation",
         "payload" :
         {
             "status" : "on",
@@ -211,21 +211,21 @@ The db looks somehow like:
 
 
 Location of the database file is
-`<application_data_dir>/ADoSnipsQnD/<database_file>`
+`<application_data_dir>/HermesMQTT/<database_file>`
 where `application_data_dir` and `database_file>` are parameters in the
 `config.ini` of the framework.
 
 ```@docs
-dbWritePayload
-dbWriteValue
-dbHasEntry
-dbReadEntry
-dbReadValue
+db_write_payload
+db_write_value
+db_has_entry
+db_read_entry
+db_read_value
 ```
 
 ## Scheduler
 
-The QnD framework provides a scheduler which allows to execute
+The framework provides a scheduler which allows to execute
 system triggers at a specified time in the future.
 
 Schedules are added by sending a trigger with the
@@ -234,8 +234,8 @@ can be scheduled with one trigger:
 
 ```
 {
-  "origin": "ADoSnipsAuto",
-  "topic": "qnd/trigger/andreasdominik:ADoSnipsSchedule",
+  "origin": "Susi:Auto",
+  "topic": "qnd/trigger/Susi:Schedule",
   "siteId": "default",
   "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
   "trigger": {
@@ -243,11 +243,11 @@ can be scheduled with one trigger:
     "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
     "siteId": "default",
     "time": "2019-08-26T14:07:55.623",
-    "origin": "ADoSnipsAuto",
+    "origin": "Susi:Auto",
     "actions": [
       {
-        "topic": "qnd/trigger/andreasdominik:ADoSnipsLights",
-        "origin": "ADoSnipsAuto",
+        "topic": "qnd/trigger/andreasdominik:Susi:Lights",
+        "origin": "Susi:Auto",
         "execute_time": "2019-08-28T10:00:20.534",
         "trigger": {
           "settings": "undefined",
@@ -257,8 +257,8 @@ can be scheduled with one trigger:
         }
       },
       {
-        "topic": "qnd/trigger/andreasdominik:ADoSnipsLights",
-        "origin": "ADoSnipsAuto",
+        "topic": "qnd/trigger/Susi:Lights",
+        "origin": "Susi:Auto",
         "execute_time": "2019-08-28T10:00:30.534",
         "trigger": {
           "settings": "undefined",
@@ -277,8 +277,8 @@ A trigger with a `mode` od `"delete all"`, `"delete by topic"` or
 
 ```
 {
-  "origin": "Main.ADoSnipsTemplate",
-  "topic": "qnd/trigger/andreasdominik:ADoSnipsSchedule",
+  "origin": "Susi:Skill",
+  "topic": "qnd/trigger/Susi:Schedule",
   "siteId": "default",
   "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
   "trigger": {
@@ -296,12 +296,12 @@ However, it is normally not necessary to set up these triggers manually;
 the following API functions provide an interface:
 
 ```@docs
-schedulerAddAction
-schedulerAddActions
-schedulerMakeAction
-schedulerDeleteAll
-schedulerDeleteTopic
-schedulerDeleteOrigin
+scheduler_add_action
+scheduler_add_actions
+scheduler_make_action
+scheduler_delete_all
+scheduler_delete_topic
+scheduler_delete_origin
 ```
 
 ## Utility functions
@@ -310,16 +310,16 @@ Little helpers to provide functionality which is commonly needed
 when developing a skill.
 
 ```@docs
-readableDateTime
-getWeather
+readable_date_time
+get_weather
 tryrun
 ping
-tryReadTextfile
-tryParseJSONfile
-tryParseJSON
-tryMkJSON
-printLog
-printDebug
+try_read_textfile
+try_parse_JSON_file
+try_parse_JSON
+try_mk_JSON
+print_log
+print_debug
 ```
 
 ## Index
