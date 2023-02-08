@@ -1,7 +1,7 @@
-This template and the SnipsHermesQnD framework is
+The hermesMQTT framework is
 copyright (C)
 
-> Andreas Dominik, THM Gießen, Germany, May 2019
+> Andreas Dominik, THM Gießen, Germany, Jan 2023
 
 and licensed under the GPL3 license:
 
