@@ -13,7 +13,7 @@ makedocs(modules = [HermesMQTT],
                   "License" => "license.md",
                   hide("Changelog" => "changelog.md")
                   ],
-         format = Documenter.HTML(prettyurls = false)
+         # format = Documenter.HTML(prettyurls = false)
          )
 
 deploydocs(
