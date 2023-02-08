@@ -35,7 +35,7 @@ for INTENT in $INTENTS ; do
   echo "(leave empty if no slots are required)"
   read -p "Slots for intent: \"$INTENT\": " SLOTS
 
-  INTENT_CLEAN="$(echo $INTENT | sed 's/[\.-\+:;,\!\?]/_/g')"
+  INTENT_CLEAN="$(echo $INTENT | sed 's/[\.-\+:;,\!\?<>]/_/g')"
   SLOTS_NAME="${INTENT_CLEAN}_SLOTS"
   declare "$SLOTS_NAME"="$SLOTS"
   # echo ${!SLOTS_NAME}
