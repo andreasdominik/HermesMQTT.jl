@@ -3,12 +3,14 @@
 This is a "quick-and-Dirty" framework for Snips.ai-style home assistants 
 (such as *Rhasspy*)
 written in Julia.
-I comes with generator script
+It comes with generator script
 which can be used as starting point for own skills.
 
 To learn about Snips, goto [snips.ai](https://docs.snips.ai/reference/).    
+
 To learn about Rhasspy, goto 
 [rhasspy](https://rhasspy.readthedocs.io/en/latest/).       
+
 To get introduced with Julia, see [julialang.org](https://julialang.org/).
 
 
@@ -21,11 +23,11 @@ and
 technical stuff (such as siteId, sessionId, callback-functions, etc.)
 are handled transparently by the framework in the background.
 
-As an example, the function `listenIntentsOneTime()` can be used
+As an example, the function `listen_intents_one_time()` can be used
 without a callback-function. Recognised intent and payload
 are returned as function value.
 
-On top of `listenIntentsOneTime()`, SnipsHermesQnD comes with
+On top of `listen_intents_one_time()`, HermesMQTT comes with
 a simple question/answer methods to
 ask questions answered with *Yes* or *No*
 (`ask_yes_or_no()` and `ask_yes_or_no_or_unknown()`).

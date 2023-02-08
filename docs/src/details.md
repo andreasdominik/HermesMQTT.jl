@@ -2,7 +2,7 @@
 
 ## Strategy
 
-The idea behind the framework is, to put as much as possible in the background
+The idea behind the framework is to put as much as possible in the background,
 so that a developer only needs to provide the code for the
 functions executed for an intent.
 
@@ -11,7 +11,7 @@ additional interfaces to *Hermes* are provided to enable direct
 dialogues without using callbacks.
 
 In addion background information, such as current session-ID or
-current site-ID, are handled in the background and not exposed to a skill
+current site-ID, are handled in the background and are not exposed to a skill
 developer.
 
 Additional utilities are provided to
@@ -21,8 +21,8 @@ Additional utilities are provided to
 - get an answer form the NLU back as function value in the
   control flow of a function,
 - use a global intent for switching a device on or off,
-- let Snips ask a question and get "yes" or "no" back as boolean value,
-- let Snips continue a conversation without the need to utter the,
+- let the assistant ask a question and get "yes" or "no" back as boolean value,
+- let the assistant continue a conversation without the need to utter the,
   hotword again,
 - execute actions of other skills by submitting system triggers.
 
@@ -86,7 +86,8 @@ The HermesMQTT-framework provides a mechanism to cancel intents, recognised
 by the NLU, by double-checking against ordered lists of words that
 must be present in a command to be valid.
 
-This is configured in the `config.ini` with parameters of the form:
+This is configured in the `config.ini` with optional 
+parameters of the form:
 
 - `<intentname>:must_include:<description>=<list of words>`
 - `<intentname>:must_chain:<description>=<list of words>`
@@ -122,14 +123,13 @@ check fails the session is ended silently.
 ## Reduce false activations of intents by disabling intents
 
 The skill `DoNotListen` with the intents `Snips:DoNotListen<DE/EN>` and
-`Snips:ListenAgain<DE/EN>` can be used to temporarily disable intents that
-are accidently activated.
+`Snips:ListenAgain<DE/EN>` can be used to temporarily disable intents.
 
 The intents themself use strict doublechecking (see section above) to
 make sure, that only very specific commands are recognised.
 
 In addition, the skill can subscripe to MQTT topics containing triggers.
-Trigger can be
+Triggers can be
 published by the API-functions `publish_listen_trigger(:stop)`
 and `publish_listenTrigger(:start)` by other apps.
 This way it is possible to programically disable intents as part of an
@@ -212,7 +212,7 @@ This can be achieved by starting a new session just after an intent is processed
 In the HermesMQTT framework this is controlled by two mechanisms:
 
 The `config.jl` defines a constant `const CONTINUE_WO_HOTWORD = false`.
-`false` is the default and hence continuation without hotword is enabled
+`false` is the default and hence continuation without hotword is disabled
 by default. To completely disable it for your skill, just set the constant
 to `false`.    
 The second mechanism is the return value of every single skill-action.
@@ -240,7 +240,7 @@ language=en
 ```
 
 ### 2) Define the texts in all languages:
-To let Snips speak different languages, all texts must be added to a 
+To let the assistant speak different languages, all texts must be added to a 
 database
 for all target languages. These are defined in the 
 `config.ini` file by connecting a language, a key and the sentence.
@@ -249,7 +249,7 @@ Text sniplets for each key must be defined in each language:
 ```
 [de]
 :skill_echo =  Hallo, ich bin die Hermes-Skill
-:slot_echo_1 = der Wert des Solts
+:slot_echo_1 = der Wert des Slots
 :slot_echo_2 = ist
 :end_say =     das wars
 :ask_echo_slots = soll ich die Slots des Intent aufsagen?
@@ -280,13 +280,14 @@ Text sniplets for each key must be defined in each language:
 ### 3) Create similar intents for all languages:
 
 The most time-consuming step ist to create the intents in the
-Snips console - however this is necessary, because speach-to-text as well as
+Snips/Rhasspy console - however this is necessary, because speach-to-text as well as
 natural language understanding highly depend on the language.
 
 
 ### 4) Switch between languages:
 
-A language can be selected in the `config.ini` of `HermesMQTT`, the `config.ini` of each skill or as kw-argument when calling a say-function.
+A language can be selected in the `config.ini` of `HermesMQTT` or 
+the `config.ini` of each skill.
 
 
 ### 5) Utter texts in the defined language:
@@ -314,7 +315,7 @@ components to communication between apps or the system or timers and apps.
 A trigger is a MQTT with a topic like
 
 ```
-qnd/trigger/andreasdominik:Snips:Lights<EN>
+qnd/trigger/andreasdominik:Susi:Lights<EN>
 ```
 
 and a payload in JSON format:
@@ -322,7 +323,7 @@ and a payload in JSON format:
 ```
     {
       "target" : "qnd/trigger/andreasdominik:Snips:Lights<EN>",
-      "origin" : "Snips:Scheduler<EN>",
+      "origin" : "Susi:Scheduler<EN>",
       "time" : timeString,
       "trigger" : {
         "room" : "default",
@@ -354,11 +355,9 @@ running in the same Julia procress.
 This reduces the footprint as well as the
 compile times (because the libraries must be compiled only once).
 
-It is still possible to add skills in the Snips console
-like all other skills.
-The only difference is, that the `action-...` executable of a skill
-is replaced by a `loader-...` script, which is recognised by the
-framework and loaded.
+To run the HermesMQTT skills, all skills must be installed 
+in directories parallel to `HermesMQTT`. When the `action-*.jl` of
+HermesMQTT is executed, it will load all other `loader-*.jl` functions and load the skills.
 
 All skills are executed in parallel 
 (thanks to Julia this is super easy to implement)
