@@ -89,14 +89,14 @@ must be present in a command to be valid.
 This is configured in the `config.ini` with optional 
 parameters of the form:
 
-- `<intentname>:must_include:<description>=<list of words>`
-- `<intentname>:must_chain:<description>=<list of words>`
-- `<intentname>:must_span:<description>=<list of words>`
+- `<intentname>:must_include = <list of words>`
+- `<intentname>:must_chain = <list of words>`
+- `<intentname>:must_span = <list of words>`
 
 Examples:
-- `switchOnOff:must_include:1=on,light`
-- `switchOnOff:must_include:rev=light,on`
-- `switchOnOff:must_include:with_regex=(light|bulb),on`
+- `switchOnOff:must_include = on, light`
+- `switchOnOff:must_include = light, on`
+- `switchOnOff:must_include = (light|bulb), on`
 
 Several lines of colon-separated parts are possible:
 - the first part is the intent name (because one `config.ini` is responsible for all intents of a skill)

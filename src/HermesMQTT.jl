@@ -39,6 +39,10 @@ CURRENT = Dict(
 const DEFAULT_LANG = "en"
 LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
+FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language 
+                                    #   key is (language code, intent)
+                                    #   val is (type, [vals])
+                                    
 INI_MATCH = "must_include"
 
 # init config. Read of config.ini moved to starter script, because

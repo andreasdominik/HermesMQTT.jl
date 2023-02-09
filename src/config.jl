@@ -98,24 +98,23 @@ function read_config(appDir)
         # read lines as "param_name=value"
         # or "param_name=value1,value2,value3"
         #
-        rgx = r"^(?<name>[^[:space:]]+)=(?<val>.+)$"
-        read_section = true
+        rgx = r"^ *(?<name>[^[:space:]]+) *= *(?<val>.+)$"
+        read_section = false
         for line in configLines
             # skip comments.
             #
             if !occursin(r"^#", line)
                 
-                line = replace(line, " "=>"")   # strip spaces
-                if line == "[global]" || line == "[secret]"
+                if is_section_head_global(line)
                     read_section = true
-                elseif occursin(r"^\[[a-z][a-z]\]", line)
+                elseif is_section_head_lang(line)
                     read_section = false
                 end
 
                 if read_section
                     m = match(rgx, line)
                     if !isnothing(m)
-                        name = Symbol(m[:name])
+                        name = strip(m[:name]) | Symbol
                         rawVals = split(chomp(m[:val]), r",")
                         vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
 
@@ -133,6 +132,60 @@ function read_config(appDir)
     end
     return config_ini
 end
+
+
+# check, if a config.ini line is a section header
+# and return true or false
+#
+function is_section_head(line)
+
+    rgx = r"^\[.+\]$"
+    return occursin(rgx, strip(line))
+end
+
+
+
+# check, if a config.ini line is a section header
+# and return nothing, :global, language code
+#
+function get_section_head(line)
+    line = replace(line, " "=>"")
+
+    if line == "[global]"
+        return :global
+    end
+
+    m = match(r"^\[(?<lang>[a-z][a-z])\]", line)
+    if !isnothing m
+        return m[:lang]
+    end
+
+    return nothing
+end
+
+function is_section_head_global(line)
+
+    return strip(line) == "[global]"
+end
+
+function is_section_head_lang(line)
+
+    return occursin(r"^\[(?<lang>[a-z][a-z])\]", strip(line))
+end
+
+function get_section_head_lang(line)
+
+    m = match(r"^\[(?<lang>[a-z][a-z])\]", strip(line))
+    if isnothing(m)
+        return nothing
+    else
+        return m[:lang]
+    end
+end
+
+
+        
+
 
 
 """
@@ -270,6 +323,28 @@ end
 
 
 """
+    add_false_detection(lang, check_type, vals))
+
+Add a false detectuion rule for the language lang and intent intent
+and init the list if necessary.
+"""
+function add_false_detectioni_rule(lang, intent, check_type, vals)
+    
+    global FALSE_DETECTION
+    if !haskey(FALSE_DETECTION, (lang, intent))
+        FALSE_DETECTION[(lang, intent)] = []
+    end
+
+    push!(FALSE_DETECTION[(lang, intent)], (check_type, vals))
+end
+
+
+function get_false_detection_rules(lang, intent)
+
+    return FALSE_DETECTION[(lang, intent)]
+end
+
+"""
     is_config_valid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error_config])
 
 Return `true`, if the parameter `name` have been read correctly from the
@@ -364,7 +439,7 @@ end
 
 function read_language_sentences(app_dir)
 
-    @show file_name = joinpath(app_dir, "config.ini")
+    file_name = joinpath(app_dir, "config.ini")
 
     config_lines = []
     try
@@ -373,8 +448,8 @@ function read_language_sentences(app_dir)
         # read lines as "name = sentence"
         # or ":name = sentence"
         #
-        rgx_section = r"^\[(?<lang>[a-z][a-z])\]"
-        rgx = r"^:?(?<name>[^ ]+) *= *(?<val>.+)$"
+        rgx_sentence = r"^ *(?<name>[^[:space:]]+) *= *(?<val>.+)$"
+        rgx_ensure = r"^ *(?<intent>[^[:space:]]+):(?<must>(must_include|must_chain|must_span)) *= *(?<val>.+)$"
         lang = DEFAULT_LANG
         read_section = false
         for line in config_lines
@@ -382,18 +457,28 @@ function read_language_sentences(app_dir)
             #
             if !occursin(r"^#", line)
                 
-                if line == "[global]" || line == "[secret]"
+                if is_section_head_global(line)
                     read_section = false
-                elseif occursin(rgx_section, line)
+                elseif is_section_head_lang(line)
                     read_section = true
-                    lang = match(rgx_section, line)[:lang]
+                    lang = get_section_head_lang(line)
                 end
 
                 if read_section
-                    m = match(rgx, line)
-                    if !isnothing(m)
-                        name = Symbol(m[:name])
-                        sentence = m[:val]
+                    m_ensure = match(rgx_ensure, line)
+                    m_sentence = match(rgx_sentence, line)
+
+                    if !isnothing(m_ensure)
+                        intent = m_ensure[:intent]
+                        check_type = m_ensure[:must]
+                        rawVals = split(chomp(m_ensure[:val]), r",")
+                        vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
+
+                        add_false_detection_rule(lang, intent, check_type, vals)
+                    
+                    elseif !isnothing(m_sentence)    
+                        name = Symbol(m_sentence[:name])
+                        sentence = m_sentence[:val]
                         add_text(lang, name, sentence)
                     end
                 end

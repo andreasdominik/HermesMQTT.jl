@@ -445,7 +445,7 @@ end
 Return true if all words in the list needles occures in haystack
 in the given order.
 `needles` can be an AbstractStrings or regular expressions.
-The match ic case insensitive.
+The match is case insensitive.
 
 ## Arguments:
 `needles`: AbstractString or list of Strings to be matched
@@ -466,7 +466,7 @@ function all_occursin_order(needles, haystack; complete=true)
     else
         rg = Regex("$(join(needles, ".*"))", "i")
     end
-    print_debug("RegEx: >$rg<, command: >$haystack<")
+    #print_debug("RegEx: >$rg<, command: >$haystack<")
     return occursin(rg, haystack)
 end
 
@@ -486,10 +486,10 @@ All lines of the `config.ini` are analysed, witch match expressions:
 - `<intentname>:must_include:<description>=<list of words>
 
 An example would be:
-- `switchOnOff:must_include:just_words1=on,light`
-- `switchOnOff:must_chain:in_order=light,on`
-- `switchOnOff:must_span:start_to_end=switch,light,on`
-- `switchOnOff:must_span:start_to_end=switch,on`
+- `switchOnOff:must_include = on, light`
+- `switchOnOff:must_chain = light,on`
+- `switchOnOff:must_span = switch,light,on`
+- `switchOnOff:must_span = switch,on`
 
 The command must include all words in the correct order
 of at least one parameter lines and the words must span the complete line
@@ -501,36 +501,37 @@ is used as description and to make the parameter names unique.
 """
 function is_false_detection(payload)
 
-    INCLUDE = ":must_include:"
-    CHAIN = ":must_chain:"
-    SPAN = ":must_span:"
+    INCLUDE = "must_include"
+    CHAIN = "must_chain"
+    SPAN = "must_span"
 
     command = strip(payload[:input])
     intent = get_intent()
+    lang = get_language()
 
     # make list of all config.ini keys which hold lists
     # of must-words:
     #
-    rgx = Regex("^$intent$INCLUDE|^$intent$CHAIN|^$intent$SPAN")
-    config = filter(p->occursin(rgx, String(p.first)), get_all_config())
-    print_debug("Config false detection lines: $config")
 
-    if length(config) == 0
+    rules = get_false_detection_rules(lang, intent)
+    print_debug("Config false detection lines: $rules")
+
+    if length(rules) == 0
         falseActivation = false
     else
         # let true, if none of the word lists is matched:
         #
         falseActivation = true
-        for (name,needle) in config
-            print_debug("""name = $name; needle = "$needle".""")
+        for (type, words) in rules
+            print_debug("""type = $type; words = "$words".""")
 
-            if occursin(INCLUDE, "$name") && all_occursin(needle, command)
+            if type == INCLUDE && all_occursin(words, command)
                 # printDebug("match INCLUDE: $command, $needle")
                 falseActivation = false
-            elseif occursin(CHAIN, "$name") && all_occursin_order(needle, command, complete=false)
+            elseif type == CHAIN && all_occursin_order(words, command, complete=false)
                 # printDebug("match CHAIN: $command, $needle")
                 falseActivation = false
-            elseif occursin(SPAN, "$name") && all_occursin_order(needle, command, complete=true)
+            elseif type == SPAN && all_occursin_order(words, command, complete=true)
                 # printDebug("match SPAN: $command, $needle")
                 falseActivation = false
             end
