@@ -4,11 +4,6 @@
 debug = logging
 language = de
 
-# devices, switched by the on/off-intent:
-# home database in dir AppilcationData
-#
-#on_off_devices=floor_light,light,irrigation,TV,amazon_fire,KODI
-on_off_devices = light
 database_file = home.json
 
 [secret]
