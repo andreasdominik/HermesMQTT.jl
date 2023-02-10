@@ -31,3 +31,4 @@ SLOT_NAMES
 #     (such as: "switch TV in room abc").
 #
 # Susi.register_intent_action("TEMPLATE_SKILL", TEMPLATE_INTENT_action)
+# Susi.register_on_off_action(TEMPLATE_INTENT_action)

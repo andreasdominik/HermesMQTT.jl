@@ -41,25 +41,19 @@ HermesMQTT tries to work around this issue, by using only one intent
 for all on/off-commands.
 
 All supported devices are listed in the slot `device` of the intent
-`Snips:OnOff<EN/DE>` and defined in the slot type `device_type`.
-
-The skill part of `HermesMQTT` has some code behind to handle unrecognised
-devises. The associated `config.ini` defines the list of devices handled
-by skills in your assistant.
-Any device that is not in this list, will be ignored; 
-i.e. the framework will
-end the respective Snips:OnOff-session without any action immediately.
+`Susi:on_off` and defined in the slot type `device_list` in 
+the profile file `hermes_mqtt.ini.
 
 If you want to use the intent to swich an additional device on or off
-- firstly look in the intent `Snips:OnOff<EN/DE>` if the device
-  is already defined in the slot type `device_type`. If not,
-  you will have to
-  add a new device to the values
-  of the slot type `device_type`.
-- secondly the new device must be added to the list of devices in the
-  `config.ini` of the framework (`HermesMQTT/config.ini`). Add the
-  name to the comma-separated list of devices in the parameter
-  `on_off_devices`.
+- firstly look in the intent `Susi:on_off` if the device
+  is already defined in the slot type `device_list`. If not,
+  you will have to add a new device to the values
+  of the slot type `device_list`.
+- secondly a `my_action_on_of(topic, payload)` 
+  function must be defined in the new skill
+  that performs the action. The function must be registered to the 
+  framework by adding a `register_On_off_action(my_action_on_of)`
+  command to `config.jl`
 
 The framework comes with a function 
 `is_on_off-matched(payload, DEVICE_NAME)`
@@ -102,8 +96,6 @@ Several lines of colon-separated parts are possible:
 - the first part is the intent name (because one `config.ini` is responsible for all intents of a skill)
 - the second part must be exactly one of the phrases `must_include`,
   `must_chain` or `must_span`.
-- the last part of the parameter name can be used as a description and
-  is necessary to make all parameter lines unique
 - the parameter value is a comma-separated list of words or regular expressions.
 
 For `must_include` each uttered command must include all words.
@@ -116,14 +108,16 @@ and the words must be in the correct order
 and they must span the complete command; i.e. the first word in the list
 must be the first word of the command and the last must be the last one.
 
-The framework performs this doublecheck before an action is started. If the
-check fails the session is ended silently.
+The framework performs this doublecheck before an action is started. 
+If the complete voice command matches with at least one of the rules the 
+intent is accepted; if not, the
+check fails and the session is ended silently.
 
 
 ## Reduce false activations of intents by disabling intents
 
-The skill `DoNotListen` with the intents `Snips:DoNotListen<DE/EN>` and
-`Snips:ListenAgain<DE/EN>` can be used to temporarily disable intents.
+The skill `DoNotListen` with the intents `Susi:DoNotListen` and
+`Susi:ListenAgain>` can be used to temporarily disable intents.
 
 The intents themself use strict doublechecking (see section above) to
 make sure, that only very specific commands are recognised.
