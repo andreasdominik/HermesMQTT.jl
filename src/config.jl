@@ -483,7 +483,7 @@ function read_language_sentences(app_dir)
                         add_false_detection_rule(lang, intent, check_type, vals)
                     
                     elseif !isnothing(m_sentence)    
-                        name = Symbol(m_sentence[:name])
+                        name = m_sentence[:name]
                         sentence = m_sentence[:val]
                         add_text(lang, name, sentence)
                     end

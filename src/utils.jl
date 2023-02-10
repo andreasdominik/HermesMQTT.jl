@@ -226,14 +226,14 @@ end
 
 
 """
-    add_text(lang::AbstractString, key::Symbol, text)
+    add_text(lang::AbstractString, key, text)
 
 Add the text to the dictionary of text sniplets for the language
 `lang` and the key `key`.
 
 ## Arguments:
 * lang: String with language code (`"en", "de", ...`)
-* key: Symbol with unique key for the text
+* key: Symbol or string with unique key for the text
 * text: String or array of String with the text(s) to be uttered.
 
 ## Details:
@@ -243,10 +243,13 @@ will return a randomly selected text from the list.
 If the key already exists, the new text will be added to the the
 Array of texts for a key.
 """
-function add_text(lang::AbstractString, key::Symbol, text)
+function add_text(lang::AbstractString, key, text)
 
     if text isa AbstractString
         text = [text]
+    end
+    if !(key isa String)
+        key = strip(key, ':') |> Symbol
     end
 
     if !haskey(LANGUAGE_TEXTS, (lang, key))
