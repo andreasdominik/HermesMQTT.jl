@@ -34,8 +34,11 @@ CURRENT = Dict(
     :app_name => "HermesMQTT framework")
 
 
+# constnats and
 # set default language and texts to en
 #
+const SUSI_ON_OFF_INTENT = "Susi:on_off"
+const SUSI_YES_NO_INTENT = "Susi:yes_no"
 const DEFAULT_LANG = "en"
 LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
@@ -43,7 +46,6 @@ FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language
                                     #   key is (language code, intent)
                                     #   val is (type, [vals])
                                     
-INI_MATCH = "must_include"
 
 # init config. Read of config.ini moved to starter script, because
 # the Package is located anywhere...:
@@ -60,6 +62,10 @@ CONFIG_INI = Dict{Symbol, Any}()
 #
 SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, AbstractString,
                              Module, Function}[]
+
+
+
+
 
 export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        subscribe_to_intents, subscribe_to_topics, listen_to_intents_one_time,

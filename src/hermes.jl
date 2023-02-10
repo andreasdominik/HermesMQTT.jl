@@ -104,7 +104,8 @@ and return :yes if "Yes" is answered or :no if "No" or
 """
 function ask_yes_no_unknown(question...)
 
-    intentListen = "Susi:Yes_No"
+    lang = get_language()
+    intentListen = SUSI_YES_NO_INTENT
     topicsListen = ["hermes/nlu/intentNotRecognized", "hermes/error/nlu",
                     "hermes/dialogueManager/intentNotRecognized"]
     slotName = "yes_or_no"
@@ -374,7 +375,7 @@ end
 """
     is_on_off_matched(payload, device_name; siteID=get_siteID())
 
-Action to be combined with the ADoSnipsOnOFF intent.
+Action to be combined with the Hermes ON/OFF-intent `Susi:on_off`.
 Depending on the payload the function returns:
 * :on if "on"
 * :off if "off"

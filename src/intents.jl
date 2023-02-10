@@ -40,6 +40,27 @@ end
 
 
 
+"""
+    register_on_off_action(action)
+
+Register the action function with the generic HermesMQTT on/off-intent.
+The register function will register to the intent 
+`HermesMQTT:on_off<xy>` where `xy` is the languagecode of the currently 
+running app.    
+Make sure, that the intent for your language exists and create one 
+if necessary.
+"""
+function register_on_off_action(action)
+
+    lang = get_language()
+    intent = HERMES_ON_OFF_INTENT
+    register_intent_action(intent, get_developer_name(), 
+                get_module(), action)
+end
+
+
+
+
 
 """
     register_trigger_action(intent, developer, inModule, action)

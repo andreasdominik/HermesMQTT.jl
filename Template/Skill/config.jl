@@ -4,7 +4,7 @@
 # commands without need of a hotword in between:
 #
 const CONTINUE_WO_HOTWORD = false
-const DEVELOPER_NAME = "andreasdominik"
+const DEVELOPER_NAME = "my_name"
 Susi.set_developer_name(DEVELOPER_NAME)
 Susi.set_module(@__MODULE__)
 

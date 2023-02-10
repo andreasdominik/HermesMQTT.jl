@@ -33,6 +33,12 @@ const SKILLS_DIR = dirname(HERMES_MQTT_DIR)
 
 load_hermes_config(HERMES_MQTT_DIR)     # load config.ini of HermesMQTT
 
+#
+# disable yes/no, because it is too general!
+# (activate only when needed!):
+#
+configure_intent(HermesMQTT.SUSI_YES_NO_INTENT, false)
+
 # list of intents and related actions:
 # (name of intent, name of developer, module, function to be executed)
 #
