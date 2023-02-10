@@ -379,7 +379,7 @@ end
 Print the message only, if debug-mode is on.
 Debug-modes include
 * `none`: no debugging
-* `logging`: only printDebug() will print
+* `logging`: print_debug() will print
 * `no_parallel`: logging is on and skill actions will
                  will not be spawned (as a result, the listener is
                  off-line while a skill-action is running).
@@ -501,12 +501,15 @@ is used as description and to make the parameter names unique.
 """
 function is_false_detection(payload)
 
+    print_log("in false detect!")
+    println(FALSE_DETECTION)
+
     INCLUDE = "must_include"
     CHAIN = "must_chain"
     SPAN = "must_span"
 
     command = strip(payload[:input])
-    intent = get_intent()
+    intent = get_intent(payload)
     lang = get_language()
 
     # make list of all config.ini keys which hold lists
@@ -514,7 +517,7 @@ function is_false_detection(payload)
     #
 
     rules = get_false_detection_rules(lang, intent)
-    print_debug("Config false detection lines: $rules")
+    print_log("Config false detection lines: $rules")
 
     if length(rules) == 0
         falseActivation = false
@@ -526,13 +529,13 @@ function is_false_detection(payload)
             print_debug("""type = $type; words = "$words".""")
 
             if type == INCLUDE && all_occursin(words, command)
-                # printDebug("match INCLUDE: $command, $needle")
+                print_debug("match INCLUDE: $command, $words")
                 falseActivation = false
             elseif type == CHAIN && all_occursin_order(words, command, complete=false)
-                # printDebug("match CHAIN: $command, $needle")
+                print_debug("match CHAIN: $command, $words")
                 falseActivation = false
             elseif type == SPAN && all_occursin_order(words, command, complete=true)
-                # printDebug("match SPAN: $command, $needle")
+                print_debug("match SPAN: $command, $words")
                 falseActivation = false
             end
         end

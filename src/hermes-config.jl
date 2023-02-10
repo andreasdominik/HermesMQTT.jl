@@ -246,7 +246,7 @@ end
 
 
 """
-    set_intent(topic)
+    set_intent(payload)
 
 Set the intent for which the currently running app is working.
 The framework uses this in the background.
@@ -254,11 +254,10 @@ The framework uses this in the background.
 ## Arguments:
 * topic: name of current topic
 """
-function set_intent(topic)
+function set_intent(payload)
 
-    m = match(r"hermes/intent/\w+:(?<intent>\w+)", topic)
-    if !isnothing(m)
-        global CURRENT[:intent] = m[:intent]
+    if haskey(payload, :intent) && haskey(payload[:intent], :intentName)
+        global CURRENT[:intent] = payload[:intent][:intentName]
     else
         global CURRENT[:intent] = "unkown_intent"
     end
@@ -266,6 +265,7 @@ end
 
 """
     get_intent()
+    get_intent(payload)
 
 Return the intent name of the currently running app.
 """
@@ -273,6 +273,16 @@ function get_intent()
 
     return CURRENT[:intent]
 end
+
+function get_intent(payload)
+
+    if haskey(payload, :intent) && haskey(payload[:intent], :intentName)
+        return payload[:intent][:intentName]
+    else
+        return "unkown_intent"
+    end
+end
+
 
 
 

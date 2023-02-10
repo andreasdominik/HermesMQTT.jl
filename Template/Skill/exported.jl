@@ -22,7 +22,7 @@ function callback_run(fun, topic, payload)
     if occursin(r"^hermes/intent/", topic)
         Susi.set_siteID(payload[:siteId])
         Susi.set_sessionID(payload[:sessionId])
-        Susi.set_intent(topic)
+        Susi.set_intent(payload)
 
         if Susi.is_false_detection(payload)
             Susi.publish_end_session("")

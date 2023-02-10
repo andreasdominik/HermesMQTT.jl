@@ -78,7 +78,7 @@ end
 
 
 """
-    read_config(appDir)
+    read_config(app_dir)
 
 Read the lines of the App's config file and
 return a Dict with config values.
@@ -86,21 +86,21 @@ return a Dict with config values.
 ## Arguments:
 * `appDir`: Directory of the currently running app.
 """
-function read_config(appDir)
+function read_config(app_dir)
 
     config_ini = Dict{Symbol, Any}()
-    fileName = joinpath(appDir, "config.ini")
+    file_name = joinpath(app_dir, "config.ini")
 
-    configLines = []
+    config_lines = []
     try
-        configLines = readlines(fileName)
+        config_lines = readlines(file_name)
 
         # read lines as "param_name=value"
         # or "param_name=value1,value2,value3"
         #
         rgx = r"^ *(?<name>[^[:space:]]+) *= *(?<val>.+)$"
         read_section = false
-        for line in configLines
+        for line in config_lines
             # skip comments.
             #
             if !occursin(r"^#", line)
@@ -114,7 +114,7 @@ function read_config(appDir)
                 if read_section
                     m = match(rgx, line)
                     if !isnothing(m)
-                        name = strip(m[:name]) | Symbol
+                        name = strip(m[:name]) |> Symbol
                         rawVals = split(chomp(m[:val]), r",")
                         vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
 
@@ -328,7 +328,7 @@ end
 Add a false detectuion rule for the language lang and intent intent
 and init the list if necessary.
 """
-function add_false_detectioni_rule(lang, intent, check_type, vals)
+function add_false_detection_rule(lang, intent, check_type, vals)
     
     global FALSE_DETECTION
     if !haskey(FALSE_DETECTION, (lang, intent))
@@ -342,6 +342,11 @@ end
 function get_false_detection_rules(lang, intent)
 
     return FALSE_DETECTION[(lang, intent)]
+end
+
+function get_false_detection_rules()
+
+    return FALSE_DETECTION
 end
 
 """
@@ -442,6 +447,8 @@ function read_language_sentences(app_dir)
     file_name = joinpath(app_dir, "config.ini")
 
     config_lines = []
+    lang = DEFAULT_LANG
+    
     try
         config_lines = readlines(file_name)
 
@@ -449,8 +456,7 @@ function read_language_sentences(app_dir)
         # or ":name = sentence"
         #
         rgx_sentence = r"^ *(?<name>[^[:space:]]+) *= *(?<val>.+)$"
-        rgx_ensure = r"^ *(?<intent>[^[:space:]]+):(?<must>(must_include|must_chain|must_span)) *= *(?<val>.+)$"
-        lang = DEFAULT_LANG
+        rgx_ensure =   r"^ *(?<intent>[^[:space:]]+):(?<must>(must_include|must_chain|must_span)) *= *(?<val>.+)$"
         read_section = false
         for line in config_lines
             # skip comments.

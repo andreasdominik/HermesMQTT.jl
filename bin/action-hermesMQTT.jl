@@ -27,6 +27,10 @@ using HermesMQTT
 #
 const HERMES_MQTT_DIR = dirname(@__DIR__)
 const SKILLS_DIR = dirname(HERMES_MQTT_DIR)
+
+# println("HERMES_MQTT_DIR = $HERMES_MQTT_DIR")
+# println("SKILLS_DIR = $SKILLS_DIR")
+
 load_hermes_config(HERMES_MQTT_DIR)     # load config.ini of HermesMQTT
 
 # list of intents and related actions:
