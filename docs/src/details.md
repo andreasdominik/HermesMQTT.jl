@@ -45,25 +45,24 @@ All supported devices are listed in the slot `device` of the intent
 the profile file `hermes_mqtt.ini.
 
 If you want to use the intent to swich an additional device on or off
-- firstly look in the intent `Susi:on_off` if the device
++ firstly look in the intent `Susi:on_off` if the device
   is already defined in the slot type `device_list`. If not,
   you will have to add a new device to the values
   of the slot type `device_list`.
-- secondly a `my_action_on_of(topic, payload)` 
++ secondly a `my_action_on_of(topic, payload)` 
   function must be defined in the new skill
   that performs the action. The function must be registered to the 
   framework by adding a `register_On_off_action(my_action_on_of)`
   command to `config.jl`
-
-The framework comes with a function 
-`is_on_off-matched(payload, DEVICE_NAME)`
-which can be called with the current payload and the name (and
-optionally with the siteId) of the device of interest.
-It will return one of
-- `:on`, if an "ON" is recognised for the device
-- `:off`, if an "OFF" is recognised for the device
-- `:matched`, if the device is recognised but no specific on or off
-- `:unmatched`, if the device is not recognised.
++ The framework comes with a function 
+  `is_on_off_matched(payload, DEVICE_NAME)`
+  which can be called with the current payload and the name (and
+  optionally with the siteId) of the device of interest.
+  It will return one of
+  - `:on`, if an "ON" is recognised for the device
+  - `:off`, if an "OFF" is recognised for the device
+  - `:matched`, if the device is recognised but no specific on or off
+  - `:unmatched`, if the device is not recognised.
 
 The tutorial shows a simple example how to use this functionality.
 
