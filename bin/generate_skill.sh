@@ -5,6 +5,31 @@
 #
 TMPF=tempfile
 
+echo "HermesMQTT (aka Susi) new skill generator
+
+           Andreas Dominik, Feb. 2023
+
+You will be asked to enter names of skill, intents
+and slots.
+Please be aware that 
+
+Skill name
+  will end up as a filename; it schould only contain
+  allowed charaters (recommended: 'a-zA-Z0-9' and '_')
+
+Intent names
+  will end up as name of a julia function; although
+  special charaters will be replaced by '_' they sould be used
+  with care. Names like 'Susi:RunIrrigation' are OK.
+
+Slot names 
+  are will end up as keys for dictionaries and should be
+  easily readable in order to allow debugging. It is good practice
+  to only have 'a-zA-Z' and _ in the names.
+  
+  "
+
+
 read -p "Enter the name of the new skill: " SKILL
 
 # enter intent names:
@@ -12,7 +37,7 @@ read -p "Enter the name of the new skill: " SKILL
 INTENTS=""
 echo " "
 echo "Enter the names of the intents for this skill:"
-echo "(leave empty whne finished)"
+echo "(leave empty when finished)"
 read -p "Name of the first intent: " INTENT
 INTENTS="$INTENTS $INTENT"
 

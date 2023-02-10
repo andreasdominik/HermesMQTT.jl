@@ -80,7 +80,7 @@ by the NLU, by double-checking against ordered lists of words that
 must be present in a command to be valid.
 
 This is configured in the `config.ini` with optional 
-parameters of the form:
+parameters in each language section of the form:
 
 - `<intentname>:must_include = <list of words>`
 - `<intentname>:must_chain = <list of words>`
