@@ -4,7 +4,7 @@
 
 
 """
-    scheduler_add_trigger(executeTime, topic, trigger;
+    publish_schedule_trigger(executeTime, topic, trigger;
             sessionID=get_sessionID(),
             origin=get_appname(),
             siteId =get_siteID())
@@ -15,9 +15,9 @@ execution at `executeTime`.
 ## Arguments:
 - `executeTime`: DateTime object
 - `topic`: topic to which the system trigger will be published.
-           topic has the format: `"qnd/trigger/andreasdominik:ADoSnipsLights"`.
-           The prefix `"qnd/trigger/"` and the developer name are added if
-           missing in the argument.
+           topic has the format: `"HermesMQTT/trigger/Susi:LightsSilent"`.
+           The prefix `"HermesMQTT/trigger/"` is added if
+           missing in the arguments.
 - `trigger`: The system trigger to be published as Dict(). Format of the
            trigger is defined by the target skill.
 
@@ -25,24 +25,25 @@ execution at `executeTime`.
 values, if not given. SessionId and origin can be used to select
 scheduled actions for deletion.
 """
-function scheduler_add_trigger(executeTime, topic, trigger;
+function publish_schedule_trigger(executeTime, topic, trigger;
                             sessionID=get_sessionID(),
                             origin=get_appname(),
                             siteID=get_siteID())
 
+    TRIGGER_NAME = "HermesMQTTScheduler"
     action = scheduler_make_action(executeTime, topic, trigger,
                             origin = origin)
 
     scheduleTrigger = Dict(
         :origin => origin,
-        :topic => "qnd/trigger/andreasdominik:HermesMQTTScheduler",
+        :topic => "HermesMQTT/trigger/$TRIGGER_NAME",
         :siteId => siteID,
         :sessionId => sessionID,
         :mode => "add schedules",
         :time => "$(Dates.now())",
         :actions => [action]
         )
-    publish_system_trigger("HermesMQTTScheduler", scheduleTrigger)
+    publish_system_trigger($TRIGGER_NAME, scheduleTrigger)
 end
 
 
