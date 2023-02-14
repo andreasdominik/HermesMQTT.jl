@@ -36,11 +36,11 @@ function db_write_payload(key, payload)
         key = Symbol(key)
     end
 
-    if !dbLock()
+    if !db_lock()
         return false
     end
 
-    db = dbRead()
+    db = db_read()
 
     if haskey(db, key)
         entry = db[key]
@@ -63,6 +63,7 @@ end
 Write a field=>value pair to the payload of a database entry.
 The field is overwitten if the entry already exists,
 or created elsewise.
+The database is written to the JSON-file after the write.
 
 ## Arguments
 - `key`: unique key of the database entry of
@@ -80,11 +81,11 @@ function db_write_value(key, field, value)
         field = Symbol(field)
     end
 
-    if !dbLock()
+    if !db_lock()
         return false
     end
 
-    db = dbRead()
+    db = db_read()
     if haskey(db, key)
         entry = db[key]
     else
@@ -201,12 +202,11 @@ Path is constructed from `config.ini` values
 """
 function db_read()
 
-    db = tryParseJSONfile(db_name(), quiet = true)
+    db = try_parse_JSON_file(get_db_name(), quiet=true)
     if length(db) == 0
-        print_log("Empty status DB read: $(db_name()).")
+        print_log("Empty status DB read: $(get_db_name()).")
         db = Dict()
     end
-
     return db
 end
 
@@ -222,7 +222,7 @@ function db_write(db)
         mkpath( get_config(:database_dir))
     end
 
-    fname = db_name()
+    fname = get_db_name()
     open(fname, "w") do f
         JSON.print(f, db, 2)
     end
@@ -233,7 +233,7 @@ end
 
 function db_lock()
 
-    lockName = db_name() * ".lock"
+    lockName = get_db_name() * ".lock"
 
     # wait until unlocked:
     #
@@ -256,13 +256,13 @@ end
 
 function db_unlock()
 
-    lockName = db_name() * ".lock"
+    lockName = get_db_name() * ".lock"
     rm(lockName, force = true)
 end
 
 
 
-function db_name()
+function get_get_db_name()
 
     return get_config(:database_path)
 end

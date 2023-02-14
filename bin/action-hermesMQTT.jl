@@ -64,6 +64,19 @@ for loader in loaders
     include(loader)
 end
 
+# register HermesMQTT intents and triggers:
+#
+registster_trigger_action(HermesMQTT.SCHEDULE_TRIGGER_NAME,
+                          "andreasdominik", HermesMQTT,
+                          scheduler_action)
+
+# run scheduler in background (listen to channels):
+#
+action_channel = Channel(64)
+delete_channel = Channel(64)
+@async HermesMQTT.start_scheduler()
+
+
 # start listening to MQTT with main callback
 #
 const topics = [i[3] for i in INTENT_ACTIONS]
