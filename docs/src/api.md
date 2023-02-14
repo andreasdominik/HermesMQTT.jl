@@ -115,6 +115,7 @@ Functions to read values from slots of recognised intents.
 
 ```@docs
 extract_slot_value
+extract_multislot_values
 is_in_slot
 is_on_off_matched
 is_valid_or_end

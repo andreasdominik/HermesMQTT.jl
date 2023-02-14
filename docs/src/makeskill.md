@@ -277,12 +277,12 @@ Send commands to Amamzon device.
 """
 function action_commands(topic, payload)
 
-    if is_in_slot(payload, SLOT_NAME, "play")
+    if is_in_slot(SLOT_NAME, "play")
         publish_end_session("I play the current selection!")
         amazonPlay()
         return true
 
-    elseif is_in_slot(payload, SLOT_NAME, "pause")
+    elseif is_in_slot(SLOT_NAME, "pause")
         publish_end_session("I pause the movie.")
         amazonPause()
         return true

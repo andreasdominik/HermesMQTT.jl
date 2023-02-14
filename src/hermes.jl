@@ -129,9 +129,9 @@ function ask_yes_no_unknown(question...)
     #     publish_MQTT(TOPIC_NOTIFICATION_ON, Dict(:siteId => get_siteID()))
     # end
 
-    if is_in_slot(payload, slotName, "yes")
+    if is_in_slot(slotName, "yes", payload)
         return :yes
-    elseif is_in_slot(payload, slotName, "no")
+    elseif is_in_slot(slotName, "no", payload)
         return :no
     else
         return :unknown
@@ -397,7 +397,7 @@ function is_on_off_matched(payload, device_name; siteID=get_siteID())
     if siteID == "any"
         commandSiteID = siteID
     else
-        commandSiteID = extract_slot_value(payload, "room")
+        commandSiteID = extract_slot_value("room", payload)
         if isnothing(commandSiteID)
             commandSiteID = payload[:siteId]
         end
@@ -412,10 +412,10 @@ function is_on_off_matched(payload, device_name; siteID=get_siteID())
 
         # test device name from payload
         #
-        if is_in_slot(payload, "device", device_name)
-            if is_in_slot(payload, "on_or_off", "ON")
+        if is_in_slot("device", device_name, payload)
+            if is_in_slot("on_or_off", "ON", payload)
                 result = :on
-            elseif is_in_slot(payload, "on_or_off", "OFF")
+            elseif is_in_slot("on_or_off", "OFF", payload)
                 result = :off
             else
                 result = :matched

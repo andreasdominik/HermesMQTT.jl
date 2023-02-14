@@ -29,7 +29,7 @@ end
 
 
 """
-    extract_slot_value(payload, slot_name; multiple = false)
+    extract_slot_value(slot_name, payload=get_intent(); multiple = false)
 
 Return the value of a slot.
 
@@ -40,9 +40,12 @@ Nothing is returned, if
 
 If multiple == `true`, a list of all slot values will be
 returned. If false, only the 1st one as String.
+
+By default, the payload is retrieved from the stored intent value in 
+the local HermesMQTT instance of the skill.
 """
-function extract_slot_value(payload, slot_name; multiple=false, 
-                            default=nothing)
+function extract_slot_value(slot_name, payload=get_intent(); 
+                            multiple=false, default=nothing)
 
     slot_name = "$slot_name"
     slot_value = default
@@ -67,7 +70,7 @@ function extract_slot_value(payload, slot_name; multiple=false,
 end
 
 """
-    extract_multislot_values(payload, slot_names)
+    extract_multislot_values(slot_names,payload=get_intent())
 
 Return a list with all values of a list of slots.
 
@@ -76,12 +79,13 @@ Nothing is returned, if
 * no slots with name in slotNames in payload,
 * no values in slot slotNames.
 """
-function extract_multislot_values(payload, slot_names::AbstractArray)
+function extract_multislot_values(slot_names::AbstractArray, 
+                                  payload=get_intent())
 
     values = []
 
     for slot in slot_names
-        value = extract_slot_value(payload, slot, multiple=true)
+        value = extract_slot_value(slot, payload, multiple=true)
         if !isnothing(value)
             append!(values, value)
         end
@@ -97,35 +101,35 @@ end
 
 
 """
-    is_in_slot(payload, slot_name, value)
+    is_in_slot(slot_name, value, payload=get_intent()
 
 Return `true`, if the value is present in the slot slotName
 of the JSON payload (i.e. one of the slot values must match).
 Return `false` if something is wrong (value not in payload or no
 slots slotName.)
 """
-function is_in_slot(payload, slot_name, value)
+function is_in_slot(slot_name, value, payload=get_intent())
 
-    values = extract_slot_value(payload, slot_name; multiple = true)
+    values = extract_slot_value(slot_name, payload; multiple = true)
     return !isnothing(values) && (value in values)
 end
 
 
 """
-    read_time_from_slot(payload, slot_name)
+    read_time_from_slot(slot_name, payload=get_intent() )
 
 Return a DateTime from a slot with a time string of the format
 `"2019-09-03 18:00:00 +00:00"` or `nothing` if it is
 not possible to parse the slot.
 """
-function read_time_from_slot(payload, slot_name)
+function read_time_from_slot(slot_name, payload=get_intent())
 
     dateTime = nothing
 
     # date format delivered from Snips:
     #
     # dateFormat = Dates.DateFormat("yyyy-mm-dd HH:MM:SS")
-    timeStr = extract_slot_value(payload, slot_name, multiple = false)
+    timeStr = extract_slot_value(slot_name, payload, multiple = false)
     if isnothing(timeStr)
         return nothing
     end
