@@ -2,6 +2,9 @@
 #
 #
 
+const SCHEDULE_TRIGGER_NAME = "HermesMQTTScheduler"
+const SCHEDULE_TRIGGER_PREFIX = "HermesMQTT/trigger"
+
 
 """
     publish_schedule_trigger(executeTime, topic, trigger;
@@ -30,25 +33,24 @@ function publish_schedule_trigger(executeTime, topic, trigger;
                             origin=get_appname(),
                             siteID=get_siteID())
 
-    TRIGGER_NAME = "HermesMQTTScheduler"
     action = scheduler_make_action(executeTime, topic, trigger,
                             origin = origin)
 
     scheduleTrigger = Dict(
         :origin => origin,
-        :topic => "HermesMQTT/trigger/$TRIGGER_NAME",
+        :topic => "$SCHEDULE_TRIGGER_PREFIX/$SCHEDULE_TRIGGER_NAME",
         :siteId => siteID,
         :sessionId => sessionID,
         :mode => "add schedules",
         :time => "$(Dates.now())",
         :actions => [action]
         )
-    publish_system_trigger($TRIGGER_NAME, scheduleTrigger)
+    publish_system_trigger($SCHEDULE_TRIGGER_NAME, scheduleTrigger)
 end
 
 
 """
-    scheduler_add_actions(actions; ...)
+    publish_schedule_actions(actions; ...)
 
 Add all actions in the list of action objects to the database of
 scheduled actions for execution.
@@ -58,14 +60,14 @@ include executeTime, topic and the trigger to be published.
 - `actions`: List of actions to be published. Format of the
            trigger is defined by the target skill.
 """
-function scheduler_add_actions(actions;
+function publish_schedule_actions(actions;
                             sessionID=get_sessionID(),
                             origin=get_appname(),
                             siteID=get_siteID())
 
     scheduleTrigger = Dict(
         :origin => origin,
-        :topic => "qnd/trigger/andreasdominik:HermesMQTTScheduler",
+        :topic => "$SCHEDULE_TRIGGER_PREFIX/$SCHEDULE_TRIGGER_NAME",
         :siteId => siteID,
         :sessionId => sessionID,
         :mode => "add schedules",
@@ -73,7 +75,7 @@ function scheduler_add_actions(actions;
         :actions => actions
         )
 
-    publishSystemTrigger("HermesMQTTScheduler", scheduleTrigger)
+    publishSystemTrigger(SCHEDULE_TRIGGER_NAME, scheduleTrigger)
 end
 
 
