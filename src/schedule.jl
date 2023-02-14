@@ -1,4 +1,4 @@
-# functions for the QnD scheduler
+# functions for the HermesMQTT scheduler
 #
 #
 
@@ -51,11 +51,14 @@ end
 
 """
     publish_schedule_actions(actions; ...)
+    publish_schedule_action(action; ...)
 
 Add all actions in the list of action objects to the database of
 scheduled actions for execution.
 The elements of `actions` can be created by `schedulerMakeAction()` and must
 include executeTime, topic and the trigger to be published.
+
+The singular form can be used to schedule a single action.
 
 - `actions`: List of actions to be published. Format of the
            trigger is defined by the target skill.
@@ -75,7 +78,18 @@ function publish_schedule_actions(actions;
         :actions => actions
         )
 
-    publishSystemTrigger(SCHEDULE_TRIGGER_NAME, scheduleTrigger)
+    publish_system_trigger(SCHEDULE_TRIGGER_NAME, scheduleTrigger)
+end
+
+function publish_schedule_action(action;
+                            sessionID=get_sessionID(),
+                            origin=get_appname(),
+                            siteID=get_siteID())
+
+    publish_schedule_actions([action];
+                            sessionID=sessionID,
+                            origin=origin,
+                            siteID=siteID)
 end
 
 
@@ -85,10 +99,9 @@ end
     scheduler_make_action(executeTime, topic, trigger;
                             origin=get_appname())
 
-Return a `Dict` in the format for the QnD scheduler.
+Return a `Dict` in the format for the HermesMQTT scheduler.
 A list of these object can be used to schedule many
-actions at once via `schedulerAddActions()`.
-(see documentation of `schedulerAddAction()` for details.)
+actions at once via `publish_schedule_actions()`.
 """
 function scheduler_make_action(executeTime, topic, trigger;
                             origin=get_appname())
@@ -107,11 +120,11 @@ end
 
 
 """
-    scheduler_delete_all()
+    publish_delete_all_schedules()
 
 Delete all scheduled action triggers.
 """
-function scheduler_delete_all()
+function publish_delete_all_schedules()
 
     trigger = Dict(
         :mode => "delete all",
@@ -121,16 +134,16 @@ function scheduler_delete_all()
         :origin => "dummy",
         :time => "$(Dates.now())"
         )
-    publishSystemTrigger("HermesMQTTScheduler", trigger)
+    publish_system_trigger(SCHEDULE_TRIGGER_NAME, trigger)
 end
 
 
 """
-    scheduler_delete_topic(topic)
+    publish_delete_scheduled_topic(topic)
 
 Delete all scheduled action triggers with the given topic.
 """
-function scheduler_delete_topic(topic)
+function scheduler_delete_scheduled_topic(topic)
 
     topic = expandTopic(topic)
     trigger = Dict(
@@ -141,17 +154,17 @@ function scheduler_delete_topic(topic)
         :origin => "dummy",
         :time => "$(Dates.now())"
         )
-    publishSystemTrigger("ADoSnipsScheduler", trigger)
+    publish_system_trigger(SCHEDULE_TRIGGER_NAME, trigger)
 end
 
 
 """
-    scheduler_delete_by_origin(origin)
+    publish_delete_schedule_by_origin(origin)
 
 Delete all scheduled action triggers with the given origin
 (i.e. name of the app which cerated the scheduled action).
 """
-function scheduler_delete_by_origin(origin)
+function  publish_delete_schedule_by_origin(origin)
 
     trigger = Dict(
         :mode => "delete by origin",
@@ -161,5 +174,6 @@ function scheduler_delete_by_origin(origin)
         :origin => origin,
         :time => "$(Dates.now())"
         )
-    publishSystemTrigger("HermesMQTTScheduler", trigger)
+    publishSystemTrigger(SCHEDULE_TRIGGER_NAME, trigger)
 end
+

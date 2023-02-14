@@ -296,12 +296,12 @@ However, it is normally not necessary to set up these triggers manually;
 the following API functions provide an interface:
 
 ```@docs
-scheduler_add_action
-scheduler_add_actions
+publisch_schedule_trigger
+publisch_schedule_actions
 scheduler_make_action
-scheduler_delete_all
-scheduler_delete_topic
-scheduler_delete_origin
+publish_delete_all_schedules
+publish_delete_scheduled_topic
+publish_delete_schedule_by_origin
 ```
 
 ## Utility functions
