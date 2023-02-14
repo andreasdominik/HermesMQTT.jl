@@ -45,7 +45,7 @@ function publish_schedule_trigger(executeTime, topic, trigger;
         :time => "$(Dates.now())",
         :actions => [action]
         )
-    publish_system_trigger($SCHEDULE_TRIGGER_NAME, scheduleTrigger)
+    publish_system_trigger(SCHEDULE_TRIGGER_NAME, scheduleTrigger)
 end
 
 
