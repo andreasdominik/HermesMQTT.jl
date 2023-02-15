@@ -27,6 +27,6 @@ read_language_sentences(APP_DIR)
 include("exported.jl")
 
 
-export getIntentActions, callbackRun
+export get_intent_actions, callback_run
 
 end
