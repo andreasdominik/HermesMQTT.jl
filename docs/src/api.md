@@ -43,9 +43,6 @@ register_intent_action
 register_trigger_action
 get_intent_actions
 set_intent_actions
-publish_system_trigger
-make_system_trigger
-publish_listen_trigger
 is_false_detection
 ```
 
@@ -227,83 +224,10 @@ db_read_value
 ## Scheduler
 
 The framework provides a scheduler which allows to execute
-system triggers at a specified time in the future.
+intents or commands at a specified time in the future.
 
-Schedules are added by sending a trigger with the
-following format to the scheduler. A list of triggers
-can be scheduled with one trigger:
+*TBD*
 
-```
-{
-  "origin": "Susi:Auto",
-  "topic": "qnd/trigger/Susi:Schedule",
-  "siteId": "default",
-  "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
-  "trigger": {
-    "mode": "add schedules",
-    "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
-    "siteId": "default",
-    "time": "2019-08-26T14:07:55.623",
-    "origin": "Susi:Auto",
-    "actions": [
-      {
-        "topic": "qnd/trigger/andreasdominik:Susi:Lights",
-        "origin": "Susi:Auto",
-        "execute_time": "2019-08-28T10:00:20.534",
-        "trigger": {
-          "settings": "undefined",
-          "device": "main_light",
-          "onOrOff": "ON",
-          "room": "default"
-        }
-      },
-      {
-        "topic": "qnd/trigger/Susi:Lights",
-        "origin": "Susi:Auto",
-        "execute_time": "2019-08-28T10:00:30.534",
-        "trigger": {
-          "settings": "undefined",
-          "device": "main_light",
-          "onOrOff": "OFF",
-          "room": "default"
-        }
-      }
-    ]
-  }
-}
-```
-
-A trigger with a `mode` od `"delete all"`, `"delete by topic"` or
-`"delete by origin"` will delete the matching schedules:
-
-```
-{
-  "origin": "Susi:Skill",
-  "topic": "qnd/trigger/Susi:Schedule",
-  "siteId": "default",
-  "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
-  "trigger": {
-    "mode": "delete all",
-    "sessionId": "7dab7a26-84fb-4855-8ad0-acd955408072",
-    "siteId": "default",
-    "topic": "dummy",
-    "origin": "dummy",
-    "time": "2019-08-26T14:07:55.623"
-  }
-}
-```
-
-However, it is normally not necessary to set up these triggers manually;
-the following API functions provide an interface:
-
-```@docs
-publisch_schedule_trigger
-publisch_schedule_actions
-scheduler_make_action
-publish_delete_all_schedules
-publish_delete_scheduled_topic
-publish_delete_schedule_by_origin
-```
 
 ## Utility functions
 

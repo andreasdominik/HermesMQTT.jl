@@ -52,7 +52,7 @@ If you want to use the intent to swich an additional device on or off
 + secondly a `my_action_on_of(topic, payload)` 
   function must be defined in the new skill
   that performs the action. The function must be registered to the 
-  framework by adding a `register_On_off_action(my_action_on_of)`
+  framework by adding a `register_on_off_action(my_action_on_of)`
   command to `config.jl`
 + The framework comes with a function 
   `is_on_off_matched(payload, DEVICE_NAME)`
@@ -115,6 +115,8 @@ check fails and the session is ended silently.
 
 ## Reduce false activations of intents by disabling intents
 
+*Not avaliable yet in v0.9!*
+
 The skill `DoNotListen` with the intents `Susi:DoNotListen` and
 `Susi:ListenAgain>` can be used to temporarily disable intents.
 
@@ -147,17 +149,16 @@ Initialise self-destruction.
 function destroy_action(topic, payload)
 
   # log message:
-  print_log("[Snips:DestroyYourself]: action destroy_action() started.")
+  print_log("[Susi:DestroyYourself]: action destroy_action() started.")
 
   if ask_yes_or_no("Do you really want to initiate self-destruction?")
-    publishEndSession("Self-destruction sequence started!")
+    publish_end_session("Self-destruction sequence started!")
     boom()  # call implementaion
   else
-    publishEndSession("""OK.
+    publish_end_session("""OK.
                       Self-destruction sequence is aborted!
                       Live long and in peace.""")
   end
-
   return true
 end
 ```
@@ -232,9 +233,9 @@ The `config.ini` must have a line like:
 language=en
 ```
 
-### 2) Define the texts in all languages:
-To let the assistant speak different languages, all texts must be added to a 
-database
+### 2) Define the texts snippets in all languages:
+To let the assistant speak different languages, all texts 
+must be added to a database
 for all target languages. These are defined in the 
 `config.ini` file by connecting a language, a key and the sentence.
 Text sniplets for each key must be defined in each language:
@@ -264,7 +265,7 @@ Text sniplets for each key must be defined in each language:
 + **key:** Keys are *julia*-style Symbols and can be specified with a
         leading colon (however this is not mandatory, just good style).
         Several sentences can be provided with the same key - 
-        the `HermesMQTT.publishSay()` will select one of the sentences
+        the `HermesMQTT.publish_say()` will select one of the sentences
         randomly.
 + **sentence:** The sentence is added after the `=` without quoting.
 
@@ -273,7 +274,8 @@ Text sniplets for each key must be defined in each language:
 ### 3) Create similar intents for all languages:
 
 The most time-consuming step ist to create the intents in the
-Snips/Rhasspy console - however this is necessary, because speach-to-text as well as
+Snips/Rhasspy console - however this is necessary, because
+speach-to-text as well as
 natural language understanding highly depend on the language.
 
 
@@ -301,39 +303,16 @@ publish_end_session(:skill_echo, "and values from variables",
 ```
 
 
-## System triggers
+## Publishing intents programmically
 
 Triggers extend the concept of sending MQTT-messages between assistant
 components to communication between apps or the system or timers and apps.
-A trigger is a MQTT with a topic like
 
-```
-qnd/trigger/andreasdominik:Susi:Lights<EN>
-```
-
-and a payload in JSON format:
-
-```
-    {
-      "target" : "qnd/trigger/andreasdominik:Snips:Lights<EN>",
-      "origin" : "Susi:Scheduler<EN>",
-      "time" : timeString,
-      "trigger" : {
-        "room" : "default",
-        "device" : "floor_lamp",
-        "onOrOff" : "ON",
-        "settings" : "undefined"
-      }
-    }
-```
-
-Skills can subscribe to triggers as to normal Hermes intents with the
-function `register_trigger_action()` as well as publish triggers
-with `publish_trigger_action()`. This way it is possible to
+By publishing intents from program code, it is possible to
 
 * execute actions in other skills (by publishing the respective trigger)
-* execute action at a specified a time.
-
+* execute action at a specified a time with help of the
+  `Susi:Schdeule` skill.
 
 ## Managing the Julia footprint
 
