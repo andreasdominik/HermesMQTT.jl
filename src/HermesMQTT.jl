@@ -23,7 +23,8 @@ include("callback.jl")
 # keep track of current actions:
 # 
 CURRENT = Dict(
-    :prefix => nothing,    # prefix for parameter names
+    :language => "en",      # language code
+    :prefix => nothing,     # prefix for parameter names
     :siteID => "default",
     :sessionID => "1",
     :devel_name => "unknown",
@@ -47,6 +48,7 @@ const SUSI_ON_OFF_INTENT = "Susi:on_off"
 const SUSI_YES_NO_INTENT = "Susi:yes_no"
 const DEFAULT_LANG = "en"
 
+const HERMES_ON_OFF_INTENT = "HermesMQTT:OnOff"   # <en>
 LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
 FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language 

@@ -52,7 +52,7 @@ if necessary.
 function register_on_off_action(action)
 
     lang = get_language()
-    intent = HERMES_ON_OFF_INTENT
+    intent = "$HERMES_ON_OFF_INTENT<$lang>"
     register_intent_action(intent, get_module(), action)
 end
 
