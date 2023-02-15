@@ -24,6 +24,10 @@ function callback_run(fun, topic, payload)
         Susi.set_sessionID(payload[:sessionId])
         Susi.set_intent(payload)
 
+        Susi.set_module(MODULE_NAME)
+        Susi.set_appdir(APP_DIR)
+        Susi.set_appname(APP_NAME)
+
         if Susi.is_false_detection(payload)
             Susi.publish_end_session("")
             return false
