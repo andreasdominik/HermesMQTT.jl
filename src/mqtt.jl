@@ -53,7 +53,7 @@ end
 
 
 """
-    read_one_MQTT(topics)
+    read_one_MQTT(topics; timeout=TIMEOUT)
 
 Listen to one or more topics until one message is
 retrieved and return topic as string and payload as Dict
@@ -63,9 +63,9 @@ or as String if JSON parsing is not possible).
 * `topics`: AbstractString or List of AbstractString to define
           topics to subscribe
 """
-function read_one_MQTT(topics)
+function read_one_MQTT(topics, timeout=MQTT_TIMEOUT)
 
-    cmd = construct_MQTT_cmd(topics)
+    cmd = construct_MQTT_cmd(topics; timeout=timeout)
 
     retrieved = run_one_MQTT(cmd)
     topic, payload = parse_MQTT(retrieved)
@@ -83,16 +83,19 @@ end
 
 """
     construct_MQTT_cmd(topics; hostname = nothing, port = nothing
-                               user=nothing, password=nothing)
+                               user=nothing, password=nothing,
+                               timeout=nothing)
 
 Build the shell cmd to retrieve one MQTT massege with mosquito_sub.
 Timeout is in sec.
 """
 function construct_MQTT_cmd(topics; hostname=nothing, port=nothing,
-                            user=nothing, password=nothing)
+                            user=nothing, password=nothing,
+                            timeout=nothing)
 
     params = make_mosquitto_params(hostname=hostname, port=port, 
-                                   user=user, password=password)
+                                   user=user, password=password,
+                                   timeout=timeout)
 
     cmd = `mosquitto_sub --qos 2 -v -C 1 $params`
 
@@ -109,7 +112,8 @@ function construct_MQTT_cmd(topics; hostname=nothing, port=nothing,
 end
 
 function make_mosquitto_params(;hostname=nothing, port=nothing,
-                               user=nothing, password=nothing)
+                               user=nothing, password=nothing,
+                               timeout=nothing)
 
     isnothing(hostname) && (hostname = get_config(:mqtt_host))
     isnothing(port) && (port = get_config(:mqtt_port))
@@ -131,6 +135,10 @@ function make_mosquitto_params(;hostname=nothing, port=nothing,
 
     if !isnothing(password)
         params = `$params -P $password`
+    end
+
+    if !isnothing(timeout)
+        params = `$params -W $timeout`
     end
 
     return params
@@ -164,7 +172,7 @@ function parse_MQTT(message)
         topic = strip(m[:topic])
         payload = try_parse_JSON(strip(m[:payload]))
     else
-        print_log("ERROR: Unable to parse MQTT message!")
+        print_log("Unable to parse MQTT message/timeout")
         topic = nothing
         payload = Dict()
     end
