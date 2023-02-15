@@ -40,7 +40,6 @@ get_language
 
 ```@docs
 register_intent_action
-register_trigger_action
 get_intent_actions
 set_intent_actions
 is_false_detection
