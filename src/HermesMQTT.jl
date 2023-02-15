@@ -14,7 +14,6 @@ include("intents.jl")
 include("config.jl")
 include("dates.jl")
 include("db.jl")
-include("schedule.jl")
 include("gpio.jl")
 include("shelly.jl")
 include("weather.jl")
@@ -56,6 +55,8 @@ CONFIG_INI = Dict{Symbol, Any}()
 # save home status database location in CONFIG_INI:
 # dirname, filename and path (full path to database) 
 #
+action_channel = Channel(64)
+delete_channel = Channel(64)
 
 # List of intents to listen to:
 # (intent, developer, topic, module, skill-action)
@@ -71,10 +72,9 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        subscribe_to_intents, subscribe_to_topics, listen_to_intents_one_time,
        publish_end_session, publish_continue_session,
        publish_start_session_action, publish_start_session_notification,
-       publish_system_trigger, publish_listen_trigger, make_system_trigger,
        publish_hotword_on, publish_hotword_off,
        configure_intent,
-       register_intent_action, register_trigger_action,
+       register_intent_action, 
        get_intent_actions, set_intent_actions,
        ask_yes_no_unknown, ask_yes_or_no,
        publish_say,
@@ -98,10 +98,6 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        is_false_detection,
        db_write_payload, db_write_value, db_read_entry, db_read_value, 
        db_has_entry,
-       publish_scheduler_trigger, publish_schedule_actions, publish_schedule_action, 
-       scheduler_make_action,
-       publish_delete_all_schedules, scheduler_delete_scheduled_topic, 
-       publish_delete_schedule_by_origin,
        get_weather,
        get_language, set_language, set_config, 
        load_hermes_config, load_skill_config, load_two_configs
