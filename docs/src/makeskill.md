@@ -1,7 +1,7 @@
 # How to write a new skill
 
 Because of the fact that all HermesMQTT skills are executed within
-the same Julia process, ther is some more overhead in the code of the skills
+the same Julia process, there is some more overhead in the code of the skills
 compared to standalone Python skills.
 
 To support skill development, the framework comes with a generator 
@@ -42,7 +42,7 @@ To generate the skill, enter the `bin`-directory of
 The generator asks you to enter
 + the skill name,
 + one by one the intent names for the skill,
-+ for each intent, the nedded slot names.
++ for each intent, the needed slot names.
 
 The generated skill is functional out of the box. When the
 HermesMQTT-framework is restarted, it will load the new skill.
@@ -50,7 +50,8 @@ Because the intents are already defined in *Rhasspy*,
 they can be tested.
 
 Of course, the actual implementation of the skill is missing, but
-if called by the voice command, the new skill will tell you
+if called by the voice command, the new skill will prove that it is
+alive by telling  you
 it's name and names and values for all recognised slots.
 
 
@@ -60,7 +61,7 @@ The actual implementation fo the skill can be added by modifying the
 action-functions for each intent.
 These functions are located in the file
 `Your_Skill/Skill/skill-actions.jl` and have the signatures
-`<intentname>-action(topic, payload)`.
+`<intentname>_action(topic, payload)`.
 
 It is easy to change the dummy-implementation into whatever is needed.
 
@@ -92,9 +93,9 @@ skill:
 
 Optionally, more fine-grained software engineering is possible by
 - separating the user-interaction from the API of controlled devices 
-(the latter might go to `api.jl`).
-and by using different intents, depending on the language
-defined in `config.ini`.
+  (the latter might go to `api.jl`).
+- and by using different intents, depending on the language
+  defined in `config.ini`.
 
 
 ## Example with low-level API
@@ -246,15 +247,6 @@ Returning `false` will disable the *continue without hotword* function; i.e.
 a hotword is necessary before the next command can be uttered.
 This is necessary for the default-case, because probably a different
 app will execute this non-recognised command.
-
-In order to ensure that the framework accepts on-off-commands for the new
-device, it must be added to the list of handled devices in the `config.ini`
-of the framework. The Amazon Fire Stick is already defined as device-type
-in the slot `device` of the intent.
-
-```
-on_off_devices=floor_light,light,amazon_fire
-```
 
 
 ### The skill-action for all other commands
