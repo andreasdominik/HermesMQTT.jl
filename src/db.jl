@@ -262,7 +262,7 @@ end
 
 
 
-function get_get_db_name()
+function get_db_name()
 
     return get_config(:database_path)
 end
