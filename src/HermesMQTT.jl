@@ -33,12 +33,20 @@ CURRENT = Dict(
     :app_name => "HermesMQTT framework")
 
 
-# constnats and
-# set default language and texts to en
+# constants and
+# default language and texts to en
 #
+const MODULE_NAME = @__MODULE__
+const MODULE_DIR = @__DIR__
+const APP_DIR = dirname(MODULE_DIR)
+const SKILLS_DIR = dirname(APP_DIR)
+const APP_NAME = basename(APP_DIR)
+
+const MQTT_TIMEOUT = 5    # cancel mqtt_subscribe after 5 seconds
 const SUSI_ON_OFF_INTENT = "Susi:on_off"
 const SUSI_YES_NO_INTENT = "Susi:yes_no"
 const DEFAULT_LANG = "en"
+
 LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
 FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language 
@@ -59,9 +67,9 @@ action_channel = Channel(64)
 delete_channel = Channel(64)
 
 # List of intents to listen to:
-# (intent, developer, topic, module, skill-action)
+# (intent, topic, module, skill-action)
 #
-SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, AbstractString,
+SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, 
                              Module, Function}[]
 
 

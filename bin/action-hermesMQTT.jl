@@ -40,9 +40,9 @@ load_hermes_config(HERMES_MQTT_DIR)     # load config.ini of HermesMQTT
 configure_intent(HermesMQTT.SUSI_YES_NO_INTENT, false)
 
 # list of intents and related actions:
-# (name of intent, name of developer, module, function to be executed)
+# (name of intent, topic, module, function to be executed)
 #
-INTENT_ACTIONS = Tuple{AbstractString, AbstractString, AbstractString,
+INTENT_ACTIONS = Tuple{AbstractString, AbstractString, 
                        Module, Function}[]
 
 
@@ -64,7 +64,12 @@ for loader in loaders
     include(loader)
 end
 
+# set global config back to default:
+#
+set_appname("HermesMQTT")
+
+println("Found: $INTENT_ACTIONS")
 # start listening to MQTT with main callback
 #
-const topics = [i[3] for i in INTENT_ACTIONS]
+const topics = [i[2] for i in INTENT_ACTIONS]
 subscribe_to_topics(topics, HermesMQTT.main_callback)

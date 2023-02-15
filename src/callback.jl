@@ -27,53 +27,26 @@ function main_callback(topic, payload)
     # find the intents that match the current
     # message:
     matchedTopics = filter(Main.INTENT_ACTIONS) do i
-                        i[3] == topic
+                        i[2] == topic
                     end
 
     for t in matchedTopics
 
-        topic = t[3]
-        fun = t[5]   # action function
-        skill = t[4]   # module
+                       # intent
+        topic = t[2]   # topic
+        skill = t[3]   # module
+        fun =   t[4]   # action function
 
         if occursin(r"hermes/intent/", topic)
             print_log("Hermes intent $topic recognised; execute $fun in $skill.")
         end
         skill.callback_run(fun, topic, payload)
+
+        set_module(MODULE_NAME)
+        set_appdir(APP_DIR)
+        set_appname(APP_NAME)
     end
 
     #println("*********** mainCallback() ended! ****************")
 end
 
-
-
-# This function is executed to run a
-# skill action in the module.
-#
-function callback_run(fun, topic, payload)
-
-    set_topic(topic)
-
-    if occursin(r"^hermes/intent/", topic)
-        set_siteID(payload[:siteId])
-        set_sessionID(payload[:sessionId])
-        set_intent(payload)
-
-        if is_false_detection(payload)
-            publish_end_session("")
-            return false
-        end
-    end
-
-    result = fun(topic, payload)
-
-    # fix, if the action does not return true or false:
-    #
-    if !(result isa Bool)
-        result = false
-    end
-
-    if CONTINUE_WO_HOTWORD && result
-        publish_start_session_action("")
-    end
-end

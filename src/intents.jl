@@ -1,5 +1,5 @@
 """
-    register_intent_action(intent, developer, inModule, action)
+    register_intent_action(intent, inModule, action)
     register_intent_action(intent, action)
 
 Add an intent to the list of intents to subscribe to.
@@ -24,18 +24,17 @@ The variants registerIntent... create topics with prefix
 - inModule: current module (can be accessed with `@__MODULE__`)
 - action: the function to be linked with the intent
 """
-function register_intent_action(intent, developer, inModule, action)
+function register_intent_action(intent, inModule, action)
 
     global SKILL_INTENT_ACTIONS
     topic = "hermes/intent/$intent"
-    push!(SKILL_INTENT_ACTIONS, (intent, developer, topic, inModule, action))
+    push!(SKILL_INTENT_ACTIONS, (intent, topic, inModule, action))
 end
 
 
 function register_intent_action(intent, action)
 
-    register_intent_action(intent, get_developer_name(), 
-                get_module(), action)
+    register_intent_action(intent, get_module(), action)
 end
 
 
@@ -54,8 +53,7 @@ function register_on_off_action(action)
 
     lang = get_language()
     intent = HERMES_ON_OFF_INTENT
-    register_intent_action(intent, get_developer_name(), 
-                get_module(), action)
+    register_intent_action(intent, get_module(), action)
 end
 
 
