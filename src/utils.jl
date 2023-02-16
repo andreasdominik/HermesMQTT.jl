@@ -508,9 +508,6 @@ is used as description and to make the parameter names unique.
 """
 function is_false_detection(payload)
 
-    print_log("in false detect!")
-    println(FALSE_DETECTION)
-
     INCLUDE = "must_include"
     CHAIN = "must_chain"
     SPAN = "must_span"
@@ -518,12 +515,14 @@ function is_false_detection(payload)
     command = strip(payload[:input])
     intent = get_intent(payload)
     lang = get_language()
+    println("$lang - $intent")
 
     # make list of all config.ini keys which hold lists
     # of must-words:
     #
 
     rules = get_false_detection_rules(lang, intent)
+    print_log("$lang - $intent")
     print_log("Config false detection lines: $rules")
 
     if length(rules) == 0

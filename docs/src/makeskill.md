@@ -305,8 +305,8 @@ const DEVICE_NAME = "amazon_fire"
 
 ...
 
-register_intent_action("HermesMQTT:OnOff<EN/DE>", powerOnOff)
-register_intent_action("MyFire", commands)
+register_on_off_action(power_on_off)
+register_intent_action("MyFire", action_commands)
 ```
 
 Once the functuions are registered together with the intents,

@@ -1,5 +1,8 @@
 # ChangeLog of HermesMQTT package
 
+### ToDo
++ sentences and false detection stored in common?
+
 ### wip
 + schedule moved to separate skill
 + triggers removed

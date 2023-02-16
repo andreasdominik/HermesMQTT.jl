@@ -24,7 +24,7 @@ Additional utilities are provided to
 - let the assistant ask a question and get "yes" or "no" back as boolean value,
 - let the assistant continue a conversation without the need to utter the,
   hotword again,
-- execute actions of other skills by submitting system triggers.
+- execute actions of other skills by submitting intents.
 
 
 ## Reduce false activations of intents by using the same intent for on/off
@@ -122,14 +122,6 @@ The skill `DoNotListen` with the intents `Susi:DoNotListen` and
 
 The intents themself use strict doublechecking (see section above) to
 make sure, that only very specific commands are recognised.
-
-In addition, the skill can subscripe to MQTT topics containing triggers.
-Triggers can be
-published by the API-functions `publish_listen_trigger(:stop)`
-and `publish_listenTrigger(:start)` by other apps.
-This way it is possible to programically disable intents as part of an
-intent that starts to make *background noise* (like `watchTVshow`) and
-enable them again later.
 
 
 
@@ -310,7 +302,7 @@ components to communication between apps or the system or timers and apps.
 
 By publishing intents from program code, it is possible to
 
-* execute actions in other skills (by publishing the respective trigger)
+* execute actions in other skills (by publishing the respective intents)
 * execute action at a specified a time with help of the
   `Susi:Schdeule` skill.
 

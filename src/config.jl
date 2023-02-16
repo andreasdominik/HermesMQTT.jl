@@ -341,7 +341,11 @@ end
 
 function get_false_detection_rules(lang, intent)
 
-    return FALSE_DETECTION[(lang, intent)]
+    if haskey(FALSE_DETECTION, (lang, intent))
+        return FALSE_DETECTION[(lang, intent)]
+    else
+        return []
+    end
 end
 
 function get_false_detection_rules()
@@ -447,7 +451,7 @@ function read_language_sentences(app_dir)
     file_name = joinpath(app_dir, "config.ini")
 
     config_lines = []
-    lang = DEFAULT_LANG
+    lang = get_language()
     
     try
         config_lines = readlines(file_name)
