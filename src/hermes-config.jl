@@ -287,25 +287,6 @@ end
 
 
 """
-    set_config(key, value)
-
-Set a value to the global HermesMQTT config (read from the 
-`config.ini` located in the HermesMQTT-subdirectory
-and the current skill `config.ini`).
-
-### Arguments:
-+ `key`: Dictionary key (will be casted to Symbol)
-+ `value`: value to be stored.
-"""
-function set_hermes_config(key,value)
-    global CONFIG_INI
-    CONFIG_INI[Symbol(key)] = value
-end
-
-
-
-
-"""
     set_language(lang)
 
 Set the language in the Module HermesMQTT

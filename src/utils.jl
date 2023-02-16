@@ -397,7 +397,7 @@ function print_debug(s)
     if isnothing(s)
         s = "log-message is nothing"
     end
-    if !match_config(:debug, "none")
+    if !match_config(:debug, "none", skill=HERMES_MQTT)
         print_log("<<< DEBUG >>> $s")
     end
 end

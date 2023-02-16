@@ -218,8 +218,8 @@ Write the status db to a file.
 """
 function db_write(db)
 
-    if !ispath( get_config(:database_dir))
-        mkpath( get_config(:database_dir))
+    if !ispath( get_config(:database_dir), skill=HERMES_MQTT)
+        mkpath( get_config(:database_dir, skill=HERMES_MQTT))
     end
 
     fname = get_db_name()
@@ -264,5 +264,5 @@ end
 
 function get_db_name()
 
-    return get_config(:database_path)
+    return get_config(:database_path, skill=HERMES_MQTT)
 end

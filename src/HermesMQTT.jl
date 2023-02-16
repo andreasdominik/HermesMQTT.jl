@@ -20,6 +20,8 @@ include("weather.jl")
 include("languages.jl")
 include("callback.jl")
 
+const HERMES_MQTT = "HermesMQTT"
+
 # keep track of current actions:
 # 
 CURRENT = Dict(
@@ -59,7 +61,8 @@ FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language
 # init config. Read of config.ini moved to starter script, because
 # the Package is located anywhere...:
 #
-CONFIG_INI = Dict{Symbol, Any}()
+TODO: config mit (skill, name) als key!
+CONFIG_INI = Dict{Tuple{Symbol, Symbol}, Any}()
 
 
 # save home status database location in CONFIG_INI:

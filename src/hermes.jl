@@ -125,10 +125,6 @@ function ask_yes_no_unknown(question...)
                             moreTopics = topicsListen)
     configure_intent(intentListen, false)
 
-    # if !isnothing(get_config(:notifications)) && get_config(:notifications) == "on"
-    #     publish_MQTT(TOPIC_NOTIFICATION_ON, Dict(:siteId => get_siteID()))
-    # end
-
     if is_in_slot(slotName, "yes", payload)
         return :yes
     elseif is_in_slot(slotName, "no", payload)

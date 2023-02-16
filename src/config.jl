@@ -35,10 +35,10 @@ Load config setting for a skill.
 + `app_dir`: path to the config.ini
                `.../Skills/Skill`
 """
-function load_skill_config(app_dir)
+function load_skill_config(app_dir; skill=get_appname())
 
     global CONFIG_INI
-    config_ini = read_config(app_dir)
+    config_ini = read_config(app_dir, Symbol(skill))
     merge!(CONFIG_INI, config_ini)
 end
     
@@ -55,30 +55,32 @@ Load config setting for the `HermesMQTT` framework.
 function load_hermes_config(hermes_dir)
 
     skills_dir = dirname(hermes_dir)  # set base dir one higher
+    config_ini = read_config(hermes_dir; skill=HERMES_MQTT)
 
-    config_ini = read_config(hermes_dir)
     global CONFIG_INI
     merge!(CONFIG_INI, config_ini)
     # todo appenD!
 
     # fix some potential issues:
     #
-    if isnothing(get_config(:language))
-        set_config(:language, DEFAULT_LANG)
+    if isnothing(get_config(:language, skill=HERMES_MQTT))
+        set_config(:language, DEFAULT_LANG, skill=HERMES_MQTT)
     end
 
     set_config(:database_dir, 
-               joinpath(skills_dir, "application_data", "database"))
+               joinpath(skills_dir, "application_data", "database"),
+               skill=HERMES_MQTT)
     if isnothing(get_config(:database_file))
-        set_config(:database_file, "home.json")
+        set_config(:database_file, "home.json", skill=HERMES_MQTT)
     end
     set_config(:database_path, 
-        joinpath(get_config(:database_dir), get_config(:database_file)))
+        joinpath(get_config(:database_dir), get_config(:database_file)),
+        skill=HERMES_MQTT)  
 end
 
 
 """
-    read_config(app_dir)
+    read_config(app_dir, skill=get_appname())
 
 Read the lines of the App's config file and
 return a Dict with config values.
@@ -86,9 +88,10 @@ return a Dict with config values.
 ## Arguments:
 * `appDir`: Directory of the currently running app.
 """
-function read_config(app_dir)
+function read_config(app_dir, skill=get_appname())
 
-    config_ini = Dict{Symbol, Any}()
+    skill = Symbol(skill)
+    config_ini = Dict{Tuple{Symbol,Symbol}, Any}()
     file_name = joinpath(app_dir, "config.ini")
 
     config_lines = []
@@ -119,9 +122,9 @@ function read_config(app_dir)
                         vals = [strip(rv) for rv in rawVals if length(strip(rv)) > 0]
 
                         if length(vals) == 1
-                            config_ini[name] = vals[1]
+                            config_ini[(skill,name)] = vals[1]
                         elseif length(vals) > 1
-                            config_ini[name] = vals
+                            config_ini[(skill,name)] = vals
                         end
                     end
                 end
@@ -189,7 +192,7 @@ end
 
 
 """
-    match_config(name::Symbol, val::String)
+    match_config(name::Symbol, val::String; skill=get_appname())
 
 Return true if the parameter with name `name` of the config.ini has the value
 val or one element of the list as the value val.
@@ -198,21 +201,19 @@ val or one element of the list as the value val.
 * `name`: name of the config parameter as Symbol or String
 * `val`: desired value
 """
-function match_config(name, val::String)
+function match_config(name, val::String; skill=get_appname())
 
-    name = add_prefix(name)
-    # if !(name isa Symbol)
-    #     name = Symbol(name)
-    # end
+    skill = Symbol(skill)
+    name = Symbol(add_prefix(name))
 
     global CONFIG_INI
 
-    if haskey(CONFIG_INI, name)
-        if CONFIG_INI[name] isa AbstractString
-            return val == CONFIG_INI[name]
+    if haskey(CONFIG_INI, (skill,name))
+        if CONFIG_INI[(skill, name)] isa AbstractString
+            return val == CONFIG_INI[(skill,name)]
 
-        elseif CONFIG_INI[name] isa AbstractArray
-            return val in CONFIG_INI[name]
+        elseif CONFIG_INI[(skill,name)] isa AbstractArray
+            return val in CONFIG_INI[(skill,name)]
         end
     end
     return false
@@ -243,21 +244,23 @@ If name is an `AbstractString`, the prefix is added if a
 prefix is defined (as `<prefix>:<name>`).
 'get_config()' returns ''nothing if something is wrong.
 """
-function get_config(name; multiple=false, one_prefix=nothing)
+function get_config(name; multiple=false, one_prefix=nothing; 
+                    skill=get_appname())
 
     global CONFIG_INI
 
+    skill = Symbol(skill)
     if isnothing(one_prefix)
         name = add_prefix(name)
     else
         name = Symbol("$one_prefix:$name")
     end
 
-    if haskey(CONFIG_INI, name)
-        if multiple && (CONFIG_INI[name] isa AbstractString)
-            return [CONFIG_INI[name]]
+    if haskey(CONFIG_INI, (skill,name))
+        if multiple && (CONFIG_INI[(skill,name)] isa AbstractString)
+            return [CONFIG_INI[(skill,name)]
         else
-            return CONFIG_INI[name]
+            return CONFIG_INI[(skill,name)]
         end
     else
         return nothing
@@ -265,7 +268,8 @@ function get_config(name; multiple=false, one_prefix=nothing)
 end
 
 """
-    get_config_path(name, default_path; one_prefix = nothing)
+    get_config_path(name, default_path; one_prefix = nothing,
+                    skill=get_appname())
 
 Read the config value 'name' as filename and generate a full
 (absolute) path:
@@ -278,9 +282,10 @@ Read the config value 'name' as filename and generate a full
 * `one_prefix`: if defined, the prefix will be used only for this
               single call instead of the stored prefix.
 """
-function get_config_path(name, default_path; one_prefix = nothing)
+function get_config_path(name, default_path; one_prefix = nothing,
+                         skill=get_appname())
 
-    fName = get_config(name, one_prefix = one_prefix)
+    fName = get_config(name, one_prefix=one_prefix, skill=skill)
     if isnothing(fName) || (length(fName) < 1)
         return nothing
     elseif fName[1] == '/'
@@ -310,15 +315,12 @@ Return true if a parameter with name exists.
 ## Arguments:
 * `name`: name of the config parameter as Symbol or String
 """
-function is_in_config(name)
+function is_in_config(name; skill=get_appname())
 
     name = add_prefix(name)
-    # if !(name isa Symbol)
-    #     name = Symbol(name)
-    # end
+    skill = Symbol(skill)
 
-    global CONFIG_INI
-    return haskey(CONFIG_INI, name)
+    return haskey(CONFIG_INI, (skill,name))
 end
 
 
@@ -354,10 +356,11 @@ function get_false_detection_rules()
 end
 
 """
-    is_config_valid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error_config])
+    is_config_valid(name; regex = r".", elem = 1, errorMsg = ERRORS_EN[:error_config],, 
+                    skill=get_appname())
 
 Return `true`, if the parameter `name` have been read correctly from the
-`config.ini` file and `false` otherwise. By default "correct" means: it is aString with
+`config.ini` file and `false` otherwise. By default "correct" means: it is a String with
 length > 0. For a moore specific test, a regex can be provided.
 
 ## Arguments:
@@ -366,19 +369,21 @@ length > 0. For a moore specific test, a regex can be provided.
 * elem: element to be tested, if the parameter returns an array
 * errorMsg: alternative error message.
 """
-function is_config_valid(name; regex = r".", elem = 1, error_msg = ERRORS_EN[:error_config])
+function is_config_valid(name; regex = r".", elem = 1, 
+                        error_msg = ERRORS_EN[:error_config],
+                        skill=get_appname())
 
     name = add_prefix(name)
-    if !is_in_config(name)
+    if !is_in_config(name, skill=skill)
         return false
     end
 
-    if isnothing(get_config(name))
+    if isnothing(get_config(name,skill=skill))
         param = ""
-    elseif get_config(name) isa AbstractString
-        param = get_config(name)
-    elseif get_config(name) isa AbstractArray
-        param = get_config(name)[elem]
+    elseif get_config(name, skill=skill) isa AbstractString
+        param = get_config(name, skill=skill)
+    elseif get_config(name, skill=skill) isa AbstractArray
+        param = get_config(name, skill=skill)[elem]
     else
         param = ""
     end
@@ -424,7 +429,7 @@ end
 
 
 """
-    reset_configPrefix()
+    reset_config_prefix()
 
 Remove the prefix for all following calls to a parameter from
 `config.ini`.
@@ -439,10 +444,12 @@ end
 
 Set a config key-value pair to the global CONFIG_INI.
 """
-function set_config(name, value)
+function set_config(name, value; skill=get_appname())
 
     global CONFIG_INI
-    CONFIG_INI[Symbol(name)] = value
+    skill = Symbol(skill)
+    name = Symboyl(name)
+    CONFIG_INI[(skill,name)] = value
 end
 
 
