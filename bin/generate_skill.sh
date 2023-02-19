@@ -122,11 +122,13 @@ cd $SKILL_DIR
 
 # modify config.ini
 #
+echo "generate config.ini"
 mv config.ini $TMPF
 cat $TMPF | sed "s/TEMPLATE_SKILL/$SKILL/g" > config.ini
 
 # modify loader:
 #
+echo "generate loader"
 cat 'loader-TEMPLATE_SKILL.jl' | sed "s/TEMPLATE_SKILL/$SKILL/g" > loader-$SKILL.jl
 rm loader-TEMPLATE_SKILL.jl
 
@@ -134,11 +136,13 @@ cd Skill
 
 # modify Modul:
 #
+echo "generate skill module"
 cat 'TEMPLATE_SKILL.jl' | sed "s/TEMPLATE_SKILL/$SKILL/g" > ${SKILL}.jl
 rm TEMPLATE_SKILL.jl
 
 # add slotnames to config.jl:
 #
+echo "generate action function skeleton"
 SLOT_DEFS=""
 for SLOT in $ALL_SLOTS ; do
     SLOT_DEFS="${SLOT_DEFS}const SLOT_${SLOT^^} = \"${SLOT}\"\n"
@@ -188,3 +192,6 @@ rm skill-actions-2-intent.jl
 rm skill-actions-3-slots.jl
 rm skill-actions-4-foot.jl
 
+echo ""
+echo "New HermesMQTT skill $SKILL generated in $SKILL_DIR."
+exit 0
