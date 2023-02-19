@@ -17,7 +17,7 @@ const APP_NAME = basename(APP_DIR)
 using HermesMQTT
 Susi = HermesMQTT
 
-Susi.load_two_configs(APP_DIR)
+Susi.load_two_configs(APP_DIR, skill=APP_NAME)
 
 Susi.set_module(MODULE_NAME)
 Susi.set_appdir(APP_DIR)

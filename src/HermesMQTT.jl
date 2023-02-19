@@ -45,6 +45,9 @@ const APP_DIR = dirname(MODULE_DIR)
 const SKILLS_DIR = dirname(APP_DIR)
 const APP_NAME = basename(APP_DIR)
 
+println("MODULE_NAME: ", MODULE_NAME)
+println("MODULE_DIR: ", MODULE_DIR)
+
 const MQTT_TIMEOUT = 5    # cancel mqtt_subscribe after 5 seconds
 const SUSI_ON_OFF_INTENT = "Susi:on_off"
 const SUSI_YES_NO_INTENT = "Susi:yes_no"
@@ -61,7 +64,6 @@ FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language
 # init config. Read of config.ini moved to starter script, because
 # the Package is located anywhere...:
 #
-TODO: config mit (skill, name) als key!
 CONFIG_INI = Dict{Tuple{Symbol, Symbol}, Any}()
 
 

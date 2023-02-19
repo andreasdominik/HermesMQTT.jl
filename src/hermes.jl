@@ -170,7 +170,7 @@ function publish_end_session(text...; sessionID=get_sessionID())
     payload[:text] = text
     publish_MQTT("hermes/dialogueManager/endSession", payload)
 
-    # wait for end session (ot MQTT_TIMEOUT):
+    # wait for end session (or MQTT_TIMEOUT):
     #
     #(topic, payload) = read_one_MQTT("hermes/dialogueManager/sessionEnded")
     read_one_MQTT("hermes/dialogueManager/sessionEnded")

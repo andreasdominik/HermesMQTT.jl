@@ -3,7 +3,7 @@
 
 
 """
-    load_two_configs(app_dir, hermes_dir=nothing)
+    load_two_configs(app_dir, hermes_dir=nothing, skill=get_appname())
 
 Load config setting for a skill in dir `app_dir` **and**
 config of the HermesMQTT` framework from 
@@ -13,7 +13,7 @@ config of the HermesMQTT` framework from
 + `hermes_dir`: path to the HermesMQTT-config.ini
                `.../Skills/HermesMQTT.jl`
 """
-function load_two_configs(app_dir, hermes_dir=nothing)
+function load_two_configs(app_dir, hermes_dir=nothing; skill=get_appname())
 
     # construct HermesMQTT dir if not given:
     #
@@ -22,7 +22,7 @@ function load_two_configs(app_dir, hermes_dir=nothing)
     end
 
     load_hermes_config(hermes_dir)
-    load_skill_config(app_dir)
+    load_skill_config(app_dir, skill=skill)
 end
 
 
@@ -243,12 +243,21 @@ Dirctionary of parameter values.
 If name is an `AbstractString`, the prefix is added if a
 prefix is defined (as `<prefix>:<name>`).
 'get_config()' returns ''nothing if something is wrong.
+
+`config.ini` entries are stored with the corresponding skill name 
+(appname), The function calles get_config_skill() with the current
+appname used as skill.
+If a config-entry for a specific skill is wanted, the function 
+`get_config_skill(...; skill="skillname")` can be used.
 """
-function get_config(name; multiple=false, one_prefix=nothing; 
+function get_config(name; multiple=false, one_prefix=nothing, 
                     skill=get_appname())
+# function get_config_skill(name; multiple=false, one_prefix=nothing, 
+#                    skill="HermesMQTT")
 
     global CONFIG_INI
 
+    println("get_config: $name, $multiple, $one_prefix, $skill")
     skill = Symbol(skill)
     if isnothing(one_prefix)
         name = add_prefix(name)
@@ -258,7 +267,7 @@ function get_config(name; multiple=false, one_prefix=nothing;
 
     if haskey(CONFIG_INI, (skill,name))
         if multiple && (CONFIG_INI[(skill,name)] isa AbstractString)
-            return [CONFIG_INI[(skill,name)]
+            return [CONFIG_INI[(skill,name)]]
         else
             return CONFIG_INI[(skill,name)]
         end
@@ -453,7 +462,7 @@ function set_config(name, value; skill=get_appname())
 end
 
 
-function read_language_sentences(app_dir)
+function read_language_sentences(app_dir; skill=get_appname())  
 
     file_name = joinpath(app_dir, "config.ini")
 

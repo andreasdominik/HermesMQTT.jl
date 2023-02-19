@@ -17,9 +17,8 @@ end
 #
 function callback_run(fun, topic, payload)
 
-    Susi.set_topic(topic)
+        Susi.set_topic(topic)
 
-    if occursin(r"^hermes/intent/", topic)
         Susi.set_siteID(payload[:siteId])
         Susi.set_sessionID(payload[:sessionId])
         Susi.set_intent(payload)
@@ -28,10 +27,9 @@ function callback_run(fun, topic, payload)
         Susi.set_appdir(APP_DIR)
         Susi.set_appname(APP_NAME)
 
-        if Susi.is_false_detection(payload)
-            Susi.publish_end_session("")
-            return false
-        end
+    if Susi.is_false_detection(payload)
+        Susi.publish_end_session("")
+        return false
     end
 
     result = fun(topic, payload)
