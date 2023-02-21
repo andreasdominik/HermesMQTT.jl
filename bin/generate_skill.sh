@@ -103,8 +103,8 @@ SKILL_DIR="$SKILLS_DIR/$SKILL"
 #
 echo " "
 echo "Generate skill skeleton for skill $SKILL with"
-echo "    Intents: $INTENTS"
-echo "    Slots:   $ALL_SLOTS"
+echo "    Intents: ${INTENTS[@]}"
+echo "    Slots:   ${ALL_SLOTS[@]}"
 
 echo "The skill will be generated in the directory "
 echo "$SKILL_DIR"
