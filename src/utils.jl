@@ -252,9 +252,7 @@ function add_text(lang::AbstractString, key, text)
     if text isa AbstractString
         text = [text]
     end
-    if !(key isa String)
-        key = strip(key, ':') |> Symbol
-    end
+    key = strip("$key", ':') |> Symbol
 
     if !haskey(LANGUAGE_TEXTS, (lang, key))
         LANGUAGE_TEXTS[(lang, key)] = text
@@ -277,11 +275,12 @@ replace each string by the sentence of the language.
 """
 function lang_text(texts...; lang=get_language())
 
-    texts = [lang_text_one(t) for t in texts]
+    texts = [lang_text_one(t, lang) for t in texts]
     return join(texts, " ")
 end
+
 """
-    lang_text_one(key::Symbol, lang=get_language())
+    lang_text_one(key::Symbol, lang)
     lang_text_one(key::Nothing)
     lang_text_one(key::AbstractString)
 
@@ -294,22 +293,24 @@ if this also does not exist, an error message is returned.
 The variants make sure that nothing or the key itself are returned
 if key is nothing or an AbstractString, respectively.
 """
-function lang_text_one(key::Symbol, lang=get_language())
+function lang_text_one(key::Symbol, lang)
 
     if haskey(LANGUAGE_TEXTS, (lang, key))
-        return StatsBase.sample(LANGUAGE_TEXTS[(lang, key)])
+        t = LANGUAGE_TEXTS[(lang, key)]
+        ts = StatsBase.sample(t)
+        return ts
     else
         return "I don't know what to say! I got $key"
     end
 end
 
-function lang_text_one(key::Nothing)
+function lang_text_one(key::Nothing, lang)
 
     return ""
 end
 
 
-function lang_text_one(key)
+function lang_text_one(key::Any, lang)
 
     return "$key"
 end

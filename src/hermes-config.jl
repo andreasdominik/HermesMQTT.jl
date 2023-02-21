@@ -102,7 +102,7 @@ function try_parse_JSON_file(fname; quiet = false)
     catch
         msg = ERRORS_EN[:error_json]
         if ! quiet
-            publishSay(msg)
+            publish_say(msg)
         end
         print_debug("try_parse_JSON_file: $msg : $fname")
         json = Dict()
