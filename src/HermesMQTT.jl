@@ -47,10 +47,6 @@ const APP_NAME = basename(APP_DIR)
 const PACKAGE_BASE_DIR = dirname(dirname(pathof(@__MODULE__)))
 const SKILLS_DIR = get_skills_dir()
 
-println("MODULE_NAME: ", MODULE_NAME)
-println("MODULE_DIR: ", MODULE_DIR)
-println("PACKAGE_BASE_DIR: ", PACKAGE_BASE_DIR) 
-
 const MQTT_TIMEOUT = 5    # cancel mqtt_subscribe after 5 seconds
 const SUSI_ON_OFF_INTENT = "Susi:on_off"
 const SUSI_YES_NO_INTENT = "Susi:yes_no"

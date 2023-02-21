@@ -81,7 +81,7 @@ function listen_to_intents_one_time(intents; moreTopics = nothing)
     end
     topics = add_strings_to_array!(topics, moreTopics)
 
-    topic, payload = read_one_MQTT(topics)
+    topic, payload = read_one_MQTT(topics, 10)
     intent = topic
     if intent isa AbstractString
         intent = replace(topic, "hermes/intent/"=>"")
@@ -104,30 +104,33 @@ and return :yes if "Yes" is answered or :no if "No" or
 """
 function ask_yes_no_unknown(question...)
 
-    lang = get_language()
-    intentListen = SUSI_YES_NO_INTENT
-    topicsListen = ["hermes/nlu/intentNotRecognized", "hermes/error/nlu",
+    intent_listen = SUSI_YES_NO_INTENT
+    topics_listen = ["hermes/nlu/intentNotRecognized", "hermes/error/nlu",
                     "hermes/dialogueManager/intentNotRecognized"]
-    slotName = "yes_or_no"
+    slot_name = "yes_or_no"
 
-    listen = true
-    intent = ""
     payload = Dict()
 
-    configure_intent(intentListen, true)
+    configure_intent(intent_listen, true)
     # publish_MQTT(TOPIC_NOTIFICATION_OFF, Dict(:siteId => get_siteID()))
 
-    publish_continue_session(question..., sessionID=get_sessionID(),
-              intentFilter=intentListen,
+    # start listening in background:
+    #
+    bck_mqtt = @spawn listen_to_intents_one_time(intent_listen,
+                            moreTopics = topics_listen)
+
+        publish_continue_session(question..., sessionID=get_sessionID(),
+              intentFilter=intent_listen,
               customData=nothing, sendIntentNotRecognized=true)
 
-    topic, payload = listen_to_intents_one_time(intentListen,
-                            moreTopics = topicsListen)
-    configure_intent(intentListen, false)
+    topic, payload = fetch(bck_mqtt)
+    #print_log("yes/no: topic: $topic, payload: $payload")
 
-    if is_in_slot(slotName, "yes", payload)
+    configure_intent(intent_listen, false)
+
+    if is_in_slot(slot_name, "yes", payload)
         return :yes
-    elseif is_in_slot(slotName, "no", payload)
+    elseif is_in_slot(slot_name, "no", payload)
         return :no
     else
         return :unknown

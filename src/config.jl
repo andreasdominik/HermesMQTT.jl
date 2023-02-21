@@ -23,9 +23,6 @@ function load_two_configs(app_dir, hermes_dir=nothing; skill=get_appname())
 
     load_hermes_config(hermes_dir)
     load_skill_config(app_dir, skill=skill)
-
-    println("CONFIG_INI:")
-    println(CONFIG_INI)
 end
 
 
@@ -261,7 +258,7 @@ function get_config(name; multiple=false, one_prefix=nothing,
 
     global CONFIG_INI
 
-    println("get_config: $name, $multiple, $one_prefix, $skill")
+    #println("get_config: $name, $multiple, $one_prefix, $skill")
     skill = Symbol(skill)
     if isnothing(one_prefix)
         name = add_prefix(name)

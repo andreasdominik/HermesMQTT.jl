@@ -60,7 +60,7 @@ print_log("[HermesMQTT loader]: $(length(loaders)) skills found to load.")
 
 for loader in loaders
     global INTENT_ACTIONS
-    println("[HermesMQTT skill loader]: loading Julia app $loader.")
+    print_log("[HermesMQTT skill loader]: loading app $loader.")
     include(loader)
 end
 
@@ -68,7 +68,6 @@ end
 #
 set_appname("HermesMQTT")
 
-println("Found: $INTENT_ACTIONS")
 # start listening to MQTT with main callback
 #
 const topics = [i[2] for i in INTENT_ACTIONS]

@@ -29,7 +29,7 @@ end
 
 
 """
-    extract_slot_value(slot_name, payload=get_intent(); multiple = false)
+    extract_slot_value(slot_name, payload; multiple = false)
 
 Return the value of a slot.
 
@@ -44,7 +44,7 @@ returned. If false, only the 1st one as String.
 By default, the payload is retrieved from the stored intent value in 
 the local HermesMQTT instance of the skill.
 """
-function extract_slot_value(slot_name, payload=get_intent(); 
+function extract_slot_value(slot_name, payload; 
                             multiple=false, default=nothing)
 
     slot_name = "$slot_name"
@@ -70,7 +70,7 @@ function extract_slot_value(slot_name, payload=get_intent();
 end
 
 """
-    extract_multislot_values(slot_names,payload=get_intent())
+    extract_multislot_values(slot_names,payload)
 
 Return a list with all values of a list of slots.
 
@@ -79,8 +79,7 @@ Nothing is returned, if
 * no slots with name in slotNames in payload,
 * no values in slot slotNames.
 """
-function extract_multislot_values(slot_names::AbstractArray, 
-                                  payload=get_intent())
+function extract_multislot_values(slot_names::AbstractArray, payload)
 
     values = []
 
@@ -101,28 +100,30 @@ end
 
 
 """
-    is_in_slot(slot_name, value, payload=get_intent()
+    is_in_slot(slot_name, value, payload)
 
 Return `true`, if the value is present in the slot slotName
 of the JSON payload (i.e. one of the slot values must match).
 Return `false` if something is wrong (value not in payload or no
 slots slotName.)
 """
-function is_in_slot(slot_name, value, payload=get_intent())
+function is_in_slot(slot_name, value, payload)
 
+print_log("is_in_slot($slot_name, $value, $payload)")
     values = extract_slot_value(slot_name, payload; multiple = true)
+print_log("is_in_slot: values = $values")
     return !isnothing(values) && (value in values)
 end
 
 
 """
-    read_time_from_slot(slot_name, payload=get_intent() )
+    read_time_from_slot(slot_name, payload)
 
 Return a DateTime from a slot with a time string of the format
 `"2019-09-03 18:00:00 +00:00"` or `nothing` if it is
 not possible to parse the slot.
 """
-function read_time_from_slot(slot_name, payload=get_intent())
+function read_time_from_slot(slot_name, payload)
 
     dateTime = nothing
 
@@ -516,7 +517,6 @@ function is_false_detection(payload)
     command = strip(payload[:input])
     intent = get_intent(payload)
     lang = get_language()
-    println("$lang - $intent")
 
     # make list of all config.ini keys which hold lists
     # of must-words:
