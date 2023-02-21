@@ -9,5 +9,5 @@
 # 2 arguments:
 # + MQTT-Topic as String
 # + MQTT-Payload (The JSON part) as a nested dictionary, with all keys
-#   as Symbols (Julia-style)
+#   as Symbols (Julia-style).
 #

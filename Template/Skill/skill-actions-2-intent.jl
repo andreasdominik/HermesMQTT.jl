@@ -3,9 +3,10 @@
 
 
 """
-function TEMPLATE_SKILL_action(topic, payload)
+    TEMPLATE_SKILL_action(topic, payload)
 
-    Generated dummy action for the intent TEMPLATE_NAME_RAW.
+Generated dummy action for the intent TEMPLATE_NAME_RAW.
+This function will be executed when the intent is recognized.
 """
 function TEMPLATE_SKILL_action(topic, payload)
 
