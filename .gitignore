@@ -23,5 +23,6 @@ docs/site/
 # environment.
 Manifest.toml
 config.ini
+global.ini
 bin/s.json
 bin/scheduler.trigger
