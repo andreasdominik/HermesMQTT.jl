@@ -6,10 +6,9 @@
 SKILL="$1"
 PACKAGE="$2"
 DIR="$3"
-TMPF="$(mktemp generate_skill.XXXXXX)"
   
-SKILL="$(echo $SKILL | sed 's/[\.-\+:;,\!\?<>\*]/_/g')"
-
+SKILL="$(echo $SKILL | sed 's/[^a-zA-Z0-9]/_/g')" # remove special chars
+DIR="$(echo $DIR | sed 's/\/$//')" # remove trailing slash
 
 echo "HermesMQTT (aka Susi) new skill generator
 
@@ -57,6 +56,7 @@ while [[ $DONE -eq 0 ]] ; do
     INTENTS="$INTENTS $INTENT"
   fi
 done
+INTENTS=$(echo "$INTENTS" | sed 's/[^a-zA-Z0-9 ]/_/g') # remove special chars
 
 # enter slot names for each intent:
 #
@@ -66,8 +66,8 @@ for INTENT in $INTENTS ; do
   echo "(leave empty if no slots are required)"
   read -p "Slots for intent: \"$INTENT\": " SLOTS
 
-  INTENT_CLEAN="$(echo $INTENT | sed 's/[\.-\+:;,\!\?<>]/_/g')"
-  SLOTS_NAME="${INTENT_CLEAN}_SLOTS"
+  SLOTS=$(echo "$SLOTS" | sed 's/[^a-zA-Z0-9 ]/_/g') # remove special chars
+  SLOTS_NAME="${INTENT}_SLOTS"
   declare "$SLOTS_NAME"="$SLOTS"
   # echo ${!SLOTS_NAME}
 done
@@ -76,8 +76,7 @@ done
 #
 ALL_SLOTS=""
 for INTENT in $INTENTS ; do
-  INTENT_CLEAN="$(echo $INTENT | sed 's/[\.-\+:;,\!\?]/_/g')"
-  SLOTS_NAME="${INTENT_CLEAN}_SLOTS"
+  SLOTS_NAME="${INTENT}_SLOTS"
   ALL_SLOTS="$ALL_SLOTS ${!SLOTS_NAME}"
 done
 
@@ -127,6 +126,7 @@ cp $TEMPLATE_DIR/LOADER-TEMPLATE_SKILL.jl $SKILL_DIR/loader-TEMPLATE_SKILL.jl
 cp $TEMPLATE_DIR/README.md $SKILL_DIR/
 
 cd $SKILL_DIR
+TMPF="$(mktemp generate_skill.XXXXXX)"
 
 # modify config.ini
 #
@@ -161,8 +161,7 @@ cat $TMPF | sed "s/SLOT_NAMES/$SLOT_DEFS/" > config.jl
 # register intents in config.jl:
 #
 for INTENT in $INTENTS ; do
-    INTENT_CLEAN="$(echo $INTENT | sed 's/[\.-\+:;,\!\?]/_/g')"
-    REGISTER="Susi.register_intent_action(\"$INTENT\", ${INTENT_CLEAN}_action)"
+    REGISTER="Susi.register_intent_action(\"$INTENT\", ${INTENT}_action)"
     echo $REGISTER >> config.jl
 done
 
@@ -173,12 +172,11 @@ cat skill-actions-1-head.jl > skill-actions.jl
 
 for INTENT in $INTENTS ; do
 
-    INTENT_CLEAN="$(echo $INTENT | sed 's/[\.-\+:;,\!\?]/_/g')"
     cat skill-actions-2-intent.jl | \
-        sed "s/TEMPLATE_SKILL/$INTENT_CLEAN/g" | \
+        sed "s/TEMPLATE_SKILL/$INTENT/g" | \
         sed "s/TEMPLATE_NAME_RAW/$INTENT/g"  >> skill-actions.jl
 
-    SLOTS_NAME="${INTENT_CLEAN}_SLOTS"
+    SLOTS_NAME="${INTENT}_SLOTS"
 
     if [[ -z ${!SLOTS_NAME} ]] ; then
         echo "publish_say(:no_slot)" >> skill-actions.jl
