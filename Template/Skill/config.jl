@@ -7,7 +7,7 @@ const CONTINUE_WO_HOTWORD = false
 
 # set a local const LANG:
 #
-const LANG = Susi.get_language()
+const LANG = get_language()
 
 
 

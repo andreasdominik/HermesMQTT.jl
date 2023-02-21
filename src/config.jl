@@ -23,6 +23,9 @@ function load_two_configs(app_dir, hermes_dir=nothing; skill=get_appname())
 
     load_hermes_config(hermes_dir)
     load_skill_config(app_dir, skill=skill)
+
+    println("CONFIG_INI:")
+    println(CONFIG_INI)
 end
 
 
@@ -38,7 +41,7 @@ Load config setting for a skill.
 function load_skill_config(app_dir; skill=get_appname())
 
     global CONFIG_INI
-    config_ini = read_config(app_dir, Symbol(skill))
+    config_ini = read_config(app_dir, skill=skill)
     merge!(CONFIG_INI, config_ini)
 end
     
@@ -80,7 +83,7 @@ end
 
 
 """
-    read_config(app_dir, skill=get_appname())
+    read_config(app_dir; skill=get_appname())
 
 Read the lines of the App's config file and
 return a Dict with config values.
@@ -88,7 +91,7 @@ return a Dict with config values.
 ## Arguments:
 * `appDir`: Directory of the currently running app.
 """
-function read_config(app_dir, skill=get_appname())
+function read_config(app_dir; skill=get_appname())
 
     skill = Symbol(skill)
     config_ini = Dict{Tuple{Symbol,Symbol}, Any}()
@@ -222,7 +225,8 @@ end
 
 
 """
-    get_config(name; multiple = false, one_prefix = nothing)
+    get_config(name; multiple = false, one_prefix = nothing,
+                    skill=get_appname())
 
 Return the parameter value of the config.ini with
 name or nothing if the param does not exist.
@@ -317,7 +321,7 @@ end
 
 
 """
-    is_in_config(name)
+    is_in_config(name; skill=get_appname())
 
 Return true if a parameter with name exists.
 
@@ -326,10 +330,8 @@ Return true if a parameter with name exists.
 """
 function is_in_config(name; skill=get_appname())
 
-    name = add_prefix(name)
-    skill = Symbol(skill)
-
-    return haskey(CONFIG_INI, (skill,name))
+    conf = get_config(name, skill=skill)
+    return !isnothing(conf)
 end
 
 
@@ -449,7 +451,7 @@ function reset_config_prefix()
 end
 
 """
-    set_config(name, value)
+    set_config(name, value; skill=get_appname())
 
 Set a config key-value pair to the global CONFIG_INI.
 """
@@ -457,7 +459,7 @@ function set_config(name, value; skill=get_appname())
 
     global CONFIG_INI
     skill = Symbol(skill)
-    name = Symboyl(name)
+    name = Symbol(name)
     CONFIG_INI[(skill,name)] = value
 end
 

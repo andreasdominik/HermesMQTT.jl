@@ -331,7 +331,7 @@ dictionary of phrases for the selected language by calling
 * `sessionId`: optional ID of the session if there is one
 * `id`: optional request identifier. If provided, it will be passed back
       in the response on hermes/tts/sayFinished.
-* `wait`: wait until the massege is spoken (i.i. wait for the
+* `wait`: wait until the massege is spoken (i.e. wait for the
         MQTT-topic)
 """
 function publish_say(text...; sessionID=get_sessionID(),
@@ -400,10 +400,10 @@ function is_on_off_matched(payload, device_name; siteID=get_siteID())
         end
     end
 
-    printDebug("siteID: $siteID")
-    printDebug("payload[:siteId]: $(payload[:siteId])")
-    printDebug("commandSiteID: $commandSiteID")
-    printDebug("device_name: $device_name")
+    print_debug("siteID: $siteID")
+    print_debug("payload[:siteId]: $(payload[:siteId])")
+    print_debug("commandSiteID: $commandSiteID")
+    print_debug("device_name: $device_name")
 
     if commandSiteID == siteID
 

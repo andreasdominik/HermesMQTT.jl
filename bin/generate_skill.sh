@@ -3,7 +3,13 @@
 # Script to generate a new skill for the HermesMQTT.jl framework
 # from the template.
 #
-TMPF=tempfile
+SKILL="$1"
+PACKAGE="$2"
+DIR="$3"
+TMPF="$(mktemp generate_skill.XXXXXX)"
+  
+SKILL="$(echo $SKILL | sed 's/[\.-\+:;,\!\?<>\*]/_/g')"
+
 
 echo "HermesMQTT (aka Susi) new skill generator
 
@@ -19,7 +25,7 @@ Skill name
 
 Intent names
   will end up as name of a julia function; although
-  special charaters will be replaced by '_' they sould be used
+  special charaters will be replaced by '_' they should be used
   with care. Names like 'Susi:RunIrrigation' are OK.
 
 Slot names 
@@ -29,8 +35,8 @@ Slot names
   
   "
 
-
-read -p "Enter the name of the new skill: " SKILL
+echo "creating new skill: $SKILL"
+echo "in directory:       $DIR"
 
 # enter intent names:
 #
@@ -84,12 +90,11 @@ done
 
 # def directories:
 #
-BIN_THIS="$(realpath -- $BASH_SOURCE)"
-BIN_DIR="$(dirname -- $BIN_THIS)"
-HERMES_DIR="$(dirname -- $BIN_DIR)"
+BIN_DIR="$PACKAGE/bin"
+HERMES_DIR="$PACKAGE"
 TEMPLATE_DIR="$HERMES_DIR/Template"
-APPS_DIR="$(dirname -- $HERMES_DIR)"
-SKILL_DIR=$APPS_DIR/$SKILL
+SKILLS_DIR="$DIR"
+SKILL_DIR="$SKILLS_DIR/$SKILL"
 
 # ask:
 #
@@ -98,19 +103,22 @@ echo "Generate skill skeleton for skill $SKILL with"
 echo "    Intents: $INTENTS"
 echo "    Slots:   $ALL_SLOTS"
 
-echo "The skill will be generate in the directory $SKILL_DIR"
+echo "The skill will be generated in the directory "
+echo "$SKILL_DIR"
 
 ASK="yes"
 read -e -i $ASK -p "Continue? " ASK
 if [[ $ASK != "yes" ]] ; then
     echo "Skill generation aborted!"
-    exit 1
+    exit 0
 else
     echo "Generating skill!"
 fi
 
 # copy template files:
 #
+echo " "
+echo "copy template files"
 mkdir -p $SKILL_DIR
 cp -r $TEMPLATE_DIR/Skill $SKILL_DIR/
 cp $TEMPLATE_DIR/config.ini $SKILL_DIR/
@@ -122,13 +130,13 @@ cd $SKILL_DIR
 
 # modify config.ini
 #
-echo "generate config.ini"
+echo "... generate config.ini"
 mv config.ini $TMPF
 cat $TMPF | sed "s/TEMPLATE_SKILL/$SKILL/g" > config.ini
 
 # modify loader:
 #
-echo "generate loader"
+echo "... generate loader"
 cat 'loader-TEMPLATE_SKILL.jl' | sed "s/TEMPLATE_SKILL/$SKILL/g" > loader-$SKILL.jl
 rm loader-TEMPLATE_SKILL.jl
 
@@ -136,13 +144,13 @@ cd Skill
 
 # modify Modul:
 #
-echo "generate skill module"
+echo "... generate skill module"
 cat 'TEMPLATE_SKILL.jl' | sed "s/TEMPLATE_SKILL/$SKILL/g" > ${SKILL}.jl
 rm TEMPLATE_SKILL.jl
 
 # add slotnames to config.jl:
 #
-echo "generate action function skeleton"
+echo "... generate action function skeleton"
 SLOT_DEFS=""
 for SLOT in $ALL_SLOTS ; do
     SLOT_DEFS="${SLOT_DEFS}const SLOT_${SLOT^^} = \"${SLOT}\"\n"
@@ -191,6 +199,8 @@ rm skill-actions-1-head.jl
 rm skill-actions-2-intent.jl
 rm skill-actions-3-slots.jl
 rm skill-actions-4-foot.jl
+rm -f $TMPF
+rm -f ../$TMPF
 
 echo ""
 echo "New HermesMQTT skill $SKILL generated in $SKILL_DIR."

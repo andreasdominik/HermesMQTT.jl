@@ -136,9 +136,9 @@ function read_time_from_slot(slot_name, payload=get_intent())
 
     # fix timezone in slot:
     #
-    printDebug("Raw timeStr in readTimeFromSlot(): $timeStr")
+    print_debug("Raw timeStr in readTimeFromSlot(): $timeStr")
     timeStr = replace(timeStr, r" \+\d\d:\d\d$"=>"")
-    printDebug("Corrected timeStr in readTimeFromSlot(): $timeStr")
+    print_debug("Corrected timeStr in readTimeFromSlot(): $timeStr")
 
     try
         # dateTime = Dates.DateTime(timeStr, dateFormat)
@@ -152,7 +152,7 @@ end
 
 
 """
-    tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent = flase)
+    tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent = false)
 
 Try to run an external command and returns true if successful
 or false if not.
@@ -166,7 +166,7 @@ or false if not.
 """
 function tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent = false)
 
-    error_msg = langText(error_msg)
+    error_msg = lang_text(error_msg)
     result = true
     try
         run(cmd; wait = wait)
@@ -213,7 +213,7 @@ something went wrong.
 """
 function try_read_textfile(fname, error_msg = :error_read)
 
-    error_msg = langText(error_msg)
+    error_msg = lang_text(error_msg)
     text = ""
     try
         text = open(fname) do file
@@ -241,7 +241,7 @@ Add the text to the dictionary of text sniplets for the language
 * text: String or array of String with the text(s) to be uttered.
 
 ## Details:
-If text is an Array, all texts will be saved and the function `J4H.langText()`
+If text is an Array, all texts will be saved and the function `J4H.lang_text()`
 will return a randomly selected text from the list.
 
 If the key already exists, the new text will be added to the the

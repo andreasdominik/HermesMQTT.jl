@@ -19,6 +19,7 @@ include("shelly.jl")
 include("weather.jl")
 include("languages.jl")
 include("callback.jl")
+include("install.jl")
 
 const HERMES_MQTT = "HermesMQTT"
 
@@ -33,7 +34,7 @@ CURRENT = Dict(
     :module => Main,
     :intent => "none",
     :app_dir => "",
-    :app_name => "HermesMQTT framework")
+    :app_name => "HermesMQTT")
 
 
 # constants and
@@ -42,11 +43,13 @@ CURRENT = Dict(
 const MODULE_NAME = @__MODULE__
 const MODULE_DIR = @__DIR__
 const APP_DIR = dirname(MODULE_DIR)
-const SKILLS_DIR = dirname(APP_DIR)
 const APP_NAME = basename(APP_DIR)
+const PACKAGE_BASE_DIR = dirname(dirname(pathof(@__MODULE__)))
+const SKILLS_DIR = get_skills_dir()
 
 println("MODULE_NAME: ", MODULE_NAME)
 println("MODULE_DIR: ", MODULE_DIR)
+println("PACKAGE_BASE_DIR: ", PACKAGE_BASE_DIR) 
 
 const MQTT_TIMEOUT = 5    # cancel mqtt_subscribe after 5 seconds
 const SUSI_ON_OFF_INTENT = "Susi:on_off"
@@ -115,6 +118,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        db_has_entry,
        get_weather,
        get_language, set_language, set_config, 
-       load_hermes_config, load_skill_config, load_two_configs
+       load_hermes_config, load_skill_config, load_two_configs,
+       install, generate_skill
 
 end # module

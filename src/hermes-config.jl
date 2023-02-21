@@ -293,7 +293,7 @@ Set the language in the Module HermesMQTT
 """
 function set_language(lang)
 
-    global CONFIG_INI[:language] = lang
+    set_config(:language, lang, skill=HERMES_MQTT)
 end
 
 """
@@ -303,5 +303,5 @@ Return the language in the Module HermesMQTT
 """
 function get_language()
 
-    return CONFIG_INI[:language]
+    return get_config(:language, skill=HERMES_MQTT)
 end
