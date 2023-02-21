@@ -1,7 +1,7 @@
 # ChangeLog of HermesMQTT package
 
 ### ToDo
-+ sentences and false detection stored in common?
++ languages de-DE
 
 ### wip
 + schedule moved to separate skill

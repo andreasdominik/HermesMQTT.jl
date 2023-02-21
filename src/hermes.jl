@@ -316,7 +316,7 @@ end
 
 """
     publish_say(text...; sessionID=get_sessionID(), siteID=nothing,
-                    lang=LANG, id=nothing, wait=true)
+                    lang=nothing, id=nothing, wait=true)
 
 Let the TTS say something.
 
@@ -326,7 +326,7 @@ dictionary of phrases for the selected language by calling
 
 ## Arguments:
 * `text`: text to be said via TTS
-* `lang`: optional language code to use when saying the text.
+* `lang`: optional language code (i.e. `en-US`) to use when saying the text.
         If not specified, default language will be used
 * `sessionId`: optional ID of the session if there is one
 * `id`: optional request identifier. If provided, it will be passed back
@@ -335,13 +335,13 @@ dictionary of phrases for the selected language by calling
         MQTT-topic)
 """
 function publish_say(text...; sessionID=get_sessionID(),
-                    siteID=get_siteID(), lang=get_language(),
+                    siteID=get_siteID(), lang=nothing,
                     id=nothing, wait=true)
 
     text = lang_text(text...)
     text = replace(text, r"\n|\r"=>" ")
     payload = Dict(:text => text, :siteId => siteID)
-    payload[:lang] = lang
+    isnothing(lang) || (payload[:lang] = lang) 
     payload[:sessionId] = sessionID
     payload[:siteId] = siteID
 
