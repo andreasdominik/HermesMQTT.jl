@@ -71,24 +71,47 @@ run-time-compiled only once, with consequences:
 
 ## HermesMQTT
 
-The framework is installed, by running `HermesMQTT`.
+The framework is installed, by installing the package `HermesMQTT.jl`.
+The package is **not** registered in the official Julia package
+repository, therefore it must be installed manually:
 
-+ find a intstallation directory `/opt/HermesMQTT` may be a good choice.
-+ clone the project from github.
-+ run the loader.
+```julia
+using Pkg
+Pkg.clone("git@github.com:andreasdominik/HermesMQTT.jl.git")
+```
+
++ find a intstallation directory; 
+  something like `/opt/HermesMQTT` or `~/Rhasspy/HermesMQTT` may be 
+  good choices.
++ run the installer from a Julia REPL:
+
+```julia
+using HermesMQTT
+HermesMQTT.install()
+``` 
+This will install the package `HermesMQTT.jl` and all its dependencies.
+It will also create a directory `bin`, a file `bin/action-hermesMQTT.jl`
+and a file `config.ini` 
+in the installation directory. The file `action-hermesMQTT.jl` 
+is the loader script.
+
+Be sure to have a look into the `config.ini` file and adapt it to your
+needs (such as MQTT host, port, user, password, etc.).
+  
+The loader script can be used to start the framework. It is a
+Julia script, which can be run from the Julia REPL or from the
+command line. 
+Ideally a service may be created to start the loader script.
+  
+```sh
+$ julia action-hermesMQTT.jl
+``` 
+
 + MQTT communication is performed via `Eclipse mosquitto` client,
   therefore this must be installed, too. On a Raspberry Pi the packages
   `mosquitto` and/or `mosquitto-clients` are needed:
 
 ```sh
-sudo apt-get install mosquitto
-sudo apt-get install mosquitto-clients
-
-sudo mkdir /opt/HermesMQTT
-cd /opt/HermesMQTT
-git clone git@github.com:andreasdominik/HermesMQTT.jl.git
-cd bin 
-julia action-hermesMQTT.jl
+$ sudo apt-get install mosquitto
+$ sudo apt-get install mosquitto-clients
 ```
-
-For production it might be a good idea to run the loader as a service.

@@ -23,7 +23,7 @@ Let us assume, `HermesMQTT` is installed at `/opt/HermesMQTT/`.
 It is a good idea, to start skill development in the *Rhasspy*
 console (aka web interface) and define the intents 
 by adding slots and intents to the sentences file or (better)
-add a new file for each skill.
+add a new sentences file for each skill.
 
 This way, it is possible to train the speech-to-text engine and 
 test all wanted commands *and* to see all generated JSON payloads which
@@ -32,22 +32,25 @@ your new skill may need to read.
 
 ## Generate the skeleton a new project
 
-To generate the skill, enter the `bin`-directory of 
-`HermesMQTT` and exectute the generator:
+To generate the skill, 
+start a Julia REPL and run the skill-generator.
+The genrator will ask you for the name of the skill, the names
+of the intents and the names of the slots for each intent.
 
-```sh
-/opt/HermesMQTT/HermesMQTT/bin/generate_skill.sh
+```julia
+using HermesMQTT
+HermesMQTT.generate_skill() # or HermesMQTT.generate_skill("SkillName")
 ```
 
 The generator asks you to enter
-+ the skill name,
++ the skill name (if not given as argument),
 + one by one the intent names for the skill,
 + for each intent, the needed slot names.
 
 The generated skill is functional out of the box. When the
 HermesMQTT-framework is restarted, it will load the new skill.
 Because the intents are already defined in *Rhasspy*,
-they can be tested.
+they can be tested instantly.
 
 Of course, the actual implementation of the skill is missing, but
 if called by the voice command, the new skill will prove that it is
