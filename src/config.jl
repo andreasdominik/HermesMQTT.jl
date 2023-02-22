@@ -67,15 +67,17 @@ function load_hermes_config(hermes_dir)
         set_config(:language, DEFAULT_LANG, skill=HERMES_MQTT)
     end
 
-    set_config(:database_dir, 
-               joinpath(skills_dir, "application_data", "database"),
-               skill=HERMES_MQTT)
-    if isnothing(get_config(:database_file))
-        set_config(:database_file, "home.json", skill=HERMES_MQTT)
+    database_dir = joinpath(hermes_dir, "application_data", "database")
+    if isnothing(get_config(:database_file, skill=HERMES_MQTT))
+        database_file = "home.json"
+    else
+        database_file = get_config(:database_file, skill=HERMES_MQTT)
     end
-    set_config(:database_path, 
-        joinpath(get_config(:database_dir), get_config(:database_file)),
-        skill=HERMES_MQTT)  
+    database_path = joinpath(database_dir, database_file)
+    
+    set_config(:database_dir, database_dir, skill=HERMES_MQTT) 
+    set_config(:database_file, database_file, skill=HERMES_MQTT)
+    set_config(:database_path, database_path, skill=HERMES_MQTT)
 end
 
 

@@ -29,6 +29,7 @@ ask_yes_or_no_or_unknown
 ask_yes_or_no
 publish_say
 publish_nlu_query
+publish_intent
 ```
 
 ## Interaction with assistant Rhasspy/Susi/Snips

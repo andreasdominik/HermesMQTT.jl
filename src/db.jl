@@ -17,20 +17,19 @@
 #
 
 """
-    db_write_payload(key, payload)
+    db_write_entry(key, entry)
 
-Write a complete payload to a database entry.
-The payload is overwitten if the entry already exists,
+Write a complete entry to a database entry.
+The entry is overwitten if it already exists,
 or created otherwise.
 
 ## Arguments
 - `key`: unique key of the database entry of
          type `AbstractString` or `Symbol`
-- `payload`: payload of the entry with key `key`
+- `entry`: entry with key `key`
          to be written.
-- `value`: value to be stored in the field.
 """
-function db_write_payload(key, payload)
+function db_write_entry(key, entry)
 
     if ! (key isa Symbol)
         key = Symbol(key)
@@ -41,18 +40,7 @@ function db_write_payload(key, payload)
     end
 
     db = db_read()
-
-    if haskey(db, key)
-        entry = db[key]
-    else
-        entry = Dict()
-        db[key] = entry
-    end
-
-    entry[:time] = Dates.now()
-    entry[:writer] = get_appname()
-    entry[:payload] = payload
-
+    db[key] = entry
     db_write(db)
     db_unlock()
 end
@@ -60,7 +48,7 @@ end
 """
     db_write_value(key, field, value)
 
-Write a field=>value pair to the payload of a database entry.
+Write a field=>value pair to the entry of a database entry.
 The field is overwitten if the entry already exists,
 or created elsewise.
 The database is written to the JSON-file after the write.
@@ -68,9 +56,10 @@ The database is written to the JSON-file after the write.
 ## Arguments
 - `key`: unique key of the database entry of
          type `AbstractString` or `Symbol`
-- `field`: database field of the payload of the entry with key `key`
+- `field`: database field of the entry with key `key`
          to be written (`AbstractString` or `Symbol`).
-- `value`: value to be stored in the field.
+- `value`: value to be stored in the field, typically
+         a Dict() will be stored as JSON.
 """
 function db_write_value(key, field, value)
 
@@ -86,21 +75,12 @@ function db_write_value(key, field, value)
     end
 
     db = db_read()
-    if haskey(db, key)
-        entry = db[key]
-    else
-        entry = Dict()
+    if !haskey(db, key)
+        db[key] = Dict()
     end
 
-    if !haskey(entry, :payload)
-        entry[:payload] = Dict()
-    end
+    db[key][field] = value
 
-    entry[:payload][field] = value
-    entry[:time] = Dates.now()
-    entry[:writer] = get_appname()
-
-    db[key] = entry
     db_write(db)
     db_unlock()
 end
@@ -218,9 +198,9 @@ Write the status db to a file.
 """
 function db_write(db)
 
-    if !ispath( get_config(:database_dir), skill=HERMES_MQTT)
-        mkpath( get_config(:database_dir, skill=HERMES_MQTT))
-    end
+    db_name = get_db_name()
+    db_path = dirname(db_name)
+    isdir(db_path) || mkpath(db_path, mode=0o755)
 
     fname = get_db_name()
     open(fname, "w") do f
@@ -233,22 +213,25 @@ end
 
 function db_lock()
 
-    lockName = get_db_name() * ".lock"
+    db_name = get_db_name()
+    db_path = dirname(db_name)
+    isdir(db_path) || mkpath(db_path, mode=0o755)
+    lock_name = "$db_name.lock"
 
     # wait until unlocked:
     #
-    waitSecs = 10
-    while isfile(lockName) && waitSecs > 0
-        waitSecs -= 1
+    wait_secs = 5
+    while isfile(lock_name) && wait_secs > 0
+        wait_secs -= 1
         sleep(1)
     end
 
-    if waitSecs == 0
-        print_log("ERROR: unable to lock home database file: $(dbName())")
+    if wait_secs == 0
+        print_log("ERROR: unable to lock home database file: $db_name")
         return false
     else
-        open(lockName, "w") do f
-            print_debug(f, "database is locked")
+        open(lock_name, "w") do f
+            print(f, "database is locked")
         end
         return true
     end
@@ -256,8 +239,9 @@ end
 
 function db_unlock()
 
-    lockName = get_db_name() * ".lock"
-    rm(lockName, force = true)
+    lock_name = "$(get_db_name()).lock"
+    println("unlocking database $lock_name")
+    rm(lock_name, force = true)
 end
 
 

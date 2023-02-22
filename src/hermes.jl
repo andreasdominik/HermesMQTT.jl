@@ -528,3 +528,56 @@ function publish_hotword_on_off(onoff, siteID)
 
     publish_MQTT(topic, payload)
 end
+
+
+"""
+publish_nlu_query(input; siteID="default", sessionID=nothing,
+                                intentFilter=nothing)
+
+Publish a NLU request for the command `input`.
+"""
+function publish_nlu_query(input; siteID=nothing, sessionID=nothing,
+                                intentFilter=nothing)
+
+
+    payload = Dict(:input => input)
+    if isnothing(sessionID) 
+        sessionID = mk_session_id()
+    end
+    payload[:sessionId] = sessionID
+
+    if !isnothing(siteID) 
+        payload[:siteId] = siteID
+    end
+    if !isnothing(intentFilter)
+        payload[:intentFilter] = intentFilter
+    end
+
+    publish_MQTT("hermes/nlu/query", payload)
+end
+
+
+"""
+    publish_intent(payload, topic=nothing)
+
+Publish an intent with the payload as topic.
+"""
+function publish_intent(payload, topic=nothing)
+
+    intent = payload[:intent][:intentName]
+    if isnothing(topic)
+        topic = "hermes/intent/$intent"
+    end
+
+    if !haskey(payload, :sessionId) 
+        payload[:sessionId] = mk_session_id()
+    end
+
+    publish_MQTT(topic, payload)
+end
+
+
+function mk_session_id()
+    c = append!(collect('a':'z'), collect('0':'9'))
+    return "$(randstring(c,8))-$(randstring(c,4))-$(randstring(c,4))-$(randstring(c,4))-$(randstring(c,12))"
+end
