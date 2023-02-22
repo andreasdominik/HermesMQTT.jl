@@ -93,7 +93,91 @@ function install_HermesMQTT(skills_dir=nothing)
     run(`$script $PACKAGE_BASE_DIR $hermes_dir`)
 
     set_skills_dir(skills_dir)
+
+    # install the default skills:
+    #
+    install_skill("SusiScheduler")
 end
+
+
+
+# install a skill from github.
+# skill_url is the url of the github repository.
+#
+function install_skill(skill_url)
+
+    skills_dir = get_skills_dir()
+    script = joinpath(skills_dir, "HermesMQTT.jl", "bin", "install_skill.sh")
+
+    # if ado's skill, no url is needed:
+    #
+    if !endswith(skill_url, ".git")
+        skill_url = "git@github.com:andreasdominik/$skill_url.git"
+    end
+
+    m = match(r"git.*/(?<skill_name>.*).git", skill_url)
+    skill_name = m[:skill_name]
+    
+    skill_dir = joinpath(skills_dir, skill_name)
+
+    # names of ini file versions:
+    #
+    conf_ini = joinpath(skill_dir, "config.ini")
+    conf_old = joinpath(skill_dir, "config.ini.old")
+    conf_new = joinpath(skill_dir, "config.ini.new")
+
+    if isdir(skill_dir)
+        println("Skill $skill_name is already installed.")
+        println("Do you want to update the skill? (y/n)")
+        s = readline()
+        if !isnothing(s) && !isempty(s) && startswith(s, "y")
+
+            cd(skill_dir)
+
+            # rescue old config.ini:
+            #
+            if isfile(conf_ini)
+                println("config.ini will be preserved and the new ini-file")
+                println("saved as config.ini.new")
+                mv(conf_ini, conf_old)
+                run(`git fetch`)
+                run(`git reset --hard \@\{u\}`)
+
+                # back-copy config.ini:
+                #
+                if isfile(conf_ini)
+                    mv(conf_ini, conf_new)
+                end
+                if isfile(conf_old)
+                    mv(conf_old, conf_ini)
+                end
+            end
+        else
+            println("Installation aborted.")
+            return
+        end
+    else
+
+        println("Installing skill: $skill_url")
+        println("at: $skills_dir\n")
+
+        run(`$script $skills_dir $skill_url`)
+    
+        # remove .git directory:
+        #
+        #git_dir = joinpath(skill_dir, ".git")
+        #rm(git_dir, recursive=true, force=true)
+
+    end
+end
+
+
+
+function update_skill(skill_url)
+    
+    install_skill(skill_url)
+end
+
 
 
 """
