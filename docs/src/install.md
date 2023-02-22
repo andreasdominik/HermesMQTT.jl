@@ -80,7 +80,7 @@ using Pkg
 Pkg.clone("git@github.com:andreasdominik/HermesMQTT.jl.git")
 ```
 
-+ find a intstallation directory; 
++ find a installation directory; 
   something like `/opt/HermesMQTT` or `~/Rhasspy/HermesMQTT` may be 
   good choices.
 + run the installer from a Julia REPL:
@@ -114,4 +114,29 @@ $ julia action-hermesMQTT.jl
 ```sh
 $ sudo apt-get install mosquitto
 $ sudo apt-get install mosquitto-clients
+```
+
+## Skills
+
+The loader will search for skills in the directory parallel to the
+HermesMQTT installation. Each Julia-script with a name like
+`loader-<skillname>.jl` will be loaded and executed.
+
+If a skill is hosted at Github, it can be installed by the
+`installSkill(<github-url>)` function. It will clone the repository into the
+correct `skills` directory or perform an update, if the installation
+already exists.
+
+Default-skills (i.e. developed by the author of HermesMQTT) are all
+in Github repos like `git@github.com:andreasdominik/SusiScheduler.git`
+and can be installed with the skill-name:
+```julia
+
+
+```julia
+install_skill("SusiScheduler")
+ 
+# or with complete URL:
+#
+install_skill("git@github.com:andreasdominik/SusiScheduler.git")
 ```
