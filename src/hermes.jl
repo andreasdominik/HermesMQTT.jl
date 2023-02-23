@@ -351,7 +351,7 @@ function publish_say(text...; sessionID=get_sessionID(),
     # make unique ID:
     #
     if isnothing(id)
-        id = randstring(25)
+        id = "$(uuid4())"
     end
     payload[:id] = id
 
@@ -579,5 +579,5 @@ end
 
 function mk_session_id()
     c = append!(collect('a':'z'), collect('0':'9'))
-    return "$(randstring(c,8))-$(randstring(c,4))-$(randstring(c,4))-$(randstring(c,4))-$(randstring(c,12))"
+    return "$(uuid4())"
 end

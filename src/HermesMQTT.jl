@@ -5,6 +5,7 @@ using StatsBase
 using Dates
 using Distributed
 using Random
+using UUIDs
 
 include("utils.jl")
 include("hermes-config.jl")
