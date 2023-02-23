@@ -21,11 +21,7 @@ SLOT_NAMES
 
 #
 # link between actions and intents:
-# intent is linked to action{Funktion}
-# the action is only matched, if
-#   * intentname matches and
-#   * if the siteId matches, if site is  defined in config.ini
-#     (such as: "switch TV in room abc").
+# intent is linked to action::Funktion
 #
 # Susi.register_intent_action("TEMPLATE_SKILL", TEMPLATE_INTENT_action)
 # Susi.register_on_off_action(TEMPLATE_INTENT_action)
