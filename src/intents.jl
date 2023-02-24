@@ -232,3 +232,25 @@ function publish_listen_trigger(mode)
         publish_system_trigger("HermesDoNotListen", trigger)
     end
 end
+
+
+
+"""
+    publish_schedule_command(command, exec_time, origin; 
+                    siteID=get_site_id(), sessionID=mk_session_id())
+
+Publish a command to be executed at a specific time.
+"""
+function publish_schedule_command(command, exec_time, origin; 
+                    siteID=get_site_id(), sessionID=mk_session_id())
+    
+    payload = Dict(:intent => "Scheduler:AddAction",
+                   :action => "add action",
+                   :sessionId => sessionID,
+                   :siteId => siteID,
+                   :type => "command", 
+                   :exec_time => exec_time,
+                   :origin => origin,
+                   :customData => command)
+    publish_intent(payload, "hermes/intent/Scheduler:AddAction")
+end

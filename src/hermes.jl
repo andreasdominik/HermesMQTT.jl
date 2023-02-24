@@ -578,6 +578,5 @@ end
 
 
 function mk_session_id()
-    c = append!(collect('a':'z'), collect('0':'9'))
     return "$(uuid4())"
 end

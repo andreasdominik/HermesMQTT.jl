@@ -227,7 +227,10 @@ db_read_value
 The framework provides a scheduler which allows to execute
 intents or commands at a specified time in the future.
 
-*TBD*
+```@docs
+publish_schedule_command
+```
+
 
 
 ## Utility functions
