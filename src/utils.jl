@@ -29,44 +29,30 @@ end
 
 
 """
-    extract_slot_value(slot_name, payload; multiple = false)
+    extract_slot_value(slot_name, payload)
 
 Return the value of a slot.
 
 Nothing is returned, if
 * no slots in payload,
 * no slots with name slot_name in payload,
-* no values in slot slot_name.
-
-If multiple == `true`, a list of all slot values will be
-returned. If false, only the 1st one as String.
-
-By default, the payload is retrieved from the stored intent value in 
-the local HermesMQTT instance of the skill.
+* no value in slot slot_name.
 """
-function extract_slot_value(slot_name, payload; 
-                            multiple=false, default=nothing)
+function extract_slot_value(slot_name, payload; default=nothing)
 
     slot_name = "$slot_name"
-    slot_value = default
+    value = default
     if !haskey(payload, :slots)
-        return slot_value
+        return default
     end
 
-    values = []
     for slot in payload[:slots]
-        if slot[:entity] == slot_name
-            push!(values, slot[:value][:value])
+        if slot[:slotName] == slot_name
+            value = slot[:value][:value]
         end
     end
-
-    if length(values) < 1
-        return slot_value
-    elseif !multiple
-        return values[1]
-    else
-        return values
-    end
+println("extract_slot_value: name = $slot_name, value = $value, $(typeof(value))")
+    return value
 end
 
 """

@@ -1,36 +1,3 @@
-# Make locales for German and French:
-#
-french_months = ["janvier", "février", "mars", "avril", "mai", "juin",
-                 "juillet", "août", "septembre", "octobre",
-                 "novembre", "décembre"];
-
-french_monts_abbrev = ["janv","févr","mars","avril","mai","juin",
-                       "juil","août","sept","oct","nov","déc"];
-
-french_days = ["lundi","mardi","mercredi","jeudi","vendredi",
-               "samedi","dimanche"];
-
-french_days_abbrev = ["lu","ma","me","je","ve", "sa","di"];
-
-Dates.LOCALES["french"] = Dates.DateLocale(french_months, french_monts_abbrev,
-                                           french_days, french_days_abbrev);
-
-
-german_months = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-                 "Juli", "August", "September", "Oktober",
-                 "November", "Dezember"];
-
-german_monts_abbrev = ["Jan","Feb","Mär","Apr","Mai","Jun",
-                       "Jul","Aug","Sept","Okt","Nov","Dez"];
-
-german_days = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag",
-               "Samstag","Sonntag"];
-
-german_days_abbrev = ["Mo","Di","Mi","Do","Fr", "Sa","So"];
-
-Dates.LOCALES["german"] = Dates.DateLocale(german_months, german_monts_abbrev,
-                                           german_days, german_days_abbrev);
-
 
 
 
@@ -72,14 +39,14 @@ function readable_date_time(datetime::AbstractString; lang=get_language(),
 
     # make date String:
     #
-    return readable_date_time(d, lang=get_language(),
+    return readable_date_time(d, lang=lang,
                             wholeDay=wholeDay, onlyDay=onlyDay, onlyTime=onlyTime)
 end
 
 
 function readable_date(datetime::Date; lang=get_language())
 
-    return readable_date_time(Dates.DateTime(datetime), lang=get_language(),
+    return readable_date_time(Dates.DateTime(datetime), lang=lang,
                             wholeDay=false, onlyDay=true)
 end
 
@@ -98,6 +65,39 @@ function readable_date_time(datetime::DateTime; lang=get_language(),
     else
         locale = "english"
     end
+
+    # Make locales for German and French:
+    #
+    french_months = ["janvier", "février", "mars", "avril", "mai", "juin",
+                     "juillet", "août", "septembre", "octobre",
+                     "novembre", "décembre"];
+
+    french_monts_abbrev = ["janv","févr","mars","avril","mai","juin",
+                           "juil","août","sept","oct","nov","déc"];
+
+    french_days = ["lundi","mardi","mercredi","jeudi","vendredi",
+                   "samedi","dimanche"];
+
+    french_days_abbrev = ["lu","ma","me","je","ve", "sa","di"];
+
+    Dates.LOCALES["french"] = Dates.DateLocale(french_months, french_monts_abbrev,
+                                               french_days, french_days_abbrev);
+
+
+    german_months = ["Januar", "Februar", "März", "April", "Mai", "Juni",
+                     "Juli", "August", "September", "Oktober",
+                     "November", "Dezember"];
+
+    german_monts_abbrev = ["Jan","Feb","Mär","Apr","Mai","Jun",
+                           "Jul","Aug","Sept","Okt","Nov","Dez"];
+
+    german_days = ["Montag","Dienstag","Mittwoch","Donnerstag","Freitag",
+                   "Samstag","Sonntag"];
+
+    german_days_abbrev = ["Mo","Di","Mi","Do","Fr", "Sa","So"];
+
+    Dates.LOCALES["german"] = Dates.DateLocale(german_months, german_monts_abbrev,
+                                               german_days, german_days_abbrev);
 
     if onlyTime
         textDate = ""

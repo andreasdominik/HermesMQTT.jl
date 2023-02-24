@@ -23,6 +23,7 @@ include("callback.jl")
 include("install.jl")
 
 const HERMES_MQTT = "HermesMQTT"
+PREFIX = nothing    # prefix for config.ini lines
 
 # keep track of current actions:
 # 

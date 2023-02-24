@@ -255,12 +255,9 @@ If a config-entry for a specific skill is wanted, the function
 """
 function get_config(name; multiple=false, one_prefix=nothing, 
                     skill=get_appname())
-# function get_config_skill(name; multiple=false, one_prefix=nothing, 
-#                    skill="HermesMQTT")
 
     global CONFIG_INI
 
-    #println("get_config: $name, $multiple, $one_prefix, $skill")
     skill = Symbol(skill)
     if isnothing(one_prefix)
         name = add_prefix(name)
