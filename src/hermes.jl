@@ -564,8 +564,8 @@ Publish an intent with the payload as topic.
 """
 function publish_intent(payload, topic=nothing)
 
-    intent = payload[:intent][:intentName]
     if isnothing(topic)
+        intent = payload[:intent][:intentName]
         topic = "hermes/intent/$intent"
     end
 

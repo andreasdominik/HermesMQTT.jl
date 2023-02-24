@@ -242,7 +242,7 @@ end
 Publish a command to be executed at a specific time.
 """
 function publish_schedule_command(command, exec_time, origin; 
-                    siteID=get_site_id(), sessionID=mk_session_id())
+                    siteID=get_siteID(), sessionID=mk_sessionID())
     
     payload = Dict(:intent => "Scheduler:AddAction",
                    :action => "add action",
