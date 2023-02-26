@@ -18,7 +18,8 @@ mkdir -p $DIR
 mkdir -p $DIR/bin
 
 cp -r $PACKAGE_DIR/bin $DIR
-cp $PACKAGE_DIR/config.ini $DIR
+cp $PACKAGE_DIR/config.ini.template $DIR/config.ini.template
+cp $PACKAGE_DIR/config.ini.template $DIR/config.ini
 
 
 echo "done."
