@@ -1,5 +1,5 @@
 """
-    register_intent_action(intent, inModule, action)
+    register_intent_action_module(intent, in_module, action)
     register_intent_action(intent, action)
 
 Add an intent to the list of intents to subscribe to.
@@ -21,25 +21,31 @@ The variants registerIntent... create topics with prefix
 ## Arguments:
 - intent: Name of the intend (without developer name)
 - developer: Name of skill developer
-- inModule: current module (can be accessed with `@__MODULE__`)
+- in_module: current module (can be accessed with `@__MODULE__`)
 - action: the function to be linked with the intent
 """
-function register_intent_action(intent, inModule, action)
+function register_intent_action_module(intent, in_module, action)
 
     global SKILL_INTENT_ACTIONS
     topic = "hermes/intent/$intent"
-    push!(SKILL_INTENT_ACTIONS, (intent, topic, inModule, action))
+    push!(SKILL_INTENT_ACTIONS, (intent, topic, in_module, action))
 end
 
 
-function register_intent_action(intent, action)
+# this version is defined in each skill locally:
 
-    register_intent_action(intent, get_module(), action)
-end
+# function register_intent_action(intent, action)
+# 
+#     global SKILL_INTENT_ACTIONS
+#     topic = "hermes/intent/$intent"
+#     push!(SKILL_INTENT_ACTIONS, (intent, topic, MODULE_NAME, action))
+#     register_intent_action(intent, get_module(), action)
+# end
 
 
 
 """
+    register_on_off_action_module(action, module_name)
     register_on_off_action(action)
 
 Register the action function with the generic HermesMQTT on/off-intent.
@@ -49,12 +55,18 @@ running app.
 Make sure, that the intent for your language exists and create one 
 if necessary.
 """
-function register_on_off_action(action)
+function register_on_off_action_module(action, module_name)
 
     lang = get_language()
     intent = "$HERMES_ON_OFF_INTENT<$lang>"
-    register_intent_action(intent, get_module(), action)
+
+    global SKILL_INTENT_ACTIONS
+    topic = "hermes/intent/$intent"
+    push!(SKILL_INTENT_ACTIONS, (intent, topic, module_name, action))
 end
+#
+# register_intent_action is defined in each skill locally
+#
 
 
 
@@ -88,39 +100,42 @@ end
 
 
 
-"""
-    get_intent_actions()
+# """
+#     get_intent_actions()
+# 
+# Return the list of all intent-function mappings for this app.
+# The function is exported to deliver the mappings
+# to the Main context.
+# """
+# function get_intent_actions()
+# 
+#     global SKILL_INTENT_ACTIONS
+#     return SKILL_INTENT_ACTIONS
+# end
+# 
+# must be defined locally in each skill
 
-Return the list of all intent-function mappings for this app.
-The function is exported to deliver the mappings
-to the Main context.
-"""
-function get_intent_actions()
-
-    global SKILL_INTENT_ACTIONS
-    return SKILL_INTENT_ACTIONS
-end
 
 
-
-
-"""
-    setIntentActions(intent_actions)
-
-Overwrite the complete list of all intent-function mappings for this app.
-The function is exported to get the mappings
-from the Main context.
-
-## Arguments:
-* intent_actions: Array of intent-action mappings as Tuple of
-                 (intent::AbstractString, developer::AbstractString,
-                  inModule::Module, action::Function)
-"""
-function set_intent_actions(intent_actions)
-
-    global SKILL_INTENT_ACTIONS
-    SKILL_INTENT_ACTIONS = intent_actions
-end
+# unused!
+#
+# """
+#     setIntentActions(intent_actions)
+# 
+# Overwrite the complete list of all intent-function mappings for this app.
+# The function is exported to get the mappings
+# from the Main context.
+# 
+# ## Arguments:
+# * intent_actions: Array of intent-action mappings as Tuple of
+#                  (intent::AbstractString, developer::AbstractString,
+#                   inModule::Module, action::Function)
+# """
+# function set_intent_actions(intent_actions)
+# 
+#     global SKILL_INTENT_ACTIONS
+#     SKILL_INTENT_ACTIONS = intent_actions
+# end
 
 
 """

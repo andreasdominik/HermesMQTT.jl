@@ -165,7 +165,7 @@ cat $TMPF | sed "s/SLOT_NAMES/$SLOT_DEFS/" > config.jl
 # register intents in config.jl:
 #
 for i in ${!INTENTS[@]} ; do
-    REGISTER="Susi.register_intent_action(\"${INTENTS[$i]}\", ${INTENTS_CLEAN[$i]}_action)"
+    REGISTER="register_intent_action(\"${INTENTS[$i]}\", ${INTENTS_CLEAN[$i]}_action)"
     echo $REGISTER >> config.jl
 done
 

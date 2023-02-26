@@ -256,7 +256,9 @@ The framework uses this in the background.
 """
 function set_intent(payload)
 
-    if haskey(payload, :intent) && haskey(payload[:intent], :intentName)
+    if haskey(payload, :intent) && 
+            payload[:intent] isa Dict && 
+            haskey(payload[:intent], :intentName)
         global CURRENT[:intent] = payload[:intent][:intentName]
     else
         global CURRENT[:intent] = "unkown_intent"

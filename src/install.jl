@@ -139,17 +139,17 @@ function install_skill(skill_url)
             if isfile(conf_ini)
                 println("config.ini will be preserved and the new ini-file")
                 println("saved as config.ini.new")
-                mv(conf_ini, conf_old)
+                mv(conf_ini, conf_old, force=true)
                 run(`git fetch`)
                 run(`git reset --hard \@\{u\}`)
 
                 # back-copy config.ini:
                 #
                 if isfile(conf_ini)
-                    mv(conf_ini, conf_new)
+                    mv(conf_ini, conf_new, force=true)
                 end
                 if isfile(conf_old)
-                    mv(conf_old, conf_ini)
+                    mv(conf_old, conf_ini, force=true)
                 end
             end
         else

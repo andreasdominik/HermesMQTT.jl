@@ -74,11 +74,6 @@ CONFIG_INI = Dict{Tuple{Symbol, Symbol}, Any}()
 action_channel = Channel(64)
 delete_channel = Channel(64)
 
-# List of intents to listen to:
-# (intent, topic, module, skill-action)
-#
-SKILL_INTENT_ACTIONS = Tuple{AbstractString, AbstractString, 
-                             Module, Function}[]
 
 
 
@@ -91,8 +86,8 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        publish_hotword_on, publish_hotword_off,
        publish_nlu_query, publish_intent, publish_schedule_command,
        configure_intent,
-       register_intent_action, 
-       get_intent_actions, set_intent_actions,
+       register_intent_action_module, 
+       # get_intent_actions, set_intent_actions,
        ask_yes_no_unknown, ask_yes_or_no,
        publish_say,
        add_text, lang_text,

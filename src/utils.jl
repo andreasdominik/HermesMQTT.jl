@@ -500,6 +500,12 @@ function is_false_detection(payload)
     CHAIN = "must_chain"
     SPAN = "must_span"
 
+    # run only on recognised intents from rhasspy:
+    #
+    if !haskey(payload, :input)
+        return false
+    end
+
     command = strip(payload[:input])
     intent = get_intent(payload)
     lang = get_language()

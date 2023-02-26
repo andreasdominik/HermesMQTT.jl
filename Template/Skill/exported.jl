@@ -6,10 +6,24 @@
 # deliver actions and intents to the Main context:
 #
 function get_intent_actions()
-    return Susi.get_intent_actions()
+
+   return SKILL_INTENT_ACTIONS
 end
 
+function register_intent_action(intent, action)
 
+    global SKILL_INTENT_ACTIONS
+    topic = "hermes/intent/$intent"
+    push!(SKILL_INTENT_ACTIONS, (intent, topic, MODULE_NAME, action))
+end
+
+function register_on_off_action(action)
+
+    lang = get_language()
+    intent = "$(HermesMQTT.HERMES_ON_OFF_INTENT)<$lang>"
+
+    register_intent_action(intent, action)
+end
 
 
 # This function is executed to run a

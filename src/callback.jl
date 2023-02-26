@@ -29,6 +29,7 @@ function main_callback(topic, payload)
     matchedTopics = filter(Main.INTENT_ACTIONS) do i
                         i[2] == topic
                     end
+    println(">>>> matchedTopics: $(matchedTopics)")
 
     for t in matchedTopics
 
