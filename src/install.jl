@@ -123,8 +123,7 @@ function install_skill(skill_url)
     # names of ini file versions:
     #
     conf_ini = joinpath(skill_dir, "config.ini")
-    conf_old = joinpath(skill_dir, "config.ini.old")
-    conf_new = joinpath(skill_dir, "config.ini.new")
+    conf_template = joinpath(skill_dir, "config.ini.template")
 
     if isdir(skill_dir)
         println("Skill $skill_name is already installed.")
@@ -138,30 +137,23 @@ function install_skill(skill_url)
             #
             if isfile(conf_ini)
                 println("config.ini will be preserved and the new ini-file")
-                println("saved as config.ini.new")
-                mv(conf_ini, conf_old, force=true)
-                run(`git fetch`)
-                run(`git reset --hard \@\{u\}`)
-
-                # back-copy config.ini:
-                #
-                if isfile(conf_ini)
-                    mv(conf_ini, conf_new, force=true)
-                end
-                if isfile(conf_old)
-                    mv(conf_old, conf_ini, force=true)
-                end
+                println("saved as config.ini.template")
             end
+            
+            run(`git fetch`)
+            run(`git reset --hard \@\{u\}`)
         else
             println("Installation aborted.")
             return
         end
-    else
-
+    else   # normal installation:
         println("Installing skill: $skill_url")
         println("at: $skills_dir\n")
 
         run(`$script $skills_dir $skill_url`)
+        if isfile(conf_template)
+            cp(conf_template, conf_ini, force=true)
+        end
     
         # remove .git directory:
         #

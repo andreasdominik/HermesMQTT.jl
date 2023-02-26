@@ -125,6 +125,8 @@ echo "copy template files"
 mkdir -p $SKILL_DIR
 cp -r $TEMPLATE_DIR/Skill $SKILL_DIR/
 cp $TEMPLATE_DIR/config.ini $SKILL_DIR/
+cp $TEMPLATE_DIR/config.ini $SKILL_DIR/config.ini.template
+cp $TEMPLATE_DIR/.gitignore $SKILL_DIR/
 cp $TEMPLATE_DIR/LOADER-TEMPLATE_SKILL.jl $SKILL_DIR/loader-TEMPLATE_SKILL.jl
 
 cp $TEMPLATE_DIR/README.md $SKILL_DIR/

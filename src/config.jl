@@ -27,7 +27,7 @@ end
 
 
 """
-    load_skill_config(app_dir)
+    load_skill_config(app_dir; skill=get_appname()
 
 Load config setting for a skill.
 
