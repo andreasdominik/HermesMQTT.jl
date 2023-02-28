@@ -166,6 +166,18 @@ function tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent =
     return result
 end
 
+function find_all_files(base, name)
+
+    finds = []
+    for (root, dirs, files) in walkdir(base, onerror=x->nothing)
+        for file in files
+            if file == name
+                push!(finds, joinpath(root, file))
+            end
+        end
+    end
+    return finds
+end
 
 
 """
@@ -544,4 +556,12 @@ function is_false_detection(payload)
     end
 
     return falseActivation
+end
+
+
+
+# copy a directory with subdirectories:
+#
+function copydir(src, dst)
+    run(`cp -r $src $dst`)
 end
