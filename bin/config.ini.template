@@ -7,8 +7,7 @@ language = <insert languagecode here before running HermesMQTT>
 database_file = home.json
 
 [secret]
-# Rhasspy HTML-API:
-rhasspy_url = <insert HTTP-API URL here before running HermesMQTT>
+# application_data_dir=/opt/Susi/ApplicationData
 
 # MQTT broker settings:
 mqtt_host = <insert MQTT hostname/IP here before running HermesMQTT>
