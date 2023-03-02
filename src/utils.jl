@@ -166,10 +166,19 @@ function tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent =
     return result
 end
 
-function find_all_files(base, name)
+function find_all_files(base, name, verbose=false)
 
+    i = 0
     finds = []
     for (root, dirs, files) in walkdir(base, onerror=x->nothing)
+        i += 1
+        if verbose
+            if i % 800 == 0
+            println(".")
+            elseif i % 100 == 0
+                print(".")
+            end
+        end
         for file in files
             if file == name
                 push!(finds, joinpath(root, file))

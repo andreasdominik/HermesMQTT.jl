@@ -6,17 +6,12 @@ install the HermesMQTT framework.
 """
 function install(skill=nothing)
     
-    # get module dir:
-    #
-    script = joinpath(APP_DIR, "bin", "find_installation.sh")
-
-
     if isnothing(skill)     # Install the framework
 
         # Check if the framework is already installed
         #
         println("Scanning for an existing installation...")
-        candidates = read(`$script`, String) |> split
+        candidates = find_all_files("/", "config.ini")
         candidates = filter(x->occursin("HermesMQTT.jl/config.ini", x), candidates)
         candidates = dirname.(candidates)
 
@@ -36,11 +31,11 @@ function install(skill=nothing)
             for (i,c) in enumerate(candidates)
                 println("($i) $c")
             end
-            println("Which installation do you want to overwrite? (1, 2, ... or new)")
+            println("Which installation do you want to overwrite? (1, 2, ... or \"new\")")
             s = readline()
 
             if startswith(s, "n")
-                install_HermesMQTT()  # ask for installation dir
+                install_HermesMQTT()  # ask for installation dir later
             else
                 i = tryparse(Int, s)
                 if !isnothing(i) && i <= length(candidates)
@@ -67,8 +62,6 @@ end
 #
 function install_HermesMQTT(skills_dir=nothing)
 
-    script = joinpath(PACKAGE_BASE_DIR, "bin", "copy_install.sh")
-
     if isnothing(skills_dir)
         println("Enter the directory where the framework should be installed:")
         println("(leave empty to use /opt/HermesMQTT/)")
@@ -78,6 +71,34 @@ function install_HermesMQTT(skills_dir=nothing)
         end
     end
     
+    if !endswith(skills_dir, "HermesMQTT.jl")
+        hermes_dir = joinpath(skills_dir, "HermesMQTT.jl")
+    end
+
+    is_update = false
+    if isfile(joinpath(hermes_dir, "config.ini"))
+        println("It seems that HermesMQTT is already installed at: \n$skills_dir")
+        println("Do you want to delete and (r)eplace or (u)pdate the installation?")
+        println("or (a)bort? (r/u/a)")
+        s = readline()
+        if isnothing(s) || isempty(s) || !startswith(s, r"(r|u)")
+            println("Installation aborted.")
+            return
+        elseif startswith(s, "r")
+            println("Are you shure you want to delete and replace the framework at: \n$skills_dir? (y/n)")
+            s = readline()
+            if isnothing(s) || isempty(s) || !startswith(s, r"(y)")
+                println("Installation aborted.")
+                return
+            end
+            rm(hermes_dir, recursive=true)
+        elseif startswith(s, "u")
+            println("Updating installation (the configuration is retained)")
+            println("Please have a look at the new config.ini.template file and 
+update your config.ini file accordingly.")
+            is_update = true
+        end
+    end
     println("Are you shure you want to install the framework at: \n$skills_dir? (y/n)")
     s = readline()
     if isnothing(s) || isempty(s) || !startswith(s, "y")
@@ -85,19 +106,123 @@ function install_HermesMQTT(skills_dir=nothing)
         return
     end 
 
-    if !endswith(skills_dir, "HermesMQTT.jl")
-        hermes_dir = joinpath(skills_dir, "HermesMQTT.jl")
-    end
-
+    # copy Framework to installation location:
+    #
     println("Installing HermesMQTT framework...")
-    run(`$script $PACKAGE_BASE_DIR $hermes_dir`)
+    # create dir hermes_dir if it not exist:
+    #
+    if !isdir(hermes_dir)
+        mkpath(hermes_dir)
+    end
+    copydir(joinpath(PACKAGE_BASE_DIR, "bin"), hermes_dir)
+    copydir(joinpath(PACKAGE_BASE_DIR, "profiles"), hermes_dir)
+    cp(joinpath(PACKAGE_BASE_DIR, "config.ini.template"), 
+                joinpath(hermes_dir, "config.ini.template"), 
+                force=true)
 
+    
+    # create config.ini:
+    #
+    if !is_update
+        configure_hermesMQTT(hermes_dir)
+    end
+    load_hermes_config(hermes_dir)
+    
     set_skills_dir(skills_dir)
+    # copy sentences:
+    #
+    install_sentences_and_slots("HermesMQTT.jl")
 
     # install the default skills:
     #
     install_skill("SusiScheduler")
 end
+
+
+
+function configure_hermesMQTT(hermes_dir)
+
+    status = false
+    r = nothing
+    rhasspy_url = "http://localhost:12101/api"
+    while !status
+        println("Please enter host of the running Rhasspy web-interface:")
+        println("(leave empty to use the default: localhost)")
+        rhasspy_host = readline()
+        if isnothing(rhasspy_host) || isempty(rhasspy_host)
+            rhasspy_host = "localhost"
+        end
+
+        println(" ")
+        println("Please enter the port of the running Rhasspy web-interface:")
+        println("(leave empty to use the default: 12101)")
+        rhasspy_port = readline()
+        if isnothing(rhasspy_port) || isempty(rhasspy_port)
+            rhasspy_port = "12101"
+        end
+
+        rhasspy_url = "http://$rhasspy_host:$rhasspy_port/api"
+        println(" ")
+        println("Trying to get profile from Rhasspy...")
+        
+        r = HTTP.request("GET", "$rhasspy_url/profile") 
+
+        if r.status < 200 || r.status >= 300
+            println(" ")
+            println("Could not get profile from Rhasspy at: $rhasspy_url")
+            println("Please check if Rhasspy is running and the url is correct.")
+            println(" ")
+            println("Do you want to try again? (y/n)")
+            s = readline()
+            if isnothing(s) || isempty(s) || !startswith(s, "y")
+                println("HermesMQTT configuration aborted.")
+                return
+            end
+        else
+            status = true
+        end
+    end  # loop until url OK
+
+    # fix, if ints are retured:
+    #
+        s = ""
+        for i in r.body
+            s = s * string(Char(i))
+        end
+    profile = JSON.parse(s)
+
+    # make config.ini from template:
+    #
+    config_ini_name = joinpath(hermes_dir, "config.ini")
+    config_template_name = joinpath(hermes_dir, "config.ini.template")
+
+    ini = readlines(config_template_name)
+    for i in eachindex(ini)
+        if startswith(ini[i], "language")
+            ini[i] = "language = $(profile["language"])"
+        elseif startswith(ini[i], "mqtt_host")
+            ini[i] = "mqtt_host = $(profile["mqtt"]["host"])"
+        elseif startswith(ini[i], "mqtt_port")
+            ini[i] = "mqtt_port = $(profile["mqtt"]["port"])"
+        elseif startswith(ini[i], "mqtt_user")
+            ini[i] = "mqtt_user = $(profile["mqtt"]["username"])"
+        elseif startswith(ini[i], "mqtt_password")
+            ini[i] = "mqtt_password = $(profile["mqtt"]["password"])"
+        elseif startswith(ini[i], "rhasspy_url")
+            ini[i] = "rhasspy_url = $rhasspy_url/"
+        end
+    end
+
+    # write config.ini:
+    #
+    open(config_ini_name, "w") do f
+        for line in ini
+            write(f, line * "\n")
+        end
+    end
+end
+
+
 
 
 
@@ -142,18 +267,23 @@ function install_skill(skill_url)
             
             run(`git fetch`)
             run(`git reset --hard \@\{u\}`)
+            install_sentences_and_slots(skill_name)
         else
             println("Installation aborted.")
             return
         end
-    else   # normal installation:
+    else   
+        # normal installation:
+        #
         println("Installing skill: $skill_url")
         println("at: $skills_dir\n")
 
-        run(`$script $skills_dir $skill_url`)
+        run(`git clone $skill_url $skill_dir`)
+
         if isfile(conf_template)
             cp(conf_template, conf_ini, force=true)
         end
+        install_sentences_and_slots(skill_name)
     
         # remove .git directory:
         #
@@ -164,6 +294,110 @@ function install_skill(skill_url)
 end
 
 
+function install_sentences_and_slots(skill_name="skill")
+
+    api_url = get_config("rhasspy_url")
+    if isnothing(api_url)
+        println("No Rhasspy url found in config.ini.")
+        println("Please configure the Rhasspy url first!")
+        return
+    end
+
+    println("Upload intents and slots for $skill_name to Rhasspy? (y/n)")
+    s = readline()
+    doit = !isnothing(s) && !isempty(s) && startswith(s, "y")
+    if !doit
+        println("""
+        Installation of profile for the NLU aborted.
+        Please make sure to install the sentences and slots manually
+        by copying the files to the correct profile directory or
+        by adding the sentences and slots to the sentence.ini file.""")
+    else
+        println("Uploading sentences and slots for $skill_name")
+        println("  to $(replace(api_url, r"api$" => "")) ...")
+
+        # copy profile files:
+        #
+        skill_dir = joinpath(get_skills_dir(), skill_name)
+        lang = get_language()
+        profile_dir = joinpath(skill_dir, "profiles", lang)
+        println(profile_dir)
+        
+        slots_dir = joinpath(profile_dir, "slots")
+        if isdir(slots_dir)
+            slots = joinpath.("slots", readdir(slots_dir, join=false)) .|> basename
+        else
+            slots = []
+        end
+
+        sentences_dir = joinpath(profile_dir, "intents")
+        if isdir(sentences_dir)
+            sentences = joinpath.("intents", readdir(sentences_dir, join=false)) .|> basename
+        else
+            sentences = []
+        end
+
+        for slot in slots
+            upload_one_slot(slot, profile_dir, api_url)
+        end
+        for sentence in sentences
+            upload_one_intent(sentence, profile_dir, api_url)
+        end
+    end
+end
+            
+
+
+# upload slots and intents to Rhasspy:
+#
+upload_one_slot(slot, profile_dir, url)  = upload_one_file(slot, profile_dir, url, "slots")
+upload_one_intent(slot, profile_dir, url)  = upload_one_file(slot, profile_dir, url, "intents")
+
+function upload_one_file(file_name, profile_dir, url, file_type="intents")
+
+    # clean url:
+    # 
+    url = replace(url, r"/$" => "")
+
+    # read slot from file:
+    #
+    file_string = read(joinpath(profile_dir, file_type, file_name), String)
+    # print debugging info:
+    #
+    println("  uploading $file_type $file_name")
+    println("  path: $(joinpath(profile_dir, file_type, file_name))")
+    println("  url: $url")
+
+    println(file_string)
+    file_field = "$file_type/$file_name"
+
+    if file_type == "slots"
+        file_field = "slots/$file_name"
+        url = "$url/slots"
+
+    elseif file_type == "intents"
+        file_field = "intents/$file_name"
+        url = "$url/sentences"
+    else
+        println("  Error: Could not upload $file_type $file_name")
+        return
+    end
+
+    r = nothing
+    try
+        r = HTTP.request("POST", "$url", 
+            ["Content-Type" => "application/json"], 
+            JSON.json(Dict(file_field=>file_string)), verbose=2)
+    catch
+        println("  Error: Could not upload $file_type $file_name")
+        return
+    end
+    if 200 <= r.status < 300
+        println("  uploaded $file_type $file_name")
+    else
+        println("  Error: Could not upload $file_type $file_name")
+    end
+end
 
 function update_skill(skill_url)
     

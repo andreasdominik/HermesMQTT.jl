@@ -6,6 +6,7 @@ using Dates
 using Distributed
 using Random
 using UUIDs
+using HTTP
 
 include("utils.jl")
 include("hermes-config.jl")
