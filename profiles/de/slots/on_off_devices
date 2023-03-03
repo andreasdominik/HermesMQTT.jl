@@ -1,4 +1,4 @@
-(Licht | große Licht | Lampe):light
+(Licht | große Licht | großes Licht | Lampe):light
 Stehlampe:floor_light
 (Nachtlicht|Licht auf dem Nachttisch):night_light
 Bewässerung:irrigation
