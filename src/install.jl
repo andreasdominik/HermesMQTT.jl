@@ -364,15 +364,10 @@ function upload_one_file(file_name, profile_dir, url, file_type="intents")
     file_string = read(joinpath(profile_dir, file_type, file_name), String)
     # print debugging info:
     #
-    println("  uploading $file_type $file_name")
-    println("  path: $(joinpath(profile_dir, file_type, file_name))")
-    println("  url: $url")
-
-    println(file_string)
     file_field = "$file_type/$file_name"
 
     if file_type == "slots"
-        file_field = "slots/$file_name"
+        file_field = "$file_name"
         url = "$url/slots"
 
     elseif file_type == "intents"
@@ -382,6 +377,13 @@ function upload_one_file(file_name, profile_dir, url, file_type="intents")
         println("  Error: Could not upload $file_type $file_name")
         return
     end
+
+    # println("\n\n\n  uploading $file_type: $file_name")
+    # println("  path: $(joinpath(profile_dir, file_type, file_name))")
+    # println("  url: $url")
+    # println("  field: $file_field")
+
+    # println(file_string)
 
     r = nothing
     try
