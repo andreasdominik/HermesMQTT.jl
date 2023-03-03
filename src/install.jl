@@ -385,20 +385,25 @@ function upload_one_file(file_name, profile_dir, url, file_type="intents")
 
     # println(file_string)
 
+    println("\n\n  uploading $file_type from file $file_name ...")
+    println(file_string)
+
     r = nothing
     try
         r = HTTP.request("POST", "$url", 
             ["Content-Type" => "application/json"], 
-            JSON.json(Dict(file_field=>file_string)), verbose=2)
+            JSON.json(Dict(file_field=>file_string)), verbose=0)
     catch
         println("  Error: Could not upload $file_type $file_name")
         return
     end
     if 200 <= r.status < 300
-        println("  uploaded $file_type $file_name")
+        println("  ... uploaded $file_type $file_name.")
     else
         println("  Error: Could not upload $file_type $file_name")
     end
+
+    println("\n")
 end
 
 function update_skill(skill_url)
