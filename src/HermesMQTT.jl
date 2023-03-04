@@ -114,6 +114,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        get_weather,
        get_language, set_language, set_config, 
        load_hermes_config, load_skill_config, load_two_configs,
-       install, generate_skill, install_skill, update_skill
+       install, generate_skill, install_skill, update_skill,
+       upload_intents
 
 end # module

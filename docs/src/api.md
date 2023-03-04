@@ -36,6 +36,7 @@ publish_intent
 
 ```@docs
 get_language
+upload_intents
 ```
 
 ## Functions to handle intents

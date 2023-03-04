@@ -294,6 +294,23 @@ function install_skill(skill_url)
 end
 
 
+
+"""
+    upload_intents(skill_name=nothing)
+
+Upload the intents and slots for the given skill to Rhasspy.
+
+### Arguments:
+- `skill_name`: name of the skill. 
+                The name must match the name of the skill directory to make it 
+                possible to find the intents and slots in the 
+                directory `<skillname>/profiles/<lang>/`.
+"""
+function upload_intents(skill_name=nothing)
+    return install_sentences_and_slots(skill_name)
+end
+
+
 function install_sentences_and_slots(skill_name="skill")
 
     api_url = get_config("rhasspy_url")
