@@ -95,6 +95,13 @@ and a file `config.ini`
 in the installation directory. The file `action-hermesMQTT.jl` 
 is the loader script.
 
+If possible the rhasspy server should be running on the same 
+or on another machine. Dring installation the installer asks for 
+hostname and port of the rhasspy server (default: `localhost:12101`).
+If the server is accessible, the installer will upload the
+intents and slots to the server (to the `intents` and `slots` 
+subdirectories for the language of he rhasspy profile.)
+
 Be sure to have a look into the `config.ini` file and adapt it to your
 needs (such as MQTT host, port, user, password, etc.).
   
@@ -123,20 +130,19 @@ HermesMQTT installation. Each Julia-script with a name like
 `loader-<skillname>.jl` will be loaded and executed.
 
 If a skill is hosted at Github, it can be installed by the
-`installSkill(<github-url>)` function. It will clone the repository into the
+`install(<github-url>)` function. It will clone the repository into the
 correct `skills` directory or perform an update, if the installation
 already exists.
 
 Default-skills (i.e. developed by the author of HermesMQTT) are all
-in Github repos like `git@github.com:andreasdominik/SusiScheduler.git`
-and can be installed with the skill-name:
-```julia
-
+in Github repos like `git@github.com:andreasdominik/SusiWeekly.git`
+and can be installed just with the skill-name:
 
 ```julia
-install_skill("SusiScheduler")
+install_skill("SusiWeekly")
  
 # or with complete URL:
 #
-install_skill("git@github.com:andreasdominik/SusiScheduler.git")
+install_skill("git@github.com:andreasdominik/SusiWeekly.git")
 ```
+
