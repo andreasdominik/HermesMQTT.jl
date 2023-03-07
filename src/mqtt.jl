@@ -41,7 +41,7 @@ function subscribe_MQTT(topics, callback)
         (topic, payload) = parse_MQTT(retrieved)
 
         if !isnothing(topic) && !isnothing(payload)
-            if match_config(:debug, "no_parallel", skill=HERMES_MQTT)
+            if match_config(:debug, "no_parallel")
                 callback(topic, payload)
             else
                 @async callback(topic, payload)
@@ -115,10 +115,10 @@ function make_mosquitto_params(;hostname=nothing, port=nothing,
                                user=nothing, password=nothing,
                                timeout=nothing)
 
-    isnothing(hostname) && (hostname = get_config(:mqtt_host, skill=HERMES_MQTT))
-    isnothing(port) && (port = get_config(:mqtt_port, skill=HERMES_MQTT))
-    isnothing(user) && (user = get_config(:mqtt_user, skill=HERMES_MQTT))
-    isnothing(password) && (password = get_config(:mqtt_password, skill=HERMES_MQTT))
+    isnothing(hostname) && (hostname = get_config(:mqtt_host))
+    isnothing(port) && (port = get_config(:mqtt_port))
+    isnothing(user) && (user = get_config(:mqtt_user))
+    isnothing(password) && (password = get_config(:mqtt_password))
 
     params = ``
     if !isnothing(hostname)

@@ -72,8 +72,8 @@ function getOpenWeather()
 
     weather = Dict()
     try
-        api = get_config(INI_WEATHER_API, onePrefix="openweather", skill=HERMES_MQTT)
-        city = get_config(INI_WEATHER_ID, onePrefix="openweather", skill=HERMES_MQTT)
+        api = get_config(INI_WEATHER_API, onePrefix="openweather" )
+        city = get_config(INI_WEATHER_ID, onePrefix="openweather")
 
         url = "$OPEN_WEATHER_URL?id=$city&APPID=$api"
         print_debug("openweather URL = $url")

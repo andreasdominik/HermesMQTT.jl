@@ -427,7 +427,7 @@ function print_debug_skill(s; skill=get_appname())
     if isnothing(s)
         s = "log-message is nothing"
     end
-    if !match_config(:debug, "none", skill=HERMES_MQTT)
+    if !match_config(:debug, "none")
         print_log("<<< DEBUG - $skill >>> $s")
     end
 end

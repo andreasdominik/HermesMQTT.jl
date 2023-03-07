@@ -305,5 +305,5 @@ Return the language in the Module HermesMQTT
 """
 function get_language()
 
-    return get_config(:language, skill=HERMES_MQTT)
+    return get_config(:language)
 end

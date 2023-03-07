@@ -248,5 +248,5 @@ end
 
 function get_db_name()
 
-    return get_config(:database_path, skill=HERMES_MQTT)
+    return get_config(:database_path)
 end

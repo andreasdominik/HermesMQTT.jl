@@ -62,15 +62,15 @@ function load_hermes_config(hermes_dir)
 
     # fix some potential issues:
     #
-    if isnothing(get_config(:language, skill=HERMES_MQTT))
+    if isnothing(get_config(:language))
         set_config(:language, DEFAULT_LANG, skill=HERMES_MQTT)
     end
 
     database_dir = joinpath(hermes_dir, "application_data", "database")
-    if isnothing(get_config(:database_file, skill=HERMES_MQTT))
+    if isnothing(get_config(:database_file))
         database_file = "home.json"
     else
-        database_file = get_config(:database_file, skill=HERMES_MQTT)
+        database_file = get_config(:database_file)
     end
     database_path = joinpath(database_dir, database_file)
     
