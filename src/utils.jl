@@ -391,24 +391,27 @@ end
 
 """
     print_log(s)
+    print_log_skill(s; skill=get_appname())
 
 Print the message
 The current App-name is printed as prefix.
 """
-function print_log(s)
+function print_log_skill(s; skill=get_appname())
 
     if isnothing(s)
         s = "log-message is nothing"
     end
     logtime = Dates.format(Dates.now(), "e, dd u yyyy HH:MM:SS")
-    prefix = get_appname()
-    println("***> $logtime [$prefix]: $s")
+    println("***> $logtime [$skill]: $s")
     flush(stdout)
 end
+
+print_log(s) = print_log_skill(s; skill=HERMES_MQTT)
 
 
 """
     print_debug(s)
+    print_debug_skill(s; skill=get_appname())
 
 Print the message only, if debug-mode is on.
 Debug-modes include
@@ -419,15 +422,17 @@ Debug-modes include
                  off-line while a skill-action is running).
 Current App-name is printed as prefix.
 """
-function print_debug(s)
+function print_debug_skill(s; skill=get_appname())
 
     if isnothing(s)
         s = "log-message is nothing"
     end
     if !match_config(:debug, "none", skill=HERMES_MQTT)
-        print_log("<<< DEBUG >>> $s")
+        print_log("<<< DEBUG - $skill >>> $s")
     end
 end
+
+print_debug(s) = print_debug_skill(s; skill=HERMES_MQTT)i
 
 
 """

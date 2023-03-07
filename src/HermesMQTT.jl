@@ -67,8 +67,9 @@ FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language
 # the Package is located anywhere...:
 #
 CONFIG_INI = Dict{Tuple{Symbol, Symbol}, Any}()
-hermes_dir = joinpath(get_skills_dir(), "HermesMQTT.jl")
-if !isnothing(hermes_dir)
+skills_dir = get_skills_dir()   # nothing if not yet configured/installed
+if !isnothing(skills_dir)
+    hermes_dir = joinpath(get_skills_dir(), "HermesMQTT.jl")
     load_hermes_config(hermes_dir)
 end
 
@@ -101,7 +102,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        set_developer_name, get_developer_name, set_module, get_module,
        set_appdir, get_appdir, set_appname, get_appname,
        set_topic, get_topic, set_intent, get_intent,
-       read_config, match_config, get_config_skill, is_in_config, get_all_config,
+       read_config, match_config_skill, get_config_skill, is_in_config_skill, get_all_config,
        is_config_valid, is_valid_or_end, set_config_prefix, reset_config_prefix,
        get_config_path, read_language_sentences,
        tryrun, try_read_textfile, ping,
@@ -109,7 +110,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        extract_slot_value, extract_multislot_values, is_in_slot, 
        is_on_off_matched, 
        read_time_from_slot, readable_date_time, readable_date,
-       set_GPIO, print_debug, print_log,
+       set_GPIO, print_debug_skill, print_log_skill,
        switch_shelly_1, switch_shelly_25_relay, move_shelly_25_roller,
        all_occuresin, one_occursin, all_occursin_order,
        is_false_detection,

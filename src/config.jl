@@ -193,7 +193,8 @@ end
 
 
 """
-    match_config(name::Symbol, val::String; skill=get_appname())
+    match_config(name::Symbol, val::String)
+    match_config_skill(name::Symbol, val::String; skill=get_appname())
 
 Return true if the parameter with name `name` of the config.ini has the value
 val or one element of the list as the value val.
@@ -219,6 +220,8 @@ function match_config(name, val::String; skill=get_appname())
     end
     return false
 end
+
+match_config(name) = match_config_skill(name; skill=HERMES_MQTT)
 
 
 
@@ -279,7 +282,7 @@ end
 
 function get_config(name; multiple=false, one_prefix=nothing) 
     return get_config_skill(name; multiple=multiple, one_prefix=one_prefix, 
-                            skill="HermesMQTT")
+                            skill=HERMES_MQTT)
 end
                  
 """
@@ -323,18 +326,21 @@ end
 
 
 """
-    is_in_config(name; skill=get_appname())
+    is_in_config(name)
+    is_in_config_skill(name; skill=get_appname())
 
 Return true if a parameter with name exists.
 
 ## Arguments:
 * `name`: name of the config parameter as Symbol or String
 """
-function is_in_config(name; skill=get_appname())
+function is_in_config_skill(name; skill=get_appname())
 
     conf = get_config(name, skill=skill)
     return !isnothing(conf)
 end
+
+is_in_config(name) = is_in_config_skill(name; skill=HERMES_MQTT)
 
 
 """
