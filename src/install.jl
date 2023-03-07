@@ -330,15 +330,15 @@ function install_sentences_and_slots(skill_name="skill")
         by copying the files to the correct profile directory or
         by adding the sentences and slots to the sentence.ini file.""")
     else
-        println("Uploading sentences and slots for $skill_name")
-        println("  to $(replace(api_url, r"api$" => "")) ...")
-
         # copy profile files:
         #
         skill_dir = joinpath(get_skills_dir(), skill_name)
         lang = get_language()
         profile_dir = joinpath(skill_dir, "profiles", lang)
-        println(profile_dir)
+        
+        println("Uploading sentences and slots for $skill_name")
+        println("  from profile dir: $profile_dir")
+        println("  to $(replace(api_url, r"api/$" => "")) ...")
         
         slots_dir = joinpath(profile_dir, "slots")
         if isdir(slots_dir)
@@ -395,12 +395,12 @@ function upload_one_file(file_name, profile_dir, url, file_type="intents")
         return
     end
 
-    # println("\n\n\n  uploading $file_type: $file_name")
-    # println("  path: $(joinpath(profile_dir, file_type, file_name))")
-    # println("  url: $url")
-    # println("  field: $file_field")
+     println("\n\n\n  uploading $file_type: $file_name")
+     println("  path: $(joinpath(profile_dir, file_type, file_name))")
+     println("  url: $url")
+     println("  field: $file_field")
 
-    # println(file_string)
+     println(file_string)
 
     println("\n\n  uploading $file_type from file $file_name ...")
     println(file_string)

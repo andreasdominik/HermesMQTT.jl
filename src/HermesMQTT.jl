@@ -67,6 +67,10 @@ FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language
 # the Package is located anywhere...:
 #
 CONFIG_INI = Dict{Tuple{Symbol, Symbol}, Any}()
+hermes_dir = joinpath(get_skills_dir(), "HermesMQTT.jl")
+if !isnothing(hermes_dir)
+    load_hermes_config(hermes_dir)
+end
 
 
 # save home status database location in CONFIG_INI:
@@ -97,7 +101,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        set_developer_name, get_developer_name, set_module, get_module,
        set_appdir, get_appdir, set_appname, get_appname,
        set_topic, get_topic, set_intent, get_intent,
-       read_config, match_config, get_config, is_in_config, get_all_config,
+       read_config, match_config, get_config_skill, is_in_config, get_all_config,
        is_config_valid, is_valid_or_end, set_config_prefix, reset_config_prefix,
        get_config_path, read_language_sentences,
        tryrun, try_read_textfile, ping,

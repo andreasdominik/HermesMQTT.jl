@@ -29,16 +29,23 @@ end
 
 
 """
-    extract_slot_value(slot_name, payload)
+    extract_slot_value(slot_name, payload; default=nothing, as=String)
 
 Return the value of a slot.
 
 Nothing is returned, if
 * no slots in payload,
 * no slots with name slot_name in payload,
-* no value in slot slot_name.
+* no value in slot slot_name,
+* or the value cannot be casted into the type, specified ba the `as=` argument.
+
+### Arguments:
++ `slot_name`: name of the slot as defined in the intent
++ `payload`: JSON payload
++ `default`: default value; returned if the slot is not present in the payload
++ `as`: type of the returned value (default: String)
 """
-function extract_slot_value(slot_name, payload; default=nothing)
+function extract_slot_value(slot_name, payload; default=nothing, as=String)
 
     slot_name = "$slot_name"
     value = default
@@ -51,7 +58,18 @@ function extract_slot_value(slot_name, payload; default=nothing)
             value = slot[:value][:value]
         end
     end
-println("extract_slot_value: name = $slot_name, value = $value, $(typeof(value))")
+
+# println("extract_slot_value: name = $slot_name, value = $value, $(typeof(value))")
+
+    if isnothing(value)
+        return default
+    end
+
+    if as == String
+        return "$value"
+    elseif value isa AbstractString 
+        return tryparse(as, value)
+    end
     return value
 end
 
@@ -96,7 +114,7 @@ slots slotName.)
 function is_in_slot(slot_name, value, payload)
 
 print_log("is_in_slot($slot_name, $value, $payload)")
-    values = extract_slot_value(slot_name, payload; multiple = true)
+    values = extract_slot_value(slot_name, payload)
 print_log("is_in_slot: values = $values")
     return !isnothing(values) && (value in values)
 end

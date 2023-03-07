@@ -33,7 +33,7 @@ Load config setting for a skill.
 
 ### Arguments:
 + `app_dir`: path to the config.ini
-               `.../Skills/Skill`
+               `.../Skills/Skill  (/config.ini)`
 """
 function load_skill_config(app_dir; skill=get_appname())
 
@@ -59,7 +59,6 @@ function load_hermes_config(hermes_dir)
 
     global CONFIG_INI
     merge!(CONFIG_INI, config_ini)
-    # todo appenD!
 
     # fix some potential issues:
     #
@@ -224,7 +223,8 @@ end
 
 
 """
-    get_config(name; multiple = false, one_prefix = nothing,
+    get_config(name; multiple = false, one_prefix = nothing)
+    get_config_skill(name; multiple = false, one_prefix = nothing,
                     skill=get_appname())
 
 Return the parameter value of the config.ini with
@@ -253,7 +253,7 @@ appname used as skill.
 If a config-entry for a specific skill is wanted, the function 
 `get_config_skill(...; skill="skillname")` can be used.
 """
-function get_config(name; multiple=false, one_prefix=nothing, 
+function get_config_skill(name; multiple=false, one_prefix=nothing, 
                     skill=get_appname())
 
     global CONFIG_INI
@@ -264,6 +264,7 @@ function get_config(name; multiple=false, one_prefix=nothing,
     else
         name = Symbol("$one_prefix:$name")
     end
+println("**** get_config($name) for skill $skill")
 
     if haskey(CONFIG_INI, (skill,name))
         if multiple && (CONFIG_INI[(skill,name)] isa AbstractString)
@@ -276,6 +277,11 @@ function get_config(name; multiple=false, one_prefix=nothing,
     end
 end
 
+function get_config(name; multiple=false, one_prefix=nothing) 
+    return get_config_skill(name; multiple=multiple, one_prefix=one_prefix, 
+                            skill="HermesMQTT")
+end
+                 
 """
     get_config_path(name, default_path; one_prefix = nothing,
                     skill=get_appname())
@@ -428,6 +434,10 @@ end
 Set the prefix for all following calls to a parameter from
 `config.ini`. All parameter names, gives as `Strings` will be
 modified as `<prefix>:<name>`.
+
+### Details:
+Do not forget to reset the prefix (`reset_config_prefix()`) as 
+possible, to avoid side effects as the prefix is applied globally!
 """
 function set_config_prefix(new_prefix)
 
