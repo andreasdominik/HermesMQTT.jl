@@ -69,7 +69,7 @@ FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language
 CONFIG_INI = Dict{Tuple{Symbol, Symbol}, Any}()
 skills_dir = get_skills_dir()   # nothing if not yet configured/installed
 if !isnothing(skills_dir)
-    hermes_dir = joinpath(get_skills_dir(), "HermesMQTT.jl")
+    hermes_dir = joinpath(skills_dir, "HermesMQTT.jl")
     load_hermes_config(hermes_dir)
 end
 
