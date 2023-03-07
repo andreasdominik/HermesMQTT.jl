@@ -56,11 +56,11 @@ some extensions:
 
 - spaces are allowed around the `=`
 - the parameter value may not contain whitespace; i.e.
-  `light=my light` is better `light=my_light`
+  `light=my light` is better written as `light=my_light`
 - if the value of the parameter (right side) includes commas,
-  the value can be interpreted as a comma-separated list of values.
+  the value is interpreted as a comma-separated list of values.
   In this case, the reader-function will return an array of Strings
-  with the values (which an be accessed by their index).
+  with the values (which can be accessed by their index).
 - parameter names may have a prefix (set by the function 
   `set_config_prefix()`).
   If set, all config-functions will try to find parameter names with prefix.
@@ -90,13 +90,13 @@ some extensions:
 
 
 ```@docs
-get_config
+get_config_skill
+is_in_config_skill
+match_config_skill
 set_config_prefix
 reset_config_prefix
 get_all_config
 read_config
-match_config
-is_in_config
 is_config_valid
 get_config_path
 load_hermes_config
