@@ -203,7 +203,7 @@ val or one element of the list as the value val.
 * `name`: name of the config parameter as Symbol or String
 * `val`: desired value
 """
-function match_config(name, val::String; skill=get_appname())
+function match_config_skill(name, val::String; skill=get_appname())
 
     skill = Symbol(skill)
     name = Symbol(add_prefix(name))
@@ -251,9 +251,9 @@ prefix is defined (as `<prefix>:<name>`).
 'get_config()' returns ''nothing if something is wrong.
 
 `config.ini` entries are stored with the corresponding skill name 
-(appname), The function calles get_config_skill() with the current
-appname used as skill.
-If a config-entry for a specific skill is wanted, the function 
+(appname), The function `get_config()` calls `get_config_skill()`` 
+with the current appname used as skill.
+If a config-entry for a different skill is wanted, the function 
 `get_config_skill(...; skill="skillname")` can be used.
 """
 function get_config_skill(name; multiple=false, one_prefix=nothing, 

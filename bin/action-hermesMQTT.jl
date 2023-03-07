@@ -56,11 +56,13 @@ for (root, dirs, files) in walkdir(SKILLS_DIR)
     append!(loaders, paths)
 end
 
-print_log("[HermesMQTT loader]: $(length(loaders)) skills found to load.")
+print_log_skill("[HermesMQTT loader]: $(length(loaders)) skills found to load.",
+                skill="HermesMQTT")
 
 for loader in loaders
     global INTENT_ACTIONS
-    print_log("[HermesMQTT skill loader]: loading app $loader.")
+    print_log_skill("[HermesMQTT skill loader]: loading app $loader.",
+                    skill="HermesMQTT")
     include(loader)
 end
 
