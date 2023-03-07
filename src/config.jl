@@ -267,7 +267,7 @@ function get_config_skill(name; multiple=false, one_prefix=nothing,
     else
         name = Symbol("$one_prefix:$name")
     end
-println("**** get_config($name) for skill $skill")
+#println("**** get_config($name) for skill $skill")
 
     if haskey(CONFIG_INI, (skill,name))
         if multiple && (CONFIG_INI[(skill,name)] isa AbstractString)

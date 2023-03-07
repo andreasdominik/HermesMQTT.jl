@@ -121,7 +121,7 @@ and return the entry as `Dict()` or nothing if not in the database.
 """
 function db_read_entry(key)
 
-    if ! (key isa Symbol)
+    if !(key isa Symbol)
         key = Symbol(key)
     end
 
@@ -182,9 +182,11 @@ Path is constructed from `config.ini` values
 """
 function db_read()
 
-    db = try_parse_JSON_file(get_db_name(), quiet=true)
+    db_path_name = get_db_name()
+    db = try_parse_JSON_file(db_path_name, quiet=true)
+
     if length(db) == 0
-        print_log("Empty status DB read: $(get_db_name()).")
+        print_log_skill("Empty status DB read: $db_path_name", skill=HERMES_MQTT)
         db = Dict()
     end
     return db

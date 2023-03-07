@@ -97,18 +97,17 @@ the content.
 """
 function try_parse_JSON_file(fname; quiet = false)
 
+    json = Dict()
     try
         json = JSON.parsefile( fname)
+        json = key2symbol(json)
     catch
         msg = ERRORS_EN[:error_json]
         if ! quiet
             publish_say(msg)
         end
-        print_debug("try_parse_JSON_file: $msg : $fname")
         json = Dict()
     end
-
-    json = key2symbol(json)
     return json
 end
 

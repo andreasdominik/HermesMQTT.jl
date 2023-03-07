@@ -432,7 +432,7 @@ function print_debug_skill(s; skill=get_appname())
     end
 end
 
-print_debug(s) = print_debug_skill(s; skill=HERMES_MQTT)i
+print_debug(s) = print_debug_skill(s; skill=HERMES_MQTT)
 
 
 """
