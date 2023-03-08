@@ -203,25 +203,25 @@ val or one element of the list as the value val.
 * `name`: name of the config parameter as Symbol or String
 * `val`: desired value
 """
-function match_config_skill(name, val::AbstractString; skill=get_appname())
+function match_config_skill(name, val::AbstractString; skill=get_appname(), 
+                            one_prefix=nothing)
 
-    skill = Symbol(skill)
-    name = Symbol(add_prefix(name))
+    conf_val = get_config_skill(name; skill=skill, one_prefix=one_prefix)
 
-    global CONFIG_INI
+    if isnothing(conf_val)
+        return false
+    else
+        if conf_val isa AbstractString
+            return val == conf_val
 
-    if haskey(CONFIG_INI, (skill,name))
-        if CONFIG_INI[(skill, name)] isa AbstractString
-            return val == CONFIG_INI[(skill,name)]
-
-        elseif CONFIG_INI[(skill,name)] isa AbstractArray
-            return val in CONFIG_INI[(skill,name)]
+        elseif conf_val isa AbstractArray
+            return val in conf_val
         end
     end
-    return false
 end
 
-match_config(name, val::AbstractString) = match_config_skill(name, val; skill=HERMES_MQTT)
+match_config(name, val::AbstractString; one_prefix=nothing) = 
+    match_config_skill(name, val; skill=HERMES_MQTT, one_prefix=one_prefix)
 
 
 
@@ -334,13 +334,14 @@ Return true if a parameter with name exists.
 ## Arguments:
 * `name`: name of the config parameter as Symbol or String
 """
-function is_in_config_skill(name; skill=get_appname())
+function is_in_config_skill(name; skill=get_appname(), one_prefix=nothing)
 
-    conf = get_config_skill(name, skill=skill)
+    conf = get_config_skill(name, skill=skill, one_prefix=one_prefix)
     return !isnothing(conf)
 end
 
-is_in_config(name) = is_in_config_skill(name; skill=HERMES_MQTT)
+is_in_config(name; one_prefix=nothing) = 
+        is_in_config_skill(name; skill=HERMES_MQTT, one_prefix=one_prefix)
 
 
 """

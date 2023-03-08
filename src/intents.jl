@@ -267,5 +267,5 @@ function publish_schedule_command(command, exec_time, origin;
                    :exec_time => exec_time,
                    :origin => origin,
                    :customData => command)
-    publish_intent(payload, "hermes/intent/Scheduler:AddAction")
+    publish_intent(payload, "susi/intent/Scheduler:AddAction")
 end

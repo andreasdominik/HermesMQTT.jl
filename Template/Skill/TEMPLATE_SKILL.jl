@@ -39,9 +39,10 @@ read_language_sentences(APP_DIR)
 #
 get_config(name; multiple=false, one_prefix=nothing) =
     HermesMQTT.get_config_skill(name; multiple=multiple, one_prefix=one_prefix, skill=APP_NAME)
-is_in_config(name) = HermesMQTT.is_in_config_skill(name; skill=APP_NAME)           
-match_config(name, val::AbstractString) = HermesMQTT.match_config_skill(name, val; skill=APP_NAME)
- 
+is_in_config(name; one_prefix=nothing) = 
+    HermesMQTT.is_in_config_skill(name; skill=APP_NAME, one_prefix=one_prefix)           
+match_config(name, val::AbstractString; one_prefix=nothing) = 
+    HermesMQTT.match_config_skill(name, val; skill=APP_NAME, one_prefix=one_prefix)
 print_log(s) = HermesMQTT.print_log_skill(s; skill=APP_NAME)
 print_debug(s) = HermesMQTT.print_debug_skill(s; skill=APP_NAME)
 

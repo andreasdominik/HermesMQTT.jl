@@ -13,7 +13,7 @@ return `true`, if successful.
 
 ## Arguments:
 - `ip`: IP address or DNS name of Shelly1 device
-- `action`: demanded action as symbol; one of `:on`, `:off`, `push` or `:timer`.
+- `action`: demanded action as symbol; one of `:on`, `:off`, `:push` or `:timer`.
             action `:push` will switch on for 200ms to simulate a push.
             action `:timer` will switch off after timer secs.
 - `timer`: if action == `timer`, the device is switched on and
