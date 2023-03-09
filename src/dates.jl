@@ -3,7 +3,7 @@
 
 """
     function readable_date_time(datetime::AbstractString; lang=get_language())
-                              wholeDay = false, onlyDay = false)
+                              wholeDay=false, onlyDay=false)
     function readable_date_time(datetime::DateTime; lang=get_language(),
                               wholeDay = false, onlyDay = false)
     function readable_date(datetime::Date; lang=get_language())

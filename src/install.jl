@@ -399,11 +399,8 @@ function upload_one_file(file_name, profile_dir, url, file_type="intents")
      println("  path: $(joinpath(profile_dir, file_type, file_name))")
      println("  url: $url")
      println("  field: $file_field")
-
      println(file_string)
 
-    println("\n\n  uploading $file_type from file $file_name ...")
-    println(file_string)
 
     r = nothing
     try
