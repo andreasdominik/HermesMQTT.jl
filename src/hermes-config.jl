@@ -134,6 +134,15 @@ function get_siteID()
     return CURRENT[:siteID]
 end
 
+function get_siteID(payload)
+
+    if haskey(payload, :siteId)
+        return payload[:siteId]
+    else
+        return "default"
+    end
+end
+
 
 
 """
