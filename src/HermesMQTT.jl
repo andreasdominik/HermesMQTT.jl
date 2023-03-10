@@ -55,7 +55,7 @@ const SUSI_ON_OFF_INTENT = "Susi:on_off"
 const SUSI_YES_NO_INTENT = "Susi:yes_no"
 const DEFAULT_LANG = "en"
 
-const HERMES_ON_OFF_INTENT = "HermesMQTT:OnOff"   # <en>
+const HERMES_ON_OFF_INTENT = "Susi:on_off"   # <en>
 LANGUAGE_TEXTS = Dict{Any, Any}()   # one entry for every language
                                     # with a Tuple as key (e.g. ("en", :ok) ...
 FALSE_DETECTION = Dict{Any, Any}()  # one entry for each language 
@@ -93,6 +93,7 @@ export subscribe_MQTT, read_one_MQTT, publish_MQTT, publish_MQTT_file,
        publish_nlu_query, publish_intent, publish_schedule_command,
        configure_intent,
        register_intent_action_module, 
+       match_device_room,
        # get_intent_actions, set_intent_actions,
        ask_yes_no_unknown, ask_yes_or_no,
        publish_say,

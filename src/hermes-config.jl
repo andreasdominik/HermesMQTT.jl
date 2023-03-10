@@ -127,7 +127,9 @@ end
     get_siteID()
 
 Return the siteID in the Module HermesMQTT
-(necessary to direct the say() output to the current room)
+(necessary to direct the say() output to the current room).
+
+The form `get_siteID(payload)` extracts the siteID from a Hermes payload.
 """
 function get_siteID()
 
