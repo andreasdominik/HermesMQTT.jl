@@ -1,0 +1,6 @@
+(livingroom | (living room):livingroom
+bedroom:bedroom
+kitchen:kitchen
+(diningroom |(dining room)):diningroom
+(stairs | hall):stairs
+office:office
