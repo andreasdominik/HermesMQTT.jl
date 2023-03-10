@@ -20,6 +20,10 @@ The package can be installed with the Julia package manager. From the Julia REPL
 ```julia
 add git@github.com:andreasdominik/HermesMQTT.jl.git
 ```
+or 
+```julia
+add https://github.com/andreasdominik/HermesMQTT.jl.git
+```
 
 ## Skill generation
 
