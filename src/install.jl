@@ -237,7 +237,7 @@ function install_skill(skill_url)
     # if ado's skill, no url is needed:
     #
     if !endswith(skill_url, ".git")
-        skill_url = "git@github.com:andreasdominik/$skill_url.git"
+        skill_url = "https://github.com/andreasdominik/$skill_url.git"
     end
 
     m = match(r"git.*/(?<skill_name>.*).git", skill_url)
