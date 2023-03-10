@@ -1,0 +1,7 @@
+(light | lamp | big light | main light):light
+((ceiling (lamp | light)) | ceilinglamp | ceilinglight):ceiling_lamp
+(floorlamp | floor light | (floor lamp) | (floor light):floor_lamp
+(nightlight | (night light)):night_lamp
+(walllamp | (wall lamp) | walllight | (wall light)):wall_lamp
+(irrigation | (water (in | for) the garden)):irrigation
+((TV set) | TV | (television [set])):tv_set

@@ -1,5 +1,7 @@
 (Licht | große Licht | großes Licht | Lampe):light
-Stehlampe:floor_light
-(Nachtlicht|Licht auf dem Nachttisch):night_light
+Deckenlampe:ceiling_lamp
+Stehlampe:floor_lamp
+(Nachtlicht|Licht auf dem Nachttisch):night_lamp
+Wandlampe:wall_lamp
 Bewässerung:irrigation
 (Fernseher | TV | Glotze):tv_set
