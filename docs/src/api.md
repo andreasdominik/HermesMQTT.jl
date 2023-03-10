@@ -95,6 +95,7 @@ is_in_config_skill
 match_config_skill
 set_config_prefix
 reset_config_prefix
+match_device_room
 get_all_config
 read_config
 is_config_valid

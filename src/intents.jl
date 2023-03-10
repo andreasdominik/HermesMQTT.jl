@@ -269,3 +269,117 @@ function publish_schedule_command(command, exec_time, origin;
                    :customData => command)
     publish_intent(payload, "susi/intent/Scheduler:AddAction")
 end
+
+
+
+"""
+    match_device_room(skill, payload; slot_device="device", slot_room="room")
+
+Find the device in a room by matching the slots of an intent (payload)
+with the config.ini of a skill.
+
+## Arguments:
+
+* `skill`: skill name
+* `payload`: intent payload
+* `slot_device`: name of the slot for the device
+* `slot_room`: name of the slot for the room
+
+## Details
+
+Devices are configured in the `config.ini` of a skill. The 
+combination of `device` and `room` is used to match the slots
+of an intent and must be unique within the skill.
+
+A joker device may be defined to match any device, but it still needs to be 
+unique - so this is only possible if there is a single device in a room
+(e.g. `joker = light` makes it possible to call *turn on the light* in 
+every room as long as there is only one light in the room **or** 
+one of the lights is defined explicitly as type `light`).
+
+Example:
+```
+joker = light
+
+living_room:light = shelly1, lrmain.home.me
+living_room:floor_lamp = shelly1, lrfloor.home.me
+
+kitchen:ceiling_lamp = shelly1, kimain.home.me
+
+stairs:ceiling_lamp = shelly1, stmain.home.me
+stairs:wall_lamp = shelly1, stwall.home.me
+```
+
+In the exampe house, it is possible to call:
++ *turn on the light in the living room*: will turn on the *light*
++ *turn on the light in the kitchen*: will turn on the *ceiling_lamp*, beacuse it is 
+  the only one.
++ *turn on the wall lamp in the stairs*: will turn on the *wall*
+but it is not possible to call:
++ *turn on the light in the stairs*: because there is more than one light in the 
+  stairs and no light is defined as type `light`. 
+
+If no room is found in the slots of the intent, the site-ID of the intent
+(i.e. the room in which the command is recorded) is used as room.
+"""
+function match_device_room(skill, payload; slot_device="device", slot_room="room")
+
+    # get room:
+    #
+    room = extract_slot_value(slot_room, payload)
+    if isnothing(room)
+        room = get_siteID(payload)
+    end
+
+    if isnothing(room)
+        publish_say(:no_room)
+        print_log("No room found in intent payload or siteID")
+        return nothing
+    end
+
+    # get device:
+    #
+    slot_device = extract_slot_value(slot_device, payload)
+    if isnothing(slot_device)
+        publish_say(:no_device)
+        print_log("No device found in intent payload")
+        return nothing
+    end
+
+    # match:
+    #
+    device = nothing
+    if is_in_config_skill("$room:$slot_device", skill=skill)
+        device = "$room:$slot_device"
+    
+    elseif is_in_config_skill("joker", skill=skill) &&
+           get_config_skill("joker", skill=skill) == slot_device
+
+        devices = get_all_devices_in_room(skill, room)
+        if length(devices) == 1
+            device = "$room:$(devices[1])"
+        elseif length(devices) > 1
+            publish_say(:device_not_unique)
+            print_log("Device $slot_device in room $room is not unique")
+        end
+    end
+
+    if isnothing(device)
+        publish_say(:device_not_found)
+        print_log("No device $room_device in room $room")
+    end
+    return device
+end
+
+function get_all_devices_in_room(skill, room)
+    
+    devices = []
+    for ((sk,param), value) in get_all_config()
+        if "$sk" == skill && occursin(Regex("^$(room):"), "$param")
+            push!(devices, "$param")
+        end
+    end
+
+    devices = replace.(devices, Regex("^$(room):") => "")
+    return devices
+end
