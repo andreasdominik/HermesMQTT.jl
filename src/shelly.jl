@@ -68,13 +68,13 @@ function switch_shelly_25_relay(ip, relay, action;
     url = "http://$ip/relay/$relay"
 
     success = true
-    if action == :on
+    if action == "on"
         cmd = "turn=on"
     elseif action == :timer
         cmd = "turn=on&timer=$timer"
-    elseif action == :off
+    elseif action == "off"
         cmd = "turn=off"
-    elseif action == :push
+    elseif action == "push"
         cmd = "turn=on"
     else
         print_log("ERROR in switch_shelly_25: action $action is not supported")
