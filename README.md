@@ -18,10 +18,6 @@ Learn more about writing skills in Julia with HermesMQTT.jl here:
 The package can be installed with the Julia package manager. From the Julia REPL, type ] to enter the Pkg REPL mode and run:
 
 ```julia
-add git@github.com:andreasdominik/HermesMQTT.jl.git
-```
-or 
-```julia
 add https://github.com/andreasdominik/HermesMQTT.jl.git
 ```
 

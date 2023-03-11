@@ -240,7 +240,7 @@ function install_skill(skill_url)
         skill_url = "https://github.com/andreasdominik/$skill_url.git"
     end
 
-    m = match(r"git.*/(?<skill_name>.*).git", skill_url)
+    m = match(r"https.*/(?<skill_name>.*).git", skill_url)
     skill_name = m[:skill_name]
     
     skill_dir = joinpath(skills_dir, skill_name)
