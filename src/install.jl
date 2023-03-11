@@ -313,7 +313,7 @@ end
 
 function install_sentences_and_slots(skill_name="skill")
 
-    api_url = get_config("rhasspy_url")
+    api_url = get_config_skill("rhasspy_url", skill="HermesMQTT")
     if isnothing(api_url)
         println("No Rhasspy url found in config.ini.")
         println("Please configure the Rhasspy url first!")
