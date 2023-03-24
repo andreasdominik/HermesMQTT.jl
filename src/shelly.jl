@@ -117,13 +117,17 @@ For the API-doc of the Shelly devices see:
 function move_shelly_25_roller(ip, action; pos=100,
             port=nothing, user=nothing, password=nothing)
 
+    # remove http:// from ip:
+    #
+    ip = replace(ip, "http://"=>"")
+
     if !isnothing(port)
         ip = "$ip:$port"
     end
     if !isnothing(user) && !isnothing(password)
         ip = "$user:$password@$ip"
     end
-    url = "http://$ip/relay/$relay"
+    url = "http://$ip/roller/0"
 
     success = true
     if action == :open
@@ -139,6 +143,7 @@ function move_shelly_25_roller(ip, action; pos=100,
         publish_say("Try to switch a Shelly-two point five with an unsupported command!")
         success = false
     end
+    println("$url?$cmd")
     try
         HTTP.get("$url?$cmd")
     catch
