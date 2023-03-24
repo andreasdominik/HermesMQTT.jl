@@ -143,7 +143,8 @@ function move_shelly_25_roller(ip, action; pos=100,
         publish_say("Try to switch a Shelly-two point five with an unsupported command!")
         success = false
     end
-    println("$url?$cmd")
+    print_log("Shelly 2.5 move URL: $url?$cmd")
+    success = true
     try
         HTTP.get("$url?$cmd")
     catch
