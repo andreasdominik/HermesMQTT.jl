@@ -48,13 +48,13 @@ If something went wrong with the API-service, `nothing` is returned.
 """
 function get_weather()
 
-    weatherService = getConfig(INI_WEATHER_SERVICE)
+    weatherService = get_config_skill(INI_WEATHER_SERVICE, skill="HermesMQTT")
 
     if weatherService == "openweather"
-        return getOpenWeather()
+        return get_open_weather()
 
     elseif weatherService == "weatherapi"
-        return getWeatherApi()
+        return get_weather_api()
 
     else
         print_log("Try to get weather information form invalid service $weatherService")
@@ -68,19 +68,23 @@ end
 
 Return a Dict with weather information from openweather.org.
 """
-function getOpenWeather()
+function get_open_weather()
 
     weather = Dict()
     try
-        api = get_config(INI_WEATHER_API, one_prefix="openweather" )
-        city = get_config(INI_WEATHER_ID, one_prefix="openweather")
+        api = get_config_skill(INI_WEATHER_API, one_prefix="openweather",
+                               skill="HermesMQTT")
+        city = get_config_skill(INI_WEATHER_ID, one_prefix="openweather",
+                          skill="HermesMQTT")
 
         url = "$OPEN_WEATHER_URL?id=$city&APPID=$api"
         print_debug("openweather URL = $url")
-        response = read(`curl $url`, String)
 
-        print_log("Weather from OpenWeatherMap: $response")
-        openWeather = try_parse_JSON(response)
+        response = HTTP.get(url)
+        data = String(response.body)
+
+        print_log("Weather from OpenWeatherMap: $data")
+        openWeather = try_parse_JSON(data)
 
         if !(openWeather isa Dict)
             return nothing
@@ -92,17 +96,17 @@ function getOpenWeather()
         weather[:winddir] = get_from_keys( openWeather, :wind, :deg)
         weather[:clouds] = get_from_keys( openWeather, :clouds, :all)
         weather[:rain1h] = get_from_keys( openWeather, :rain, Symbol("1h"))
-        if weather[:rain1h] == nothing
+        if isnothing(weather[:rain1h])
             weather[:rain1h] = 0.0
         end
         weather[:rain3h] = get_from_keys( openWeather, :rain, Symbol("3h"))
-        if weather[:rain3h] == nothing
+        if isnothing(weather[:rain3h])
             weather[:rain3h] = 0.0
         end
         weather[:rain] = 0.0
 
         timeEpoch = get_from_keys(openWeather, :sys, :sunrise)
-        if timeEpoch != nothing
+        if isnothing(timeEpoch)
             weather[:sunrise] = unix2datetime(timeEpoch)
 
             if (weather[:sunrise] isa DateTime) && haskey(openWeather, :timezone)
@@ -111,7 +115,7 @@ function getOpenWeather()
         end
 
         timeEpoch = get_from_keys(openWeather, :sys, :sunset)
-        if timeEpoch != nothing
+        if isnothing(timeEpoch)
             weather[:sunset] = unix2datetime(timeEpoch)
 
             if (weather[:sunset] isa DateTime) && haskey(openWeather, :timezone)
@@ -134,30 +138,30 @@ end
 
 Return a Dict with weather information from weatherapi.com.
 """
-function getWeatherApi()
+function get_weather_api()
 
     weather = Dict()
     try
-        api = get_config(INI_WEATHER_API, one_prefix="weatherapi")
+        api = get_config_skill(INI_WEATHER_API, one_prefix="weatherapi",
+                               skill="HermesMQTT")
         print_debug("api = $api")
-        location = get_config(INI_WEATHER_LOCATION,
-                             multiple=true, one_prefix="weatherapi")
+        location = get_config_skill(INI_WEATHER_LOCATION,
+                             multiple=true, one_prefix="weatherapi",
+                             skill="HermesMQTT")
         if length(location) != 2
             print_log("Wrong location in config.ini for weatherAPI: lon,lat expected!")
             return nothing
         end
         lat = location[1]
         lon = location[2]
-        print_debug("location = $lat, $lon")
+        #print_debug("location = $lat, $lon")
 
         url = "$WEATHER_API_URL?key=$api&q=$lat,$lon"
-        print_debug("url = $url")
+        #print_debug("url = $url")
 
-        cmd = `curl $url`
-        print_debug("cmd = $cmd")
-        response = read(cmd, String)
-        print_log("Weather from WeatherApi: $response")
-        weatherApi = try_parse_JSON(response)
+        response = HTTP.get(url)
+        data = String(response.body)
+        weatherApi = try_parse_JSON(data)
 
         if !(weatherApi isa Dict)
             return nothing
@@ -168,18 +172,19 @@ function getWeatherApi()
         weather[:windspeed] = weatherApi[:current][:wind_kph]
         weather[:winddir] = weatherApi[:current][:wind_degree]
         weather[:clouds] = weatherApi[:current][:cloud]
-        weather[:rain] = weatherApi[:current][:precip_mm]
-        weather[:rain1h] = 0.0
-        weather[:rain3h] = 0.0
+        weather[:rain1h] = weatherApi[:current][:precip_mm]
+        if isnothing(weather[:rain1h])
+            weather[:rain1h] = 0.0
+        end
+        weather[:rain3h] = weather[:rain1h]
+
 
         url = "$WEATHER_AST_URL?key=$api&q=$lat,$lon"
-        print:debug("url = $url")
 
-        cmd = `curl $url`
-        print_debug("cmd: $cmd")
-        response = read(cmd, String)
+        response = HTTP.get(url)
+        data = String(response.body)
         print_log("Astronomy from WeatherApi: $response")
-        weatherApi = tryParseJSON(response)
+        weatherApi = try_parse_JSON(data)
 
         if !(weatherApi isa Dict)
             return nothing
@@ -192,12 +197,12 @@ function getWeatherApi()
         timestr = weatherApi[:astronomy][:astro][:sunset]
         sunsetTime = Time(timestr, "HH:MM pp")
         weather[:sunset] = DateTime(today(), sunsetTime)
+    
+        weather[:time] = "$(Dates.now())"
     catch
         weather = nothing
     end
 
-    weather[:time] = "$(Dates.now())"
-    print_debug("weatherapi complete: $weather")
     return weather
 end
 

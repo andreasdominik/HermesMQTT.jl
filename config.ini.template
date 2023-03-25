@@ -23,13 +23,19 @@ mqtt_timeout = nothing
 # (here: example Berlin, DE)
 # if not defined, no weather data will be downloaded:
 #
-weather_service=openweather
-openweather:api_key=<insert valid API-key here>
-openweather:city_id=6350865
+# weather_history defines the days of recorded weather history.
+# weather information will be retrieved every hour by the scheduler
+# and stored in the database.
+#
+weather_history = 7
 
-#weather_service=weatherapi
-weatherapi:api_key=<insert valid API-key here>
-weatherapi:location=52.52,13.40
+weather_service = openweather
+openweather:api_key = <insert valid API-key here>
+openweather:city_id = 6350865
+
+#weather_service = weatherapi
+weatherapi:api_key = <insert valid API-key here>
+weatherapi:location = 52.52,13.40
 
 # predefined sentences in different languages:
 #
