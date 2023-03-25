@@ -72,8 +72,8 @@ function getOpenWeather()
 
     weather = Dict()
     try
-        api = get_config(INI_WEATHER_API, onePrefix="openweather" )
-        city = get_config(INI_WEATHER_ID, onePrefix="openweather")
+        api = get_config(INI_WEATHER_API, one_prefix="openweather" )
+        city = get_config(INI_WEATHER_ID, one_prefix="openweather")
 
         url = "$OPEN_WEATHER_URL?id=$city&APPID=$api"
         print_debug("openweather URL = $url")
@@ -118,6 +118,8 @@ function getOpenWeather()
                 weather[:sunset] += Dates.Second(openWeather[:timezone])
             end
         end
+
+        weather[:time] = "$(Dates.now())"
     catch
         weather = nothing
     end
@@ -136,10 +138,10 @@ function getWeatherApi()
 
     weather = Dict()
     try
-        api = getConfig(INI_WEATHER_API, onePrefix="weatherapi")
+        api = get_config(INI_WEATHER_API, one_prefix="weatherapi")
         print_debug("api = $api")
-        location = getConfig(INI_WEATHER_LOCATION,
-                             multiple=true, onePrefix="weatherapi")
+        location = get_config(INI_WEATHER_LOCATION,
+                             multiple=true, one_prefix="weatherapi")
         if length(location) != 2
             print_log("Wrong location in config.ini for weatherAPI: lon,lat expected!")
             return nothing
@@ -194,6 +196,7 @@ function getWeatherApi()
         weather = nothing
     end
 
+    weather[:time] = "$(Dates.now())"
     print_debug("weatherapi complete: $weather")
     return weather
 end
