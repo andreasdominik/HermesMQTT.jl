@@ -150,21 +150,23 @@ and return the value or nothing if not in the database.
 """
 function db_read_value(key, field)
 
-    if ! (key isa Symbol)
-        key = Symbol(key)
-    end
-    if ! (field isa Symbol)
-        field = Symbol(field)
-    end
+    entry = db_read_entry(key)
 
-    db = db_read()
-    if haskey(db, key) &&
-       haskey(db[key],:payload) &&
-       haskey(db[key][:payload],field)
-        return db[key][:payload][field]
-    else
+    if isnothing(entry)
         print_log("Try to read value for unknown key $key from status database.")
         return nothing
+
+    else
+        if ! (field isa Symbol)
+            field = Symbol(field)
+        end
+
+        if haskey(entry, field)
+            return entry[field]
+        else
+            print_log("Try to read value for key $key and unknown field $field from status database.")
+            return nothing
+        end
     end
 end
 
