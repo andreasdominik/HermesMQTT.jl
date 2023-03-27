@@ -15,7 +15,7 @@ Learn more about writing skills in Julia with HermesMQTT.jl here:
 
 ## Installation
 
-The package can be installed with the Julia package manager. From the Julia REPL, type ] to enter the Pkg REPL mode and run:
+The package can be installed with the Julia package manager. From the Julia REPL, type `alt ]` to enter the Pkg REPL mode and run:
 
 ```julia
 add https://github.com/andreasdominik/HermesMQTT.jl.git
@@ -25,8 +25,8 @@ add https://github.com/andreasdominik/HermesMQTT.jl.git
 
 New skills can be easily created with the `generate_skill()` function
 which creates the skeleton of a already working skill with demo code that 
-echoes its name (aka *hello world*) and the values of recognised slots.
-The skeleton may be used as a starting point for your own skills.
+tells its name (aka *hello world*) and the values of recognised slots.
+The skeleton may be used as a starting point for skill development.
 
 ## Skill installation
 
@@ -38,7 +38,8 @@ skill name is needed (i.e. `install_skill("SusiLights")`).
 ## Available skills
 
 As the framework is set up to enable quick skill development for
-everybody, only a small number of prepared skills is available yet:
+everybody, only a small number of prepared skills is available yet
+(supporting languages *en* and *de*):
 
 - SusiLights: control lights (shelly-devices and gpio)
 - SusiDateTime: tell the current date or time
