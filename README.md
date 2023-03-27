@@ -43,5 +43,8 @@ everybody, only a small number of prepared skills is available yet:
 - SusiLights: control lights (shelly-devices and gpio)
 - SusiDateTime: tell the current date or time
 - SusiWeekly: program a weekly schedule with profiles  
+- SusiRoller: control roller shutters
+- SusiWater: control pumos and valves for irrigation, depending on
+  weather data
 - SusiScheduler: organise a database of scheduled events (this
   skill is always installed with the framework)
