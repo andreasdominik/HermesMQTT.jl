@@ -507,3 +507,75 @@ end
     
 
 
+"""
+    install_service()
+
+Install a service to make sure that HermesMQTT.jl is started on system start 
+and always runs (i.e. restarts if it crashes).
+
+The service can be controlled with `systemctl` command as:
+    
+        systemctl status hermesmqtt
+        systemctl start hermesmqtt
+        systemctl stop hermesmqtt
+        systemctl restart hermesmqtt
+
+### Details:
+The service is configured with the full path to the julia executable.
+Therefore, it is not necessary to have julia in the PATH **but** 
+if a new version of julia is installed, the service has to be reinstalled.
+"""
+function install_service()
+    
+    println("Install a service for HermesMQTT.jl? (y/n)")
+    if !startswith(readline(), "y")
+        println("OK - aborted!\n")
+        return nothing
+    end
+
+    # set user:
+    #
+    user = ENV["USER"]
+    println("Run service as user $user? (leave empty for yes, enter user name for no)")
+    s = readline()
+    if !(s == "" || s == "y")
+        user = s
+    end
+    println("Running service as user $user")
+
+    # set julia exec:
+    #
+    julia_exec = joinpath(Sys.BINDIR, "julia")
+
+    cmd = joinpath(get_skills_dir(), "HermesMQTT.jl", "bin", "make_service.sh")
+    if !boolrun(`sudo $cmd $(get_skills_dir()) $user $julia_exec`)
+        println("Error executing installation script!")
+        return nothing
+    end
+
+    println("Service installed. You can start, stop or restart it with:")
+    println("    systemctl start hermesmqtt")
+    println("    systemctl stop hermesmqtt")
+    println("    systemctl restart hermesmqtt")
+
+    println("You can also check the status with:")
+    println("    systemctl status hermesmqtt")
+
+    println("Start the service now? (y/n)")
+    if startswith(readline(), "y")
+        if !boolrun(`sudo systemctl start hermesmqtt`)
+            println("Error starting the service!")
+        end
+    else
+        println("OK - please start the service manually!\n")
+    end
+
+    println("Configure the service to start on system start? (y/n)")
+    if startswith(readline(), "y")
+        if !boolrun(`sudo systemctl enable hermesmqtt`)
+            println("Error - could not configure the service!")
+        end
+    else
+        println("OK - please configure the service manually!\n")
+    end
+end

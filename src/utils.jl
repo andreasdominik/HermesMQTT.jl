@@ -184,6 +184,18 @@ function tryrun(cmd; wait = true, error_msg = ERRORS_EN[:error_script], silent =
     return result
 end
 
+function boolrun(cmd)
+
+    result = true
+    try
+        run(cmd)
+    catch
+        result = false
+    end
+
+    return result
+end
+
 function find_all_files(base, name, verbose=false)
 
     i = 0

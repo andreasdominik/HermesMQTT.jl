@@ -123,6 +123,19 @@ $ sudo apt-get install mosquitto
 $ sudo apt-get install mosquitto-clients
 ```
 
+## Running HermesMQTT.jl as a service
+
+For production systems it is recommended to run HermesMQTT.jl as a
+service. This can be done by creating a service file for systemd
+or by running the `install_service()` function from the Julia REPL inside
+a confugured HermesMQTT-installation:
+  
+  ```julia
+  using HermesMQTT
+  install_service()
+  ```
+
+
 ## Skills
 
 The loader will search for skills in the directory parallel to the
