@@ -41,11 +41,11 @@ As the framework is set up to enable quick skill development for
 everybody, only a small number of prepared skills is available yet
 (supporting languages *en* and *de*):
 
-- SusiLights: control lights (shelly-devices and gpio)
-- SusiDateTime: tell the current date or time
-- SusiWeekly: program a weekly schedule with profiles  
-- SusiRoller: control roller shutters
-- SusiWater: control pumos and valves for irrigation, depending on
+- [SusiLights](https://github.com/andreasdominik/SusiLights): control lights (shelly-devices and gpio)
+- [SusiDateTime](https://github.com/andreasdominik/SusiDateTime): tell the current date or time
+- [SusiWeekly](https://github.com/andreasdominik/SusiWeekly): program a weekly schedule with profiles  
+- [SusiRoller](https://github.com/andreasdominik/SusiRoller): control roller shutters
+- [SusiWater](https://github.com/andreasdominik/SusiWater): control pumos and valves for irrigation, depending on
   weather data
-- SusiScheduler: organise a database of scheduled events (this
+- [SusiScheduler](https://github.com/andreasdominik/SusiScheduler): organise a database of scheduled events (this
   skill is always installed with the framework)
