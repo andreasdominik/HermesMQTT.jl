@@ -231,8 +231,14 @@ end
 #
 function install_skill(skill_url)
 
+    # read config.ini:
+    #
     skills_dir = get_skills_dir()
-    script = joinpath(skills_dir, "HermesMQTT.jl", "bin", "install_skill.sh")
+    if isnothing(skills_dir)
+        println("Please install the HermesMQTT-framework first.") 
+        return nothing
+    end
+    load_hermes_config(joinpath(skills_dir, "HermesMQTT.jl"))
 
     # if ado's skill, no url is needed:
     #
@@ -467,6 +473,8 @@ function generate_skill(skill_name=nothing)
         println("Please install the HermesMQTT-framework first.") 
         return nothing
     end
+    load_hermes_config(joinpath(skills_dir, "HermesMQTT.jl"))
+
     println("The new Skill $skill_name will be installed at: \n$skills_dir\n\n")
     tryrun(`$(joinpath(HermesMQTT.PACKAGE_BASE_DIR, "bin", "generate_skill.sh")) $skill_name $PACKAGE_BASE_DIR $skills_dir`)
     return nothing
@@ -527,6 +535,14 @@ if a new version of julia is installed, the service has to be reinstalled.
 """
 function install_service()
     
+    skills_dir = get_skills_dir()
+    if isnothing(skills_dir)
+        println("Please install the HermesMQTT-framework first.") 
+        return nothing
+    end
+    load_hermes_config(joinpath(skills_dir, "HermesMQTT.jl"))
+
+    println("The new Skill $skill_name will be installed at: \n$skills_dir\n\n")
     println("Install a service for HermesMQTT.jl? (y/n)")
     if !startswith(readline(), "y")
         println("OK - aborted!\n")

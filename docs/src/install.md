@@ -77,7 +77,7 @@ repository, therefore it must be installed manually:
 
 ```julia
 using Pkg
-Pkg.clone("https://github.com/andreasdominik/HermesMQTT.jl.git")
+Pkg.add(url="https://github.com/andreasdominik/HermesMQTT.jl.git")
 ```
 
 + find a installation directory; 
