@@ -95,6 +95,9 @@ and a file `config.ini`
 in the installation directory. The file `action-hermesMQTT.jl` 
 is the loader script.
 
+The installation requires sudo-rights, because the installer
+needs to change the permissions of the installation directory.
+
 If possible the rhasspy server should be running on the same 
 or on another machine. During installation the installer asks for 
 hostname and port of the rhasspy server (default: `localhost:12101`).

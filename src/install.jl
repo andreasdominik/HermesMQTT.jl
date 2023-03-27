@@ -114,11 +114,20 @@ update your config.ini file accordingly.")
     if !isdir(hermes_dir)
         mkpath(hermes_dir)
     end
+
+    # copy a directory and set write permission:
+    #
     copydir(joinpath(PACKAGE_BASE_DIR, "bin"), hermes_dir)
     copydir(joinpath(PACKAGE_BASE_DIR, "profiles"), hermes_dir)
     cp(joinpath(PACKAGE_BASE_DIR, "config.ini.template"), 
                 joinpath(hermes_dir, "config.ini.template"), 
                 force=true)
+
+    if !boolrun(`sudo chmod -R 755 $(joinpath(hermes_dir, "bin"))`) || 
+        !boolrun(`sudo chmod -R 755 $(joinpath(hermes_dir, "profiles"))`)
+        println("Error: Could not set write permission for $hermes_dir")
+        return
+    end
 
     
     # create config.ini:
