@@ -77,7 +77,7 @@ repository, therefore it must be installed manually:
 
 ```julia
 using Pkg
-Pkg.clone("git@github.com:andreasdominik/HermesMQTT.jl.git")
+Pkg.clone("https://github.com/andreasdominik/HermesMQTT.jl.git")
 ```
 
 + find a installation directory; 
@@ -96,7 +96,7 @@ in the installation directory. The file `action-hermesMQTT.jl`
 is the loader script.
 
 If possible the rhasspy server should be running on the same 
-or on another machine. Dring installation the installer asks for 
+or on another machine. During installation the installer asks for 
 hostname and port of the rhasspy server (default: `localhost:12101`).
 If the server is accessible, the installer will upload the
 intents and slots to the server (to the `intents` and `slots` 
@@ -147,7 +147,7 @@ correct `skills` directory or perform an update, if the installation
 already exists.
 
 Default-skills (i.e. developed by the author of HermesMQTT) are all
-in Github repos like `git@github.com:andreasdominik/SusiWeekly.git`
+in Github repos like `https//github.com/andreasdominik/SusiWeekly.git`
 and can be installed just with the skill-name:
 
 ```julia
@@ -155,6 +155,6 @@ install_skill("SusiWeekly")
  
 # or with complete URL:
 #
-install_skill("git@github.com:andreasdominik/SusiWeekly.git")
+install_skill("https://github.com/andreasdominik/SusiWeekly.git")
 ```
 
