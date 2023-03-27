@@ -256,8 +256,6 @@ Most parts of HermesMQTT.jl and the skills can be installed from the Julia REPL:
 
 ```@docs  
 install
-install_skill
-update_skill
 upload_intents
 install_service
 generate_skill
