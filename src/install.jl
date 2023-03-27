@@ -369,6 +369,8 @@ function install_sentences_and_slots(skill_name="skill")
         else
             sentences = []
         end
+println("sentences: $sentences")
+println("slots: $slots")
 
         for slot in slots
             upload_one_slot(slot, profile_dir, api_url)
