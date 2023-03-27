@@ -197,6 +197,21 @@ for i in ${!INTENTS[@]} ; do
     cat skill-actions-4-foot.jl >> skill-actions.jl
 done
 
+# make profile dir and empty ini-files for en, fr, de:
+# create ini-file name:
+#
+echo "... generate profile files"
+mkdir -p profile/en
+mkdir -p profile/fr
+mkdir -p profile/de
+
+INI_FILE_NAME="$(echo $SKILL | tr '[:upper:]' '[:lower:]').ini"
+echo " " > profile/en/$INI_FILE_NAME
+echo " " > profile/fr/$INI_FILE_NAME
+echo " " > profile/de/$INI_FILE_NAME
+
+
+
 # clean:
 #
 rm skill-actions-1-head.jl
