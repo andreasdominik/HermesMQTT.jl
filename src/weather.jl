@@ -70,6 +70,60 @@ Return a Dict with weather information from openweather.org.
 """
 function get_open_weather()
 
+# openwather JSON:
+#
+#  {
+#    "coord":
+#    {
+#      "lon":8.7686,"lat":50.6981
+#    },
+#    "weather":
+#    [
+#      {"id":804,
+#       "main":"Clouds",
+#       "description":"overcast clouds",
+#       "icon":"04d"
+#      }
+#    ],
+#    "base":"stations",
+#    "main":
+#    {
+#      "temp":278.7,
+#      "feels_like":276.96,
+#      "temp_min":277.25,
+#      "temp_max":279.37,
+#      "pressure":1019,
+#      "humidity":83,
+#      "sea_level":1019,
+#      "grnd_level":985
+#    },
+#    "visibility":10000,
+#    "wind":
+#    {
+#      "speed":2.21,
+#      "deg":193,
+#      "gust":4.79
+#    },
+#    "clouds":
+#    {
+#      "all":100
+#    },
+#    "dt":1680074949,
+#    "sys":
+#    {
+#      "type":2,
+#      "id":2009022,
+#      "country":"DE",
+#      "sunrise":1680066511,
+#      "sunset":1680112252,
+#      },
+#    "timezone":7200,
+#    "id":3220941,
+#    "name":"Regierungsbezirk Gießen",
+#    "cod":200
+#  }
+
+
     weather = Dict()
     try
         api = get_config_skill(INI_WEATHER_API, one_prefix="openweather",
@@ -106,8 +160,8 @@ function get_open_weather()
         weather[:rain] = 0.0
 
         timeEpoch = get_from_keys(openWeather, :sys, :sunrise)
-        if isnothing(timeEpoch)
-            weather[:sunrise] = unix2datetime(timeEpoch)
+        if !isnothing(timeEpoch)
+            weather[:sunrise] = Dates.unix2datetime(timeEpoch)
 
             if (weather[:sunrise] isa DateTime) && haskey(openWeather, :timezone)
                 weather[:sunrise] += Dates.Second(openWeather[:timezone])
@@ -115,8 +169,8 @@ function get_open_weather()
         end
 
         timeEpoch = get_from_keys(openWeather, :sys, :sunset)
-        if isnothing(timeEpoch)
-            weather[:sunset] = unix2datetime(timeEpoch)
+        if !isnothing(timeEpoch)
+            weather[:sunset] = Dates.unix2datetime(timeEpoch)
 
             if (weather[:sunset] isa DateTime) && haskey(openWeather, :timezone)
                 weather[:sunset] += Dates.Second(openWeather[:timezone])
@@ -191,11 +245,11 @@ function get_weather_api()
         end
 
         timestr = weatherApi[:astronomy][:astro][:sunrise]
-        sunriseTime = Time(timestr, "HH:MM pp")
+        sunriseTime = Dates.Time(timestr, "HH:MM pp")
         weather[:sunrise] = DateTime(today(), sunriseTime)
 
         timestr = weatherApi[:astronomy][:astro][:sunset]
-        sunsetTime = Time(timestr, "HH:MM pp")
+        sunsetTime = Dates.Time(timestr, "HH:MM pp")
         weather[:sunset] = DateTime(today(), sunsetTime)
     
         weather[:time] = "$(Dates.now())"
