@@ -226,9 +226,11 @@ match_config(name, val::AbstractString; one_prefix=nothing) =
 
 
 """
-    get_config(name; multiple = false, one_prefix = nothing)
-    get_config_skill(name; multiple = false, one_prefix = nothing,
-                    skill=get_appname())
+    get_config(name; multiple = false, one_prefix = nothing,
+                    cast_to = nothing, default = nothing)
+    get_config_skill(name; skill=get_appname(), 
+                    multiple=false, one_prefix=nothing,
+                    cast_to=nothing, default=nothing)
 
 Return the parameter value of the config.ini with
 name or nothing if the param does not exist.
@@ -239,9 +241,13 @@ values is read.
 ## Arguments:
 * `name`: name of the config parameter as Symbol or String
 * `multiple`: if `true` an array of values is returned, even if
-              only a single value have been read.
+                only a single value have been read.
 * `one_prefix`: if defined, the prefix will be used only for this
-              single call instead of the stored prefix.
+                single call instead of the stored prefix.
+* `cast_to`: if defined, the value (or values of the list) 
+                is casted to the given type.
+* `default`: if defined, the value is returned if the parameter
+                does not exist in the config.ini or the cast fails.
 
 ## Details:
 If name is of type `Symbol`, it is treated as key in the
@@ -256,8 +262,9 @@ with the current appname used as skill.
 If a config-entry for a different skill is wanted, the function 
 `get_config_skill(...; skill="skillname")` can be used.
 """
-function get_config_skill(name; multiple=false, one_prefix=nothing, 
-                    skill=get_appname())
+function get_config_skill(name; skill=get_appname(),
+                          multiple=false, one_prefix=nothing, 
+                          cast_to=nothing, default=nothing)
 
     global CONFIG_INI
 
@@ -271,13 +278,27 @@ function get_config_skill(name; multiple=false, one_prefix=nothing,
 
     if haskey(CONFIG_INI, (skill,name))
         if multiple && (CONFIG_INI[(skill,name)] isa AbstractString)
-            return [CONFIG_INI[(skill,name)]]
+            val = [CONFIG_INI[(skill,name)]]
         else
-            return CONFIG_INI[(skill,name)]
+            val = CONFIG_INI[(skill,name)]
         end
-    else
-        return nothing
+        if !isnothing(cast_to)
+            if val isa AbstractString
+                val = tryparse(cast_to, val)
+            elseif val isa AbstractArray
+                val = tryparse.(cast_to, val)
+            end
+        end
+    else # key not in config.ini
+        val = nothing
     end
+
+    if val isa AbstractArray
+        val = [if isnothing(v) default else v end for v in val]
+    else
+        val = if isnothing(val) default else val end
+    end
+    return val
 end
 
 function get_config(name; multiple=false, one_prefix=nothing) 

@@ -37,8 +37,7 @@ read_language_sentences(APP_DIR)
 
 # mask the following functions:
 #
-get_config(name; multiple=false, one_prefix=nothing) =
-    HermesMQTT.get_config_skill(name; multiple=multiple, one_prefix=one_prefix, skill=APP_NAME)
+get_config(name; o...) = HermesMQTT.get_config_skill(name; skill=APP_NAME, o...)
 is_in_config(name; one_prefix=nothing) = 
     HermesMQTT.is_in_config_skill(name; skill=APP_NAME, one_prefix=one_prefix)           
 match_config(name, val::AbstractString; one_prefix=nothing) = 
