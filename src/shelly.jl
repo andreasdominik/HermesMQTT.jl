@@ -57,6 +57,10 @@ For the API-doc of the Shelly devices see:
 function switch_shelly_25_relay(ip, relay, action; 
             port=nothing, user=nothing, password=nothing)
 
+    # make action a string:
+    #
+    action = "$action"
+
     print_log("Switching Shelly1/2.5 $ip with action: $action")
 
     if !isnothing(port)
