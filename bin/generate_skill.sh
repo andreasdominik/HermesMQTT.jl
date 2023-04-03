@@ -201,14 +201,17 @@ done
 # create ini-file name:
 #
 echo "... generate profile files"
-mkdir -p profile/en
-mkdir -p profile/fr
-mkdir -p profile/de
+mkdir -p profile/en/intents
+mkdir -p profile/fr/intents
+mkdir -p profile/de/intents
+mkdir -p profile/en/slots
+mkdir -p profile/fr/slots
+mkdir -p profile/de/slots
 
 INI_FILE_NAME="$(echo $SKILL | tr '[:upper:]' '[:lower:]').ini"
-echo " " > profile/en/$INI_FILE_NAME
-echo " " > profile/fr/$INI_FILE_NAME
-echo " " > profile/de/$INI_FILE_NAME
+echo " " > profile/en/intents/$INI_FILE_NAME
+echo " " > profile/fr/intents/$INI_FILE_NAME
+echo " " > profile/de/intents/$INI_FILE_NAME
 
 
 
