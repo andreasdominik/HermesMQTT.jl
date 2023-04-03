@@ -48,4 +48,5 @@ everybody, only a small number of prepared skills is available yet
 - [SusiWater](https://github.com/andreasdominik/SusiWater): control pumos and valves for irrigation, depending on
   weather data
 - [SusiScheduler](https://github.com/andreasdominik/SusiScheduler): organise a database of scheduled events (this
-  skill is always installed with the framework)
+- [SusiWeather](https://github.com/andreasdominik/SusiWeather): Simple skill to demonstrate the use of the weather
+  history of *HermesMQTT.jl*
