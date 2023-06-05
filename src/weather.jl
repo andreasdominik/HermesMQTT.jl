@@ -33,6 +33,7 @@ weatherapi:location=52.52,13.40
 ## Value:
 The return value has the elements:
 - `:service`: name of the weather service
+- `:description`: description of the weather in the profile language
 - `:pressure`: pressure in hPa
 - `:temperature`: temperature in degrees Celsius
 - `:windspeed`: wind speed in meter/sec
@@ -131,6 +132,9 @@ function get_open_weather()
         city = get_config_skill(INI_WEATHER_ID, one_prefix="openweather",
                           skill="HermesMQTT")
 
+        lang = get_language()
+
+        # url = "$OPEN_WEATHER_URL?id=$city&lang=$lang&APPID=$api"
         url = "$OPEN_WEATHER_URL?id=$city&APPID=$api"
         print_debug("openweather URL = $url")
 
@@ -176,6 +180,12 @@ function get_open_weather()
                 weather[:sunset] += Dates.Second(openWeather[:timezone])
             end
         end
+
+        # if haskey(openWeather, :weather) && length(openWeather[:weather]) > 0
+        #    weather[:description] = get_from_keys(openWeather[:weather][1], :description)
+        # else
+        #    weather[:description] = nothing
+        # end
 
         weather[:time] = "$(Dates.now())"
     catch
@@ -260,6 +270,16 @@ function get_weather_api()
     return weather
 end
 
+
+function get_from_keys(hierDict, key1)
+
+    if haskey(hierDict, key1) 
+        val = hierDict[key1]
+        return val
+    else
+        return nothing
+    end
+end
 
 function get_from_keys(hierDict, key1, key2)
 

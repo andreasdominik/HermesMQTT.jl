@@ -373,6 +373,47 @@ end
 
 
 """
+    publish_play(audio_name; sessionID=get_sessionID(), siteID=nothing,
+                    id=nothing, wait=true)
+
+Let the client at siteID play the audio file audio_name.
+
+## Arguments:
+* `audio_name`: name of the audio file to be played
+* `sessionId`: optional ID of the session if there is one
+* `id`: optional request identifier. If provided, it will be passed back
+      in the response on hermes/audioServer/playFinished.
+* `wait`: wait until the audio is played (i.e. wait for the
+        MQTT-topic)
+"""
+function publish_play(audio_file; sessionID=get_sessionID(),
+                    siteID=get_siteID(), 
+                    id=nothing, wait=true)
+
+    # make unique ID:
+    #
+    if isnothing(id)
+        id = "$(uuid4())"
+    end
+
+    publish_MQTT("hermes/audioServer/$siteID/playBytes/$id", audio_file, file=true)
+
+    # wait until finished:
+    #
+    while wait
+        topic, payload = read_one_MQTT("hermes/audioServer/$siteID/playFinished")
+        if !haskey(payload, :id)
+            print_log("ERROR: playFinished retrieved without id!")
+            wait = false
+            sleep(3)
+        elseif payload[:id] == id
+            wait = false
+        end
+    end
+end
+
+
+"""
     is_on_off_matched(payload, device_name; siteID=get_siteID())
 
 Action to be combined with the Hermes ON/OFF-intent `Susi:on_off`.
