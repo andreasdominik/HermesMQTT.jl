@@ -334,7 +334,7 @@ dictionary of phrases for the selected language by calling
 * `sessionId`: optional ID of the session if there is one
 * `id`: optional request identifier. If provided, it will be passed back
       in the response on hermes/tts/sayFinished.
-* `wait`: wait until the massege is spoken (i.e. wait for the
+* `wait`: wait until the message is spoken (i.e. wait for the
         MQTT-topic)
 """
 function publish_say(text...; sessionID=get_sessionID(),
@@ -359,6 +359,7 @@ function publish_say(text...; sessionID=get_sessionID(),
 
     # wait until finished:
     #
+    println("wait: $wait")
     while wait
         topic, payload = read_one_MQTT("hermes/tts/sayFinished")
         if !haskey(payload, :id)
